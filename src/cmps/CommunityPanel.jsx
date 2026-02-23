@@ -9,7 +9,7 @@ export function CommunityPanel(props) {
       </div>
       <div>
         <p>
-          Explore topics you are interested in <br /> with Travelsdin
+          Explore topics you are interested in <br /> with Linkedout
         </p>
       </div>
     </section>

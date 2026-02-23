@@ -3,8 +3,8 @@
   "background_color": "#ffffff",
   "display": "standalone",
   "start_url": "/",
-  "name": "Travelsdin",
-  "short_name": "Travelsdin",
+  "name": "Linkedout",
+  "short_name": "Linkedout",
   "icons": [
     {
       "src": "/icon-192x192.png",

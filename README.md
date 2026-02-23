@@ -2,9 +2,9 @@
 
 ## Overview
 
-This project is a social media web-app inspired by LinkedIn, called **Travelsdin**. The application allows users to create posts, like, comment, and interact with other users, focusing on providing an interactive and modern UI/UX for social networking purposes.
+This project is a social media web-app inspired by LinkedIn, called **Linkedout**. The application allows users to create posts, like, comment, and interact with other users, focusing on providing an interactive and modern UI/UX for social networking purposes.
 
-For the live project, visit: [Travelsdin on Railway](https://travelsdin-express-production.up.railway.app/#/)
+For the live project, visit: [Linkedout on Vercel](https://linkedout-frontend-laophan74.vercel.app/#/)
 
 Backend Repository: [Social Network Backend](https://github.com/shlomiNugarker/Social-Network-Backend)
 
@@ -107,9 +107,9 @@ Then follow the specific deployment steps for your chosen platform.
 
 ### Demo Video
 
-Watch the demo of Travelsdin here:
+Watch the demo of Linkedout here:
 
-[Travelsdin Demo Video](https://user-images.githubusercontent.com/98424459/205487047-22fc957c-701f-45de-bb31-58c11a467db8.mp4)
+[Linkedout Demo Video](https://user-images.githubusercontent.com/98424459/205487047-22fc957c-701f-45de-bb31-58c11a467db8.mp4)
 
 ## Contributing
 
@@ -128,5 +128,5 @@ If you have any questions or suggestions, feel free to contact the project maint
 - **Name**: Shlomi Nugarker
 - **Email**: [shlomin1231@gmail.com](mailto\:shlomin1231@gmail.com)
 
-We look forward to your feedback and contributions to make **Travelsdin** even better!
+We look forward to your feedback and contributions to make **Linkedout** even better!
 
