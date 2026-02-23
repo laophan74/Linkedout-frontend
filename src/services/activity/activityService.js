@@ -16,8 +16,8 @@ async function save(activity) {
 }
 
 async function getActivitiesLength(filterBy = {}) {
-  const activities = await httpService.get(`activity`)
-  return activities.length
+  const result = await httpService.get('activity/count', filterBy)
+  return result?.unreadCount ?? 0
 }
 
 async function updateLastSeen() {

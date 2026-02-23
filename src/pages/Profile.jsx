@@ -14,7 +14,6 @@ import {
   setCurrPage,
   setFilterByPosts,
 } from '../store/actions/postActions'
-import { updateUser } from '../store/actions/userActions'
 
 function Profile() {
   const params = useParams()
@@ -30,9 +29,10 @@ function Profile() {
   const { loggedInUser } = useSelector((state) => state.userModule)
 
   const checkIsConnected = () => {
-    const isConnected = loggedInUser?.connections?.some(
-      (connection) => connection?.userId === user?._id
-    )
+    const isConnected = loggedInUser?.connections?.some((connection) => {
+      const connectionId = connection?._id || connection
+      return connectionId === user?._id
+    })
 
     setIsConnected(isConnected)
   }
@@ -60,44 +60,18 @@ function Profile() {
 
   const connectProfile = async () => {
     if (!user) return
+
     if (isConnected === true) {
-      // Remove
-      const connectionToRemve = JSON.parse(JSON.stringify(user))
-      const loggedInUserToUpdate = JSON.parse(JSON.stringify(loggedInUser))
-
-      loggedInUserToUpdate.connections =
-        loggedInUserToUpdate.connections.filter(
-          (connection) => connection.userId !== connectionToRemve._id
-        )
-
-      connectionToRemve.connections = connectionToRemve.connections.filter(
-        (connection) => connection.userId !== loggedInUserToUpdate._id
-      )
-
-      dispatch(updateUser(loggedInUserToUpdate))
-      dispatch(updateUser(connectionToRemve))
-
-      setUser((prev) => ({ ...prev, ...connectionToRemve }))
+      await userService.disconnectUser(user._id)
     } else if (isConnected === false) {
-      // Add
-      const connectionToAdd = JSON.parse(JSON.stringify(user))
-
-      const loggedInUserToUpdate = JSON.parse(JSON.stringify(loggedInUser))
-
-      connectionToAdd.connections.unshift({
-        userId: loggedInUserToUpdate._id,
-        fullname: loggedInUserToUpdate.fullname,
-      })
-
-      loggedInUserToUpdate.connections.push({
-        userId: connectionToAdd._id,
-        fullname: connectionToAdd.fullname,
-      })
-
-      dispatch(updateUser(loggedInUserToUpdate))
-      dispatch(updateUser(connectionToAdd))
-      setUser(connectionToAdd)
+      await userService.connectUser(user._id)
     }
+
+    const refreshedLoggedInUser = await userService.getProfile()
+    dispatch({ type: 'UPDATE_LOGGED_IN_USER', user: refreshedLoggedInUser })
+
+    const refreshedUser = await userService.getById(user._id)
+    setUser(refreshedUser)
   }
 
   const moveToChat = () => {

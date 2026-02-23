@@ -130,7 +130,7 @@ function useChat(loggedInUser, chats, params) {
       setMessagesToShow(savedChat.messages)
       if (savedChat) {
         const newActivity = {
-          type: 'private-message',
+          type: 'message',
           createdBy: loggedInUser?._id,
           createdTo: loggedInUser._id === savedChat.userId
             ? savedChat.userId2

@@ -1,10 +1,16 @@
 import Axios from 'axios'
 
 const BASE_URL =
-  process.env.NODE_ENV === 'production' ? '/api/' : '//localhost:3030/api/'
+  process.env.REACT_APP_API_BASE_URL ||
+  (process.env.NODE_ENV === 'production'
+    ? 'https://linkedout-backend.vercel.app/api/'
+    : 'http://localhost:3030/api/')
 
 var axios = Axios.create({
   withCredentials: false,
+  validateStatus: function (status) {
+    return status >= 200 && status < 300
+  }
 })
 
 // Add JWT token to requests
@@ -39,9 +45,16 @@ async function ajax(endpoint, method = 'GET', data = null) {
       data,
       params: method === 'GET' ? data : null,
     })
+    if (res.data && res.data.success && 'data' in res.data) {
+      return res.data.data
+    }
+    // If response is not successful, throw error with backend message
+    if (res.data && !res.data.success) {
+      throw new Error(res.data.message || 'Request failed')
+    }
     return res.data
   } catch (err) {
-    console.dir(err)
+    console.error('HTTP Error:', err)
     throw err
   }
 }

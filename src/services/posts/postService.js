@@ -12,10 +12,15 @@ export const postService = {
 // Map backend post fields to frontend schema
 function mapBackendPost(backendPost) {
   if (!backendPost) return backendPost
+  
+  // Extract userId from createdBy (which can be string ID or full object)
+  const createdByObj = backendPost.createdBy
+  const userId = typeof createdByObj === 'object' ? createdByObj._id : createdByObj
+  
   return {
     ...backendPost,
     _id: backendPost._id,
-    userId: backendPost.createdBy,
+    userId: userId,
     body: backendPost.txt,
     imgBodyUrl: backendPost.imgUrl,
     videoBodyUrl: backendPost.videoBodyUrl || '',

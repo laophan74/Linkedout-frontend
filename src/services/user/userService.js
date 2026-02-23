@@ -7,9 +7,13 @@ export const userService = {
   login,
   logout,
   signup,
+  getProfile,
   getLoggedinUser,
   getUsers,
   getById,
+  getConnections,
+  connectUser,
+  disconnectUser,
   remove,
   update,
 }
@@ -53,6 +57,24 @@ async function logout() {
   sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
   sessionStorage.removeItem(STORAGE_KEY_TOKEN)
   return await httpService.post('auth/logout')
+}
+
+async function getProfile() {
+  const user = await httpService.get('user/profile/me')
+  if (user) _saveLocalUser(user)
+  return user
+}
+
+async function getConnections(userId) {
+  return await httpService.get(`user/${userId}/connections`)
+}
+
+async function connectUser(userId) {
+  return await httpService.post(`user/${userId}/connect`)
+}
+
+async function disconnectUser(userId) {
+  return await httpService.delete(`user/${userId}/disconnect`)
 }
 
 function _saveLocalUser(user, token) {
