@@ -1,4 +1,7 @@
 import { httpService } from '../httpService'
+import { API_CONFIG } from '../../config/constants'
+
+const ENDPOINTS = API_CONFIG.ENDPOINTS
 
 export const postService = {
   query,
@@ -35,22 +38,22 @@ function mapBackendPost(backendPost) {
 }
 
 async function query(filterBy = {}) {
-  const posts = await httpService.get(`post`, filterBy)
+  const posts = await httpService.get(ENDPOINTS.POST_LIST, filterBy)
   return Array.isArray(posts) ? posts.map(mapBackendPost) : posts
 }
 
 async function getPostsLength(filterBy = {}) {
-  const posts = await httpService.get(`post`)
+  const posts = await httpService.get(ENDPOINTS.POST_LIST)
   return posts.length
 }
 
 async function getById(id) {
-  const post = await httpService.get(`post/${id}`)
+  const post = await httpService.get(ENDPOINTS.POST_BY_ID(id))
   return mapBackendPost(post)
 }
 
 async function remove(id) {
-  return await httpService.delete(`post/${id}`)
+  return await httpService.delete(ENDPOINTS.POST_BY_ID(id))
 }
 
 async function save(post) {
@@ -61,14 +64,13 @@ async function save(post) {
     link: post.link,
     title: post.title,
   }
-  const result = await httpService[post._id ? 'put' : 'post'](
-    `post${post._id ? '/' + post._id : ''}`,
-    postToSave
-  )
+  const method = post._id ? 'put' : 'post'
+  const endpoint = post._id ? ENDPOINTS.POST_BY_ID(post._id) : ENDPOINTS.POST_LIST
+  const result = await httpService[method](endpoint, postToSave)
   return mapBackendPost(result)
 }
 
 async function likePost(postId) {
-  const result = await httpService.put(`post/${postId}/like`)
+  const result = await httpService.put(ENDPOINTS.POST_LIKE(postId))
   return mapBackendPost(result)
 }

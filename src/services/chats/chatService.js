@@ -1,5 +1,8 @@
 import { httpService } from '../httpService'
 import { userService } from '../user/userService'
+import { API_CONFIG } from '../../config/constants'
+
+const ENDPOINTS = API_CONFIG.ENDPOINTS
 
 export const chatService = {
   query,
@@ -9,7 +12,7 @@ export const chatService = {
 }
 
 async function query(filterBy = {}) {
-  const chats = await httpService.get('chat', filterBy)
+  const chats = await httpService.get(ENDPOINTS.CHAT_LIST, filterBy)
   if (!Array.isArray(chats)) return chats
 
   const loggedInUser = userService.getLoggedinUser()
@@ -26,7 +29,7 @@ async function query(filterBy = {}) {
 }
 
 async function getMessages(chatId) {
-  const messages = await httpService.get(`chat/${chatId}/messages`)
+  const messages = await httpService.get(ENDPOINTS.CHAT_MESSAGES(chatId))
   if (!Array.isArray(messages)) return messages
   return messages.map(mapBackendMessage)
 }
@@ -36,7 +39,7 @@ async function saveMessage(chatId, message) {
     txt: message?.txt,
     recipientId: message?.recipientId,
   }
-  return await httpService.post(`chat/${chatId}/message`, payload)
+  return await httpService.post(ENDPOINTS.CHAT_MESSAGE_SEND(chatId), payload)
 }
 
 async function save(chat) {
@@ -52,8 +55,8 @@ async function save(chat) {
   }
 
   const baseChat = chat?._id
-    ? await httpService.get(`chat/${chat._id}`)
-    : await httpService.post('chat', { recipientId })
+    ? await httpService.get(ENDPOINTS.CHAT_GET(chat._id))
+    : await httpService.post(ENDPOINTS.CHAT_CREATE, { recipientId })
 
   const lastMsg = chat?.messages?.[chat.messages.length - 1]
   if (lastMsg?.txt) {

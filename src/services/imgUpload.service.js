@@ -1,4 +1,7 @@
 import { httpService } from './httpService'
+import { API_CONFIG } from '../config/constants'
+
+const ENDPOINTS = API_CONFIG.ENDPOINTS
 
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -18,7 +21,7 @@ export const uploadImg = async (ev) => {
 
     const base64File = await toBase64(file)
 
-    const response = await httpService.post('upload/image', {
+    const response = await httpService.post(ENDPOINTS.UPLOAD_IMAGE, {
       imageData: base64File,
       fileName: file.name,
     })

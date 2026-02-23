@@ -1,21 +1,19 @@
 import Axios from 'axios'
+import { API_CONFIG, HTTP_CONFIG, STORAGE_CONFIG } from '../config/constants'
 
-const BASE_URL =
-  process.env.REACT_APP_API_BASE_URL ||
-  (process.env.NODE_ENV === 'production'
-    ? 'https://linkedout-backend1.vercel.app/api/'
-    : 'http://localhost:3030/api/')
+const BASE_URL = API_CONFIG.BASE_URL
 
 var axios = Axios.create({
   withCredentials: false,
   validateStatus: function (status) {
-    return status >= 200 && status < 300
-  }
+    return status >= HTTP_CONFIG.SUCCESS_CODES.MIN && status <= HTTP_CONFIG.SUCCESS_CODES.MAX
+  },
+  timeout: HTTP_CONFIG.TIMEOUT,
 })
 
 // Add JWT token to requests
 axios.interceptors.request.use((config) => {
-  const token = sessionStorage.getItem('token')
+  const token = sessionStorage.getItem(STORAGE_CONFIG.TOKEN_KEY)
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
