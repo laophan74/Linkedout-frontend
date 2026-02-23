@@ -197,21 +197,17 @@ function Message() {
           setIsUserChatExist(bool)
           openChat()
         })
-        .catch((bool) => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-          if (params.userId === loggedInUser._id) return
-          setIsUserChatExist(bool)
-          openChat()
+        .catch((err) => {
+          console.error(err)
         })
     })
-  }, [loggedInUser, params.userId, isUserChatExist])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
-    return async () => {
-      await updateLastSeenLoggedUser()
-      dispatch(setUnreadActivitiesIds())
-    }
+    updateLastSeenLoggedUser()
+    dispatch(setUnreadActivitiesIds())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const updateLastSeenLoggedUser = async () => {
