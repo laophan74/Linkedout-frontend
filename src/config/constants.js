@@ -164,7 +164,7 @@ export const ROUTES = {
 
 // ==================== EXPORT DEFAULTS ====================
 
-export default {
+const APP_CONFIG = {
   API_CONFIG,
   STORAGE_CONFIG,
   UI_CONFIG,
@@ -174,3 +174,5 @@ export default {
   VALIDATION_RULES,
   ROUTES,
 }
+
+export default APP_CONFIG
