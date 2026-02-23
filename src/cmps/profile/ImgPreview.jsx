@@ -22,6 +22,7 @@ export function ImgPreview({
 
   useEffect(() => {
     if (post?.userId) loadUser(post.userId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

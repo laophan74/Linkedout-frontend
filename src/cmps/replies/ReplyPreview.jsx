@@ -35,6 +35,7 @@ export const ReplyPreview = ({ reply, updateReply }) => {
 
   useEffect(() => {
     loadUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (!userReply) return
