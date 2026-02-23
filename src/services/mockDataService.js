@@ -1,5 +1,5 @@
 // Mock Data Service - Complete dummy data for frontend demo without backend
-// Login: username: guest, password: guest
+// Login: username: guest, password: guest123
 
 const MOCK_USERS = [
   {
@@ -393,7 +393,7 @@ export const mockDataService = {
     return user ? { ...user } : null
   },
   async login(creds) {
-    if (creds.username === 'guest' && creds.password === 'guest') {
+    if (creds.username === 'guest' && creds.password === 'guest123') {
       const user = MOCK_USERS[0]
       return { ...user }
     }

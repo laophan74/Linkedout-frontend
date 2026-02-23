@@ -12,7 +12,7 @@ export const Home = (props) => {
 
   const [creds, setCreds] = useState({
     username: 'guest',
-    password: 'guest',
+    password: 'guest123',
   })
 
   const [msg, setMsg] = useState('')
