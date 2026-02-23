@@ -26,31 +26,23 @@ export const Nav = () => {
           </Link>
         </li>
         <li
-          className={
-            'mynetwork' + ' ' + (currPage === 'mynetwork' ? 'current-btn' : '')
-          }
+          className={`mynetwork ${currPage === 'mynetwork' ? 'current-btn' : ''}`}
         >
           <Link to={`/main/mynetwork`}>
             <p>
               <FontAwesomeIcon
-                className={
-                  'nav-icon' +
-                  ' ' +
-                  (currPage === 'mynetwork' ? 'curr-logo' : '')
-                }
+                className={`nav-icon ${currPage === 'mynetwork' ? 'curr-logo' : ''}`}
                 icon="fas fa-user-friends"
               />
               <span>My Network</span>
             </p>
           </Link>
         </li>
-        <li className={'map' + ' ' + (currPage === 'map' ? 'current-btn' : '')}>
+        <li className={`map ${currPage === 'map' ? 'current-btn' : ''}`}>
           <Link to="/main/map">
             <p>
               <FontAwesomeIcon
-                className={
-                  'nav-icon' + ' ' + (currPage === 'map' ? 'curr-logo' : '')
-                }
+                className={`nav-icon ${currPage === 'map' ? 'curr-logo' : ''}`}
                 icon="fa-solid fa-map-location"
               />
 
@@ -59,16 +51,12 @@ export const Nav = () => {
           </Link>
         </li>
         <li
-          className={
-            'messaging' + ' ' + (currPage === 'message' ? 'current-btn' : '')
-          }
+          className={`messaging ${currPage === 'message' ? 'current-btn' : ''}`}
         >
           <Link to={`/main/message`}>
             <p>
               <FontAwesomeIcon
-                className={
-                  'nav-icon' + ' ' + (currPage === 'message' ? 'curr-logo' : '')
-                }
+                className={`nav-icon ${currPage === 'message' ? 'curr-logo' : ''}`}
                 icon="fas fa-comment"
               />
               <span>Messaging</span>
@@ -79,20 +67,12 @@ export const Nav = () => {
           </Link>
         </li>
         <li
-          className={
-            'notifications' +
-            ' ' +
-            (currPage === 'notifications' ? 'current-btn' : '')
-          }
+          className={`notifications ${currPage === 'notifications' ? 'current-btn' : ''}`}
         >
           <Link to={`/main/notifications`}>
             <p>
               <FontAwesomeIcon
-                className={
-                  'nav-icon' +
-                  ' ' +
-                  (currPage === 'notifications' ? 'curr-logo' : '')
-                }
+                className={`nav-icon ${currPage === 'notifications' ? 'curr-logo' : ''}`}
                 icon="fas fa-bell"
               />
               <span>Notifications</span>
@@ -103,9 +83,7 @@ export const Nav = () => {
           </Link>
         </li>
         <li
-          className={
-            'me-btn' + ' ' + (currPage === 'profile' ? 'current-btn' : '')
-          }
+          className={`me-btn ${currPage === 'profile' ? 'current-btn' : ''}`}
         >
           <Link to={`/main/profile/${loggedInUser?._id}`}>
             <p>

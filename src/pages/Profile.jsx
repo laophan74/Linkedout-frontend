@@ -117,6 +117,7 @@ function Profile() {
     return () => {
       dispatch(setFilterByPosts(null))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.userId, loggedInUser])
 
   if (!user)

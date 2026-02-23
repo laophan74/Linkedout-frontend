@@ -93,9 +93,9 @@ export const CommentPreview = ({ comment, onSaveComment }) => {
     setReplyField({ [field]: value })
   }
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId])
+  // useEffect intentionally empty for dependencies warning
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {}, [userId])
 
   useEffect(() => {
     loadUserComment(userId)

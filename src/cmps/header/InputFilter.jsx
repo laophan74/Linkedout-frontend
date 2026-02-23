@@ -79,8 +79,8 @@ export const InputFilter = () => {
 
   useEffect(() => {
     handleAutComplete()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usersAutoComplete])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     onLoadPosts()

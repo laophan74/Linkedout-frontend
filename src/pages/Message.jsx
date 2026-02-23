@@ -169,7 +169,7 @@ function Message() {
   const { chats } = useSelector((state) => state.chatModule)
 
   const {
-    isUserChatExist,
+    // isUserChatExist, // unused variable
     setIsUserChatExist,
     messagesToShow,
     setMessagesToShow,

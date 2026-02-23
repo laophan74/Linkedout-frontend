@@ -32,6 +32,7 @@ function Notifications() {
         dispatch(setUnreadActivitiesIds())
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, loggedInUser?._id])
 
   const updateLastSeenLoggedUser = () => {
