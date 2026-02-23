@@ -1,4 +1,4 @@
-import { mockDataService } from '../mockDataService'
+import { httpService } from '../httpService'
 
 export const activityService = {
   query,
@@ -8,20 +8,19 @@ export const activityService = {
 }
 
 async function query(filterBy = {}) {
-  const activities = await mockDataService.getActivities()
-  return activities
+  return await httpService.get(`activity`, filterBy)
 }
 
 async function save(activity) {
-  // Mock: just return success
-  return Promise.resolve(activity)
+  return await httpService.post(`activity`, activity)
 }
 
 async function getActivitiesLength(filterBy = {}) {
-  const activities = await mockDataService.getActivities()
+  const activities = await httpService.get(`activity`)
   return activities.length
 }
 
 async function updateLastSeen() {
-  return await mockDataService.updateLastSeen()
+  // Client-side operation, no backend call needed
+  return Promise.resolve(true)
 }

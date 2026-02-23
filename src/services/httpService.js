@@ -4,7 +4,16 @@ const BASE_URL =
   process.env.NODE_ENV === 'production' ? '/api/' : '//localhost:3030/api/'
 
 var axios = Axios.create({
-  withCredentials: true,
+  withCredentials: false,
+})
+
+// Add JWT token to requests
+axios.interceptors.request.use((config) => {
+  const token = sessionStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
 })
 
 export const httpService = {
@@ -33,7 +42,6 @@ async function ajax(endpoint, method = 'GET', data = null) {
     return res.data
   } catch (err) {
     console.dir(err)
-
     throw err
   }
 }

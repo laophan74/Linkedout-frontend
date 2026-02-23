@@ -1,4 +1,4 @@
-import { mockDataService } from '../mockDataService'
+import { httpService } from '../httpService'
 
 export const chatService = {
   query,
@@ -8,18 +8,18 @@ export const chatService = {
 }
 
 async function query(filterBy = {}) {
-  return await mockDataService.getChats()
+  return await httpService.get(`chat`, filterBy)
 }
 
 async function getMessages(chatId) {
-  return await mockDataService.getChatMessages(chatId)
+  const data = await httpService.get(`chat/${chatId}`)
+  return data.messages || []
 }
 
-async function saveMessage(message) {
-  return await mockDataService.saveMessage(message)
+async function saveMessage(chatId, message) {
+  return await httpService.post(`chat/${chatId}/messages`, message)
 }
 
 async function save(chat) {
-  // Mock: just return the chat
-  return Promise.resolve(chat)
+  return await httpService.post(`chat`, chat)
 }

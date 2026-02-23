@@ -1,4 +1,4 @@
-import { mockDataService } from '../mockDataService'
+import { httpService } from '../httpService'
 
 export const postService = {
   query,
@@ -6,31 +6,33 @@ export const postService = {
   remove,
   save,
   getPostsLength,
+  likePost,
 }
-
-const postsCash = {}
 
 async function query(filterBy = {}) {
-  return await mockDataService.getPosts()
+  return await httpService.get(`post`, filterBy)
 }
+
 async function getPostsLength(filterBy = {}) {
-  const posts = await mockDataService.getPosts()
+  const posts = await httpService.get(`post`)
   return posts.length
 }
 
 async function getById(id) {
-  if (postsCash[id]) return postsCash[id]
-  else {
-    const post = await mockDataService.getPostById(id)
-    if (post) postsCash[id] = post
-    return post
-  }
+  return await httpService.get(`post/${id}`)
 }
 
 async function remove(id) {
-  return await mockDataService.deletePost(id)
+  return await httpService.delete(`post/${id}`)
 }
 
 async function save(post) {
-  return await mockDataService.savePost(post)
+  return await httpService[post._id ? 'put' : 'post'](
+    `post${post._id ? '/' + post._id : ''}`,
+    post
+  )
+}
+
+async function likePost(postId) {
+  return await httpService.put(`post/${postId}/like`)
 }

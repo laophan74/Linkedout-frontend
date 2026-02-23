@@ -1,26 +1,32 @@
-import { mockDataService } from '../mockDataService'
+import { httpService } from '../httpService'
 
 export const commentService = {
   query,
   getById,
   remove,
   save,
+  likeComment,
 }
 
 async function query(filterBy = {}) {
-  return await mockDataService.getComments()
+  return await httpService.get(`comment`, filterBy)
 }
 
 async function getById(id) {
-  const comments = await mockDataService.getComments()
-  return comments.find(c => c._id === id)
+  return await httpService.get(`comment/${id}`)
 }
 
 async function remove(comment) {
-  // Mock: just return success
-  return Promise.resolve(true)
+  return await httpService.delete(`comment/${comment._id}`)
 }
 
 async function save(comment) {
-  return await mockDataService.saveComment(comment)
+  return await httpService[comment._id ? 'put' : 'post'](
+    `comment${comment._id ? '/' + comment._id : ''}`,
+    comment
+  )
+}
+
+async function likeComment(commentId) {
+  return await httpService.put(`comment/${commentId}/like`)
 }
