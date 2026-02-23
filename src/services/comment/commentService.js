@@ -1,7 +1,5 @@
 import { mockDataService } from '../mockDataService'
 
-const ENDPOINT = 'comment'
-
 export const commentService = {
   query,
   getById,

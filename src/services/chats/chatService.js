@@ -1,7 +1,5 @@
 import { mockDataService } from '../mockDataService'
 
-const ENDPOINT = 'chat'
-
 export const chatService = {
   query,
   getMessages,

@@ -1,7 +1,5 @@
 import { mockDataService } from '../mockDataService'
 
-const ENDPOINT = 'activity'
-
 export const activityService = {
   query,
   save,

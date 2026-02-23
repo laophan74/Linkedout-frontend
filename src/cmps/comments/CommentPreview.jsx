@@ -99,6 +99,7 @@ export const CommentPreview = ({ comment, onSaveComment }) => {
 
   useEffect(() => {
     loadUserComment(userId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (!userComment) return

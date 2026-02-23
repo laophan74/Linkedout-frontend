@@ -1,7 +1,5 @@
 import { mockDataService } from '../mockDataService'
 
-const ENDPOINT = 'post'
-
 export const postService = {
   query,
   getById,

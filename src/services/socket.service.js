@@ -1,11 +1,9 @@
 // Mock Socket Service - No backend connection in demo mode
-import io from 'socket.io-client'
 
 export const SOCKET_EMIT_USER_WATCH = 'user-watch'
 export const SOCKET_EVENT_USER_UPDATED = 'user-updated'
 
 // Disabled for demo without backend
-const baseUrl = null
 export const socketService = createSocketService()
 
 socketService.setup()
