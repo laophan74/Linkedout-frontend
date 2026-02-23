@@ -75,6 +75,7 @@ export const InputFilter = () => {
     return () => {
       dispatch(addFilterByPosts(null))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users])
 
   useEffect(() => {
