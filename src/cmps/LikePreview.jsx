@@ -15,7 +15,8 @@ export function LikePreview({ reaction }) {
 
   useEffect(() => {
     loadUser(reaction.userId)
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reaction?.userId])
 
   if (!user) return
 
@@ -26,7 +27,7 @@ export function LikePreview({ reaction }) {
         onClick={() => history.push(`/main/profile/${user._id}`)}
       >
         <div className="img-container">
-          <img src={user.imgUrl} alt="" className="img" />
+          <img src={user.imgUrl} alt={user.fullname} className="img" />
         </div>
         <div className="fullname">
           <p>{user.fullname}</p>

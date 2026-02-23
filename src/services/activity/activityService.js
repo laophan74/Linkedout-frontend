@@ -8,8 +8,6 @@ export const activityService = {
   getActivitiesLength,
 }
 
-const activitiesCash = {}
-
 async function query(filterBy = {}) {
   const activities = await httpService.get(ENDPOINT, filterBy)
 

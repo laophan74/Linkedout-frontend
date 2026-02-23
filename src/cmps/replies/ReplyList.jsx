@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { ReplyPreview } from './ReplyPreview'
 
 export const ReplyList = ({ replies, updateReply }) => {

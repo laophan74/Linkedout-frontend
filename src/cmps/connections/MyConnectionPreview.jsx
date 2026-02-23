@@ -16,6 +16,7 @@ export function MyConnectionPreview({ connection }) {
 
   useEffect(() => {
     loadUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (!user) return

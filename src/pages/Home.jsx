@@ -138,7 +138,12 @@ export const Home = (props) => {
               
               <div className="login-footer">
                 <span>New to TravelsIn?</span>
-                <a onClick={() => history.push(`/signup`)}>Create account</a>
+                <button 
+                  className="create-account-link"
+                  onClick={() => history.push(`/signup`)}
+                >
+                  Create account
+                </button>
               </div>
             </form>
           </div>
@@ -176,10 +181,10 @@ export const Home = (props) => {
         <div className="footer-content">
           <p>&copy; 2023 TravelsIn. All rights reserved.</p>
           <div className="footer-links">
-            <a href="#">About</a>
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Contact</a>
+            <button onClick={() => {}}>About</button>
+            <button onClick={() => {}}>Privacy</button>
+            <button onClick={() => {}}>Terms</button>
+            <button onClick={() => {}}>Contact</button>
           </div>
         </div>
       </footer>

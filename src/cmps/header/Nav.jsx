@@ -13,14 +13,12 @@ export const Nav = () => {
     <nav className="nav">
       <ul>
         <li
-          className={'home' + ' ' + (currPage === 'home' ? 'current-btn' : '')}
+          className={`home ${currPage === 'home' ? 'current-btn' : ''}`}
         >
           <Link to="/main/feed">
             <p>
               <FontAwesomeIcon
-                className={
-                  'nav-icon' + ' ' + (currPage === 'home' ? 'curr-logo' : '')
-                }
+                className={`nav-icon ${currPage === 'home' ? 'curr-logo' : ''}`}
                 icon="fas fa-home-lg-alt"
               />
               <span>Home</span>

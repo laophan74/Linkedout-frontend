@@ -17,7 +17,7 @@ export function EditModal({ toggleShowEditModal, user }) {
     birthDate: user.birthDate,
   })
 
-  const { age, bg, email, fullname, imgUrl, phone, profession, birthDate } =
+  const { age, email, fullname, imgUrl, phone, profession } =
     userToUpdate
 
   useEffect(() => {}, [])

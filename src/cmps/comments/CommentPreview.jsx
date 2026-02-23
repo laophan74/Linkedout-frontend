@@ -94,6 +94,10 @@ export const CommentPreview = ({ comment, onSaveComment }) => {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId])
+
+  useEffect(() => {
     loadUserComment(userId)
   }, [])
 

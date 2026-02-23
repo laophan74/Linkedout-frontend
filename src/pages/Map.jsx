@@ -21,7 +21,7 @@ import {
 function Map() {
   const dispatch = useDispatch()
 
-  const [defaultProps, setDefaultProps] = useState({
+  const [defaultProps] = useState({
     center: {
       lat: 32.05591645013164,
       lng: 34.7549857056555,
@@ -53,6 +53,9 @@ function Map() {
     return () => {
       dispatch(setFilterByPosts(null))
       dispatch(setFilterByUsers(null))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
     }
   }, [])
 

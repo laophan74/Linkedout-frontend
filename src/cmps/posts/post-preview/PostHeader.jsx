@@ -20,7 +20,7 @@ export const PostHeader = ({ post, userPost }) => {
         className="img-actor"
         onClick={() => history.push(`/main/profile/${userPost?._id}`)}
       >
-        <img src={imgUrl} className="img"></img>
+        <img src={imgUrl} className="img" alt={fullname}></img>
       </div>
 
       <div className="details">

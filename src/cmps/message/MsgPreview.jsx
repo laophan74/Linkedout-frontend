@@ -46,12 +46,14 @@ export function MsgPreview({
     loadNotLoggedUser(chat)
     getUnreadCountMsgs()
     return () => {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     setMessagesToShow(chat.messages)
     setChooseenChatId(chat._id)
     return () => {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chat, chats])
 
   const isChatChooseen = chooseenChatId === chat._id ? 'chooseen-chat' : ''
