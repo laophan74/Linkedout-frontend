@@ -37,7 +37,8 @@ export function loadPosts() {
       const posts = await postService.query(filterByPosts)
       dispatch({ type: 'SET_POSTS', posts })
     } catch (err) {
-      console.log('err:', err)
+      console.error('Error loading posts:', err)
+      dispatch({ type: 'SET_POSTS', posts: [] })
     }
   }
 }
@@ -49,7 +50,8 @@ export function getPostsLength() {
       const postsLength = await postService.getPostsLength(filterByPosts)
       dispatch({ type: 'SET_POSTS_LENGTH', postsLength })
     } catch (err) {
-      console.log('err:', err)
+      console.error('Error getting posts length:', err)
+      dispatch({ type: 'SET_POSTS_LENGTH', postsLength: 0 })
     }
   }
 }
