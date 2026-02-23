@@ -198,6 +198,8 @@ function Message() {
           openChat()
         })
         .catch((bool) => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
           if (params.userId === loggedInUser._id) return
           setIsUserChatExist(bool)
           openChat()

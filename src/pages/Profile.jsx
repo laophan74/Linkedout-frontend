@@ -39,6 +39,7 @@ function Profile() {
 
   useEffect(() => {
     checkIsConnected()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
   const loadUser = async () => {

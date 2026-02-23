@@ -17,6 +17,7 @@ export function ThreadMsgPreview({ msg }) {
 
   useEffect(() => {
     loadUserMsg(msg.userId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

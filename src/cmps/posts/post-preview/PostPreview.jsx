@@ -28,6 +28,7 @@ export const PostPreview = ({ post }) => {
   useEffect(() => {
     loadUserPost(post.userId)
     if (params.postId) setIsShowComments(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUser])
 
   const toggleMenu = () => {
