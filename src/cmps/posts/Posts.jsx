@@ -14,6 +14,7 @@ export const Posts = () => {
   const dispatch = useDispatch()
 
   const { posts } = useSelector((state) => state.postModule)
+  const { isPostsLoading } = useSelector((state) => state.postModule)
 
   useEffect(() => {
     dispatch(loadPosts())
@@ -29,7 +30,8 @@ export const Posts = () => {
     dispatch(getPostsLength())
   }
 
-  if (!posts)
+  // Show loading spinner during initial load
+  if (isPostsLoading && posts.length === 0)
     return (
       <section className="posts">
         <img

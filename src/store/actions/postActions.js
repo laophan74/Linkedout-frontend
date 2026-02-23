@@ -34,11 +34,14 @@ export function loadPosts() {
   return async (dispatch, getState) => {
     try {
       const { filterByPosts } = getState().postModule
+      dispatch({ type: 'SET_IS_POSTS_LOADING', isLoading: true })
       const posts = await postService.query(filterByPosts)
       dispatch({ type: 'SET_POSTS', posts })
+      dispatch({ type: 'SET_IS_POSTS_LOADING', isLoading: false })
     } catch (err) {
       console.error('Error loading posts:', err)
       dispatch({ type: 'SET_POSTS', posts: [] })
+      dispatch({ type: 'SET_IS_POSTS_LOADING', isLoading: false })
     }
   }
 }

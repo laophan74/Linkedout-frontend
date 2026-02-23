@@ -48,15 +48,6 @@ export const PostsList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postsLength])
 
-  if (!posts)
-    return (
-      <div className="posts-list">
-        <span className="gif-container">
-          <img className="loading-gif" src={loadingGif} alt="" />
-        </span>
-      </div>
-    )
-
   return (
     <section className="posts-list">
       {posts.map((post,idx) => (
