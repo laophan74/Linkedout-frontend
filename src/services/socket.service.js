@@ -9,7 +9,6 @@ export const socketService = createSocketService()
 socketService.setup()
 
 function createSocketService() {
-  var socket = null
   const socketService = {
     async setup() {
       // Socket disabled in demo mode - no backend
@@ -25,7 +24,7 @@ function createSocketService() {
       // Mock: do nothing
     },
     terminate() {
-      socket = null
+      // Mock: do nothing
     },
   }
   return socketService
