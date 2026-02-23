@@ -3,7 +3,7 @@ import Axios from 'axios'
 const BASE_URL =
   process.env.REACT_APP_API_BASE_URL ||
   (process.env.NODE_ENV === 'production'
-    ? 'https://linkedout-backend.vercel.app/api/'
+    ? 'https://linkedout-backend1.vercel.app/api/'
     : 'http://localhost:3030/api/')
 
 var axios = Axios.create({
