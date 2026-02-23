@@ -11,8 +11,8 @@ export const Home = (props) => {
   const history = useHistory()
 
   const [creds, setCreds] = useState({
-    username: 'guest123',
-    password: '1234',
+    username: 'guest',
+    password: 'guest',
   })
 
   const [msg, setMsg] = useState('')

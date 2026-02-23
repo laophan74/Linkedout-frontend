@@ -1,9 +1,11 @@
+// Mock Socket Service - No backend connection in demo mode
 import io from 'socket.io-client'
 
 export const SOCKET_EMIT_USER_WATCH = 'user-watch'
 export const SOCKET_EVENT_USER_UPDATED = 'user-updated'
 
-const baseUrl = process.env.NODE_ENV === 'production' ? '' : '//localhost:3030'
+// Disabled for demo without backend
+const baseUrl = null
 export const socketService = createSocketService()
 
 socketService.setup()
@@ -12,18 +14,17 @@ function createSocketService() {
   var socket = null
   const socketService = {
     async setup() {
-      socket = io(baseUrl)
+      // Socket disabled in demo mode - no backend
+      // socket = io(baseUrl)
     },
     on(eventName, cb) {
-      socket.on(eventName, cb)
+      // Mock: do nothing
     },
     off(eventName, cb = null) {
-      if (!socket) return
-      if (!cb) socket.removeAllListeners(eventName)
-      else socket.off(eventName, cb)
+      // Mock: do nothing
     },
     emit(eventName, data) {
-      socket.emit(eventName, data)
+      // Mock: do nothing
     },
     terminate() {
       socket = null

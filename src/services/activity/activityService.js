@@ -1,4 +1,4 @@
-import { httpService } from '../httpService'
+import { mockDataService } from '../mockDataService'
 
 const ENDPOINT = 'activity'
 
@@ -6,20 +6,24 @@ export const activityService = {
   query,
   save,
   getActivitiesLength,
+  updateLastSeen,
 }
 
 async function query(filterBy = {}) {
-  const activities = await httpService.get(ENDPOINT, filterBy)
-
+  const activities = await mockDataService.getActivities()
   return activities
 }
 
 async function save(activity) {
-  return activity._id
-    ? await httpService.put(`${ENDPOINT}/${activity._id}`, activity)
-    : await httpService.post(ENDPOINT, activity)
+  // Mock: just return success
+  return Promise.resolve(activity)
 }
 
 async function getActivitiesLength(filterBy = {}) {
-  return await httpService.get(ENDPOINT + '/length', filterBy)
+  const activities = await mockDataService.getActivities()
+  return activities.length
+}
+
+async function updateLastSeen() {
+  return await mockDataService.updateLastSeen()
 }

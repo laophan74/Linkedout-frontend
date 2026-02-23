@@ -1,4 +1,4 @@
-import { httpService } from '../httpService'
+import { mockDataService } from '../mockDataService'
 
 const ENDPOINT = 'comment'
 
@@ -10,26 +10,19 @@ export const commentService = {
 }
 
 async function query(filterBy = {}) {
-  return await httpService.get(ENDPOINT, filterBy)
+  return await mockDataService.getComments()
 }
 
 async function getById(id) {
-  return await httpService.get(`${ENDPOINT}/${id}`)
+  const comments = await mockDataService.getComments()
+  return comments.find(c => c._id === id)
 }
 
 async function remove(comment) {
-  return await httpService.delete(`${ENDPOINT}/${comment._id}`, comment)
+  // Mock: just return success
+  return Promise.resolve(true)
 }
 
 async function save(comment) {
-  return comment._id
-    ? await httpService.put(`${ENDPOINT}/${comment._id}`, comment)
-    : await httpService.post(ENDPOINT, comment)
+  return await mockDataService.saveComment(comment)
 }
-
-// ;(async () => {
-//   console.log('IFI !')
-//   const comments = await query()
-
-//   console.log('comments: ', comments)
-// })()

@@ -1,35 +1,27 @@
-import { httpService } from '../httpService'
+import { mockDataService } from '../mockDataService'
 
 const ENDPOINT = 'chat'
 
 export const chatService = {
   query,
-  // getById,
-  // remove,
+  getMessages,
+  saveMessage,
   save,
 }
 
 async function query(filterBy = {}) {
-  return await httpService.get(ENDPOINT, filterBy)
+  return await mockDataService.getChats()
 }
 
-// async function getById(id) {
-//   return await httpService.get(`${ENDPOINT}/${id}`)
-// }
+async function getMessages(chatId) {
+  return await mockDataService.getChatMessages(chatId)
+}
 
-// async function remove(id) {
-//   return await httpService.delete(`${ENDPOINT}/${id}`)
-// }
+async function saveMessage(message) {
+  return await mockDataService.saveMessage(message)
+}
 
 async function save(chat) {
-  return chat._id
-    ? await httpService.put(`${ENDPOINT}/${chat._id}`, chat)
-    : await httpService.post(ENDPOINT, chat)
+  // Mock: just return the chat
+  return Promise.resolve(chat)
 }
-
-// ;(async () => {
-//   console.log('IFI !')
-//   const chats = await query()
-
-//   console.log('chats: ', chats)
-// })()

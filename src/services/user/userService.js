@@ -1,5 +1,5 @@
-import { httpService } from '../httpService'
-// import { socketService } from '../socket.service'
+import { mockDataService } from '../mockDataService'
+// Using MOCK DATA SERVICE - No backend required for demo
 const STORAGE_KEY_LOGGEDIN_USER = 'user'
 
 export const userService = {
@@ -16,41 +16,40 @@ export const userService = {
 const usersCash = {}
 
 async function getUsers(filterBy) {
-  return await httpService.get(`user`, filterBy)
+  return await mockDataService.getUsers()
 }
 
 async function getById(userId) {
   if (usersCash[userId]) return usersCash[userId]
   else {
-    const user = await httpService.get(`user/${userId}`)
-    usersCash[userId] = user
+    const user = await mockDataService.getUserById(userId)
+    if (user) usersCash[userId] = user
     return user
   }
 }
 function remove(userId) {
-  return httpService.delete(`user/${userId}`)
+  // Mock: just return success
+  return Promise.resolve(true)
 }
 
 async function update(user) {
-  const savedUser = await httpService.put(`user/${user._id}`, user)
+  const savedUser = await mockDataService.updateUser(user)
   // Handle case in which admin updates other user's details
   if (getLoggedinUser()._id === savedUser._id) _saveLocalUser(savedUser)
   return savedUser
 }
 
 async function login(userCred) {
-  const user = await httpService.post('auth/login', userCred)
+  const user = await mockDataService.login(userCred)
   if (user) return _saveLocalUser(user)
 }
 async function signup(userCred) {
-  const user = await httpService.post('auth/signup', userCred)
-
-  return _saveLocalUser(user)
+  // Mock: signup creates new user (for demo, just login)
+  return await login(userCred)
 }
 async function logout() {
   sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
-
-  return await httpService.post('auth/logout')
+  return await mockDataService.logout()
 }
 
 function _saveLocalUser(user) {
