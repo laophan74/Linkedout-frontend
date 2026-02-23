@@ -9,8 +9,29 @@ export const postService = {
   likePost,
 }
 
+// Map backend post fields to frontend schema
+function mapBackendPost(backendPost) {
+  if (!backendPost) return backendPost
+  return {
+    ...backendPost,
+    _id: backendPost._id,
+    userId: backendPost.createdBy,
+    body: backendPost.txt,
+    imgBodyUrl: backendPost.imgUrl,
+    videoBodyUrl: backendPost.videoBodyUrl || '',
+    link: backendPost.link || '',
+    title: backendPost.title || '',
+    reactions: backendPost.likes || [],
+    comments: backendPost.comments || [],
+    txt: backendPost.txt, // Keep original for backend compatibility
+    createdBy: backendPost.createdBy, // Keep original for backend compatibility
+    likes: backendPost.likes, // Keep original for backend compatibility
+  }
+}
+
 async function query(filterBy = {}) {
-  return await httpService.get(`post`, filterBy)
+  const posts = await httpService.get(`post`, filterBy)
+  return Array.isArray(posts) ? posts.map(mapBackendPost) : posts
 }
 
 async function getPostsLength(filterBy = {}) {
@@ -19,7 +40,8 @@ async function getPostsLength(filterBy = {}) {
 }
 
 async function getById(id) {
-  return await httpService.get(`post/${id}`)
+  const post = await httpService.get(`post/${id}`)
+  return mapBackendPost(post)
 }
 
 async function remove(id) {
@@ -27,12 +49,21 @@ async function remove(id) {
 }
 
 async function save(post) {
-  return await httpService[post._id ? 'put' : 'post'](
+  const postToSave = {
+    txt: post.body || post.txt,
+    imgUrl: post.imgBodyUrl || post.imgUrl,
+    videoBodyUrl: post.videoBodyUrl,
+    link: post.link,
+    title: post.title,
+  }
+  const result = await httpService[post._id ? 'put' : 'post'](
     `post${post._id ? '/' + post._id : ''}`,
-    post
+    postToSave
   )
+  return mapBackendPost(result)
 }
 
 async function likePost(postId) {
-  return await httpService.put(`post/${postId}/like`)
+  const result = await httpService.put(`post/${postId}/like`)
+  return mapBackendPost(result)
 }

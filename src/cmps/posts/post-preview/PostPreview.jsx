@@ -64,22 +64,22 @@ export const PostPreview = ({ post }) => {
   }
 
   const onLikePost = () => {
-    const isAlreadyLike = post.reactions.some(
-      (reaction) => reaction.userId === loggedInUser._id
+    const isAlreadyLike = (post.reactions || post.likes || []).some(
+      (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
     )
-    if (isAlreadyLike) {
-      post.reactions = post.reactions.filter(
-        (reaction) => reaction.userId !== loggedInUser._id
-      )
-    } else if (!isAlreadyLike) {
-      post.reactions.push({
-        userId: loggedInUser._id,
-        fullname: loggedInUser.fullname,
-        reaction: 'like',
-      })
+    const newReactions = isAlreadyLike
+      ? (post.reactions || post.likes || []).filter(
+          (reaction) => reaction.userId !== loggedInUser._id && reaction !== loggedInUser._id
+        )
+      : [...(post.reactions || post.likes || []), loggedInUser._id]
+
+    const postToSave = {
+      ...post,
+      reactions: newReactions,
+      likes: newReactions, // Keep likes for backend compatibility
     }
 
-    dispatch(savePost(post)).then((savedPost) => {
+    dispatch(savePost(postToSave)).then((savedPost) => {
       if (savedPost?._id === post._id) {
         const newActivity = {
           type: isAlreadyLike ? 'remove-like' : 'add-like',
