@@ -98,6 +98,7 @@ export function NotificaitonPreview({ activity }) {
 
   useEffect(() => {
     buildActivityStr()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createdByUser, createdToUser])
 
   useEffect(() => {
@@ -105,6 +106,7 @@ export function NotificaitonPreview({ activity }) {
     getTheCreatedByUser()
 
     return () => {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theNotLoggedUser])
 
   useEffect(() => {
@@ -117,6 +119,7 @@ export function NotificaitonPreview({ activity }) {
     setIsActivityUnread(isActivityUnread)
 
     return () => {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unreadActivities])
 
   return (

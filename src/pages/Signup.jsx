@@ -161,7 +161,9 @@ export const Signup = () => {
             
             {signin && (
               <div className="forgot-password">
-                <a href="#" onClick={(e) => e.preventDefault()}>Forgot password?</a>
+                <button type="button" onClick={(e) => e.preventDefault()} className="forgot-password-btn">
+                  Forgot password?
+                </button>
               </div>
             )}
             
@@ -172,15 +174,16 @@ export const Signup = () => {
             <div className="mode-toggle">
               <p>
                 {signin ? "Don't have an account?" : "Already have an account?"}
-                <a
-                  href="#"
+                <button
+                  type="button"
                   onClick={(ev) => {
                     ev.preventDefault()
                     toggle()
                   }}
+                  className="toggle-auth-link"
                 >
                   {signin ? 'Join Now' : 'Sign In'}
-                </a>
+                </button>
               </p>
             </div>
           </form>
