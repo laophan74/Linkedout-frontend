@@ -95,9 +95,9 @@ export const PostPreview = ({ post }) => {
   }
 
   return (
-    <section className="post-preview">
+    <section className="post-preview bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-lg">
       <div className="menu" onClick={toggleMenu}>
-        <FontAwesomeIcon className="dots-icon" icon="fa-solid fa-ellipsis" />
+        <FontAwesomeIcon className="dots-icon text-gray-500 dark:text-gray-400" icon="fa-solid fa-ellipsis" />
       </div>
       <PostHeader post={post} userPost={userPost} />
       <PostBody
@@ -112,7 +112,7 @@ export const PostPreview = ({ post }) => {
         comments={post.comments}
         post={post}
       />
-      <hr />
+      <hr className="border-gray-200 dark:border-gray-700" />
       <PostActions
         post={post}
         onLikePost={onLikePost}

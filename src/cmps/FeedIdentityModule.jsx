@@ -21,7 +21,7 @@ export const FeedIdentityModule = (props) => {
   const { fullname, imgUrl, profession } = loggedInUser
 
   return (
-    <section className="feed-identity-module">
+    <section className="feed-identity-module bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
       <div className="">
         <div className="bg">
           <div
@@ -33,13 +33,13 @@ export const FeedIdentityModule = (props) => {
         </div>
 
         <div className="profile-name">
-          <h1>{fullname}</h1>
-          <p className="professional">{profession}</p>
+          <h1 className="text-gray-900 dark:text-white">{fullname}</h1>
+          <p className="professional text-gray-600 dark:text-gray-400">{profession}</p>
         </div>
 
         <div className="views">
           <div>
-            <p>{loggedInUser?.connections?.length} connections</p>
+            <p className="text-gray-600 dark:text-gray-400">{loggedInUser?.connections?.length} connections</p>
           </div>
 
           <div></div>
@@ -47,8 +47,8 @@ export const FeedIdentityModule = (props) => {
 
         <div className="my-items">
           <div onClick={doLogout}>
-            <p>Logout</p>
-            <span>
+            <p className="text-gray-600 dark:text-gray-400">Logout</p>
+            <span className="text-gray-600 dark:text-gray-400">
               <FontAwesomeIcon icon="fa-solid fa-arrow-right-from-bracket" />
             </span>
           </div>

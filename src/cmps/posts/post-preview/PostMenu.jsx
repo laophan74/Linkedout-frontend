@@ -23,11 +23,11 @@ export const PostMenu = ({
           toggleMenu()
         }}
       ></div>
-      <section className="post-menu">
+      <section className="post-menu bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
         {isLoggedInUserCanDelete && (
           <div className="container">
             <button
-              className="delete-container "
+              className="delete-container text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
               onClick={() => setIsAskAgain((prev) => !prev)}
             >
               <FontAwesomeIcon
@@ -39,13 +39,13 @@ export const PostMenu = ({
           </div>
         )}
         {isAskAgain && (
-          <div className="ask-again">
-            <p>Are you sure?</p>
+          <div className="ask-again bg-gray-100 dark:bg-gray-700">
+            <p className="text-gray-900 dark:text-white">Are you sure?</p>
             <div className="opts">
-              <p className="yes opt-btn" onClick={onRemovePost}>
+              <p className="yes opt-btn text-red-600 dark:text-red-400" onClick={onRemovePost}>
                 yes
               </p>
-              <p className="no opt-btn" onClick={() => setIsAskAgain(false)}>
+              <p className="no opt-btn text-gray-600 dark:text-gray-400" onClick={() => setIsAskAgain(false)}>
                 no
               </p>
             </div>
@@ -54,6 +54,7 @@ export const PostMenu = ({
 
         <div className="copy-to-clip-board">
           <button
+            className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             onClick={(ev) => {
               ev.stopPropagation()
               toggleMenu()

@@ -161,7 +161,11 @@ body.theme-dark .notificaiton-preview {
 }
 
 body.theme-dark .post-preview {
-  background-color: #1f2937;
+  background-color: #111827;
+}
+
+body.theme-dark .add-post {
+  background-color: #111827;
 }
 
 body.theme-dark .post-preview hr,
@@ -192,12 +196,12 @@ body.theme-dark .add-post .input-container,
 body.theme-dark .create-post-modal .container,
 body.theme-dark .comment-menu,
 body.theme-dark .post-menu {
-  background-color: #1f2937;
+  background-color: #111827;
   color: #e6edf3;
 }
 
 body.theme-dark .social-details {
-  background-color: #1f2937;
+  background-color: #111827;
   color: #9aa4b2;
   padding-bottom: 6px;
 }
@@ -217,7 +221,7 @@ body.theme-dark .social-details .likes-container {
 }
 
 body.theme-dark .social-details .likes-container .likes {
-  background-color: #1f2937;
+  background-color: #111827;
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 

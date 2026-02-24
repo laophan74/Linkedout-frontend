@@ -24,7 +24,10 @@ export const Nav = () => {
   const [theme, setTheme] = useState(getInitialTheme)
 
   useEffect(() => {
+    // Update body class for legacy SCSS
     document.body.classList.toggle('theme-dark', theme === 'dark')
+    // Update html class for Tailwind dark mode
+    document.documentElement.classList.toggle('dark', theme === 'dark')
     localStorage.setItem(THEME_STORAGE_KEY, theme)
   }, [theme])
 

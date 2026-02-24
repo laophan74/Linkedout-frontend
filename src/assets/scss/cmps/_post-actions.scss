@@ -5,7 +5,7 @@
   margin-bottom: 5px;
 
   button {
-    background-color: white;
+    // background-color: white; // Removed - now handled by Tailwind classes (transparent, inherits from parent)
     display: flex;
     align-items: center;
     justify-content: center;

@@ -103,7 +103,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
             {fullname}
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            <time pubdate dateTime={createdAt} title={new Date(createdAt).toLocaleString()}>
+            <time dateTime={createdAt} title={new Date(createdAt).toLocaleString()}>
               <TimeAgo date={createdAt} />
             </time>
           </p>

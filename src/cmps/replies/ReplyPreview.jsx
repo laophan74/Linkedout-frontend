@@ -65,7 +65,7 @@ export const ReplyPreview = ({ reply, updateReply }) => {
             {userReply.fullname}
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            <time pubdate dateTime={reply.createdAt} title={new Date(reply.createdAt).toLocaleString()}>
+            <time dateTime={reply.createdAt} title={new Date(reply.createdAt).toLocaleString()}>
               <TimeAgo date={reply.createdAt} />
             </time>
           </p>

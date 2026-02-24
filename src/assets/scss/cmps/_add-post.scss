@@ -1,5 +1,5 @@
 .add-post {
-  background-color: white;
+  // background-color: white; // Removed - now handled by Tailwind classes
   border: 2px solid $border;
   border-radius: 10px;
   height: 140px;
@@ -38,7 +38,7 @@
       border-radius: 35px;
       margin: 0.4rem 0;
       padding: 5px 5px 5px 15px;
-      background-color: white;
+      // background-color: white; // Removed - now handled by Tailwind classes
       border: 1px solid #b2b2b2;
 
       span {
@@ -59,7 +59,7 @@
     justify-content: space-around;
 
     button {
-      background-color: white;
+      // background-color: white; // Removed - now handled by Tailwind classes
       display: flex;
       align-items: center;
       justify-content: center;

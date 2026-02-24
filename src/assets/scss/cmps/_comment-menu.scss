@@ -7,7 +7,7 @@
 }
 .comment-menu {
   z-index: 10;
-  background-color: #ffffff;
+  // background-color: #ffffff; // Removed - now handled by Tailwind classes
   position: absolute;
   border-radius: 15px;
   width: 50%;

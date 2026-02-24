@@ -12,7 +12,7 @@ export function SocialDetails({ comments, shares, post }) {
   return (
     <section className="social-details">
       <div className="likes-count">
-        <span onClick={toggleLikes}>
+        <span onClick={toggleLikes} className="text-gray-600 dark:text-gray-400 cursor-pointer hover:underline">
           {!post.reactions?.length
             ? ''
             : post.reactions?.length > 1
@@ -22,7 +22,7 @@ export function SocialDetails({ comments, shares, post }) {
       </div>
       <div className="share-comment">
         <div className="comment-count">
-          <p>
+          <p className="text-gray-600 dark:text-gray-400">
             {!comments?.length
               ? ''
               : comments?.length > 1
@@ -31,7 +31,7 @@ export function SocialDetails({ comments, shares, post }) {
           </p>
         </div>
         <div className="share-count">
-          <p>
+          <p className="text-gray-600 dark:text-gray-400">
             {!shares?.length
               ? ''
               : shares?.length > 1

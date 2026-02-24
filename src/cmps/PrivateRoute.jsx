@@ -1,15 +1,18 @@
 import { Route, Redirect } from 'react-router-dom'
 import { userService } from '../services/user/userService'
 
-function PrivateRoute({ component: Component, ...rest }) {
+function PrivateRoute({ component: Component, render, ...rest }) {
   const isAuthenticated = userService.getLoggedinUser()
 
   return (
     <Route
       {...rest}
-      render={(props) =>
-        isAuthenticated ? <Component {...props} /> : <Redirect to="/signin" />
-      }
+      render={(props) => {
+        if (!isAuthenticated) {
+          return <Redirect to="/signin" />
+        }
+        return Component ? <Component {...props} /> : render(props)
+      }}
     />
   )
 }

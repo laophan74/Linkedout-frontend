@@ -52,7 +52,7 @@
       }
     }
     .comment-action {
-      background-color: white;
+      // background-color: white; // Removed - now handled by Tailwind classes
       display: flex;
       align-items: center;
       flex-direction: row;

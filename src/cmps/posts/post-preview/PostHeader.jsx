@@ -34,7 +34,7 @@ export const PostHeader = ({ post, userPost }) => {
             {profession}
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:underline" onClick={() => history.push(`/main/post/${post.userId}/${post._id}`)}>
-            <time pubdate dateTime={post.createdAt} title={new Date(post.createdAt).toLocaleString()}>
+            <time dateTime={post.createdAt} title={new Date(post.createdAt).toLocaleString()}>
               <TimeAgo date={post.createdAt} />
             </time>
             {post?.position?.lat && post?.position?.lng && (

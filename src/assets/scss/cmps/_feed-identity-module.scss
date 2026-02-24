@@ -2,7 +2,7 @@
   border-radius: 10px;
   border: 1px solid $border;
   min-height: 240px;
-  background-color: white;
+  // background-color: white; // Removed - now handled by Tailwind classes
 
   div {
     .bg {

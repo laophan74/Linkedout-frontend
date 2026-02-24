@@ -5,14 +5,25 @@
   max-width: 900px;
 
   .loading {
-    text-align: center;
-    padding: 40px;
-    color: #9aa4b2;
-    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 40px;
+    
+    span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+      img {
+        width: 60px;
+        height: 60px;
+      }
+    }
   }
 
   .post-detail {
-    background-color: #fff;
+    // background-color: #fff; // Removed - now handled by Tailwind classes
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 40px;

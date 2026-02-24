@@ -37,7 +37,7 @@ export function ThreadMsgPreview({ msg }) {
             {userMsg?.fullname}
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            <time pubdate dateTime={msg.createdAt} title={new Date(msg.createdAt).toLocaleString()}>
+            <time dateTime={msg.createdAt} title={new Date(msg.createdAt).toLocaleString()}>
               <TimeAgo date={msg.createdAt} />
             </time>
           </p>
