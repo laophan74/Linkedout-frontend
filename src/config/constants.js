@@ -159,7 +159,6 @@ export const ROUTES = {
   MESSAGES: '/main/messages',
   CONNECTIONS: '/main/connections',
   NOTIFICATIONS: '/main/notifications',
-  MAP: '/main/map',
 }
 
 // ==================== EXPORT DEFAULTS ====================

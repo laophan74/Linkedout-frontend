@@ -21,7 +21,6 @@
 @import 'pages/feed';
 @import 'pages/profile';
 @import 'pages/my-network';
-@import 'pages/map';
 @import 'pages/message';
 @import 'pages/notifications';
 @import 'pages/connections';
@@ -36,7 +35,6 @@
 @import 'cmps/input';
 @import 'cmps/nav';
 @import 'cmps/add-post';
-@import 'cmps/sort-by';
 @import 'cmps/posts-list';
 @import 'cmps/post-preview';
 @import 'cmps/post-header';
@@ -69,9 +67,6 @@
 @import 'cmps/thread-msg-preview';
 @import 'cmps/notfications-list';
 @import 'cmps/notificaiton-preview';
-@import 'cmps/user-icon-pos';
-@import 'cmps/map-menu';
-@import 'cmps/post-icon-map';
 
 .app {
   background-color: $main-background;
@@ -96,4 +91,232 @@
   position: fixed;
   background-color: rgb(82, 82, 39);
   z-index: 4000;
+}
+
+body.theme-dark {
+  background-color: #0f1419;
+  color: #e6edf3;
+}
+
+body.theme-dark .app {
+  background-color: #0f1419;
+}
+
+body.theme-dark .header {
+  background-color: #0f1419;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+body.theme-dark .nav ul li {
+  color: #9aa4b2;
+}
+
+body.theme-dark .nav ul li.current-btn {
+  color: #e6edf3;
+  border-bottom-color: #e6edf3;
+}
+
+body.theme-dark .nav ul p:hover,
+body.theme-dark .nav ul .theme-toggle .theme-toggle-btn:hover {
+  color: #e6edf3;
+}
+
+body.theme-dark .input .search-icon {
+  color: #9aa4b2;
+}
+
+body.theme-dark .input input {
+  background-color: #1f2937;
+  color: #e6edf3;
+}
+
+body.theme-dark .input .suggestions li {
+  background-color: #1f2937;
+  color: #e6edf3;
+}
+
+body.theme-dark .input .suggestions li:hover {
+  background-color: #2b3440;
+}
+
+body.theme-dark .right-side-bar .container,
+body.theme-dark .right-side-bar .else-container {
+  background-color: #161b22;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.theme-dark .posts-list .load-btn {
+  background-color: #161b22;
+  color: #9aa4b2;
+}
+
+body.theme-dark .post-preview,
+body.theme-dark .add-post,
+body.theme-dark .community-panel,
+body.theme-dark .feed-identity-module,
+body.theme-dark .connection-preview,
+body.theme-dark .my-connection-preview,
+body.theme-dark .messaging .container,
+body.theme-dark .messaging .list-msg,
+body.theme-dark .messaging .message-thread,
+body.theme-dark .msg-preview,
+body.theme-dark .thread-msg-list .thread-msg-preview,
+body.theme-dark .notificaiton-preview {
+  background-color: #161b22;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #e6edf3;
+}
+
+body.theme-dark .post-preview {
+  background-color: #1f2937;
+}
+
+body.theme-dark .post-preview hr,
+body.theme-dark .feed-identity-module,
+body.theme-dark .feed-identity-module .profile-name,
+body.theme-dark .feed-identity-module .views,
+body.theme-dark .feed-identity-module .to-premium,
+body.theme-dark .my-connection-preview,
+body.theme-dark .my-connection-preview .container,
+body.theme-dark .messaging .list-msg,
+body.theme-dark .messaging .list-msg .title-container,
+body.theme-dark .messaging .list-msg .filter-container,
+body.theme-dark .messaging .message-thread,
+body.theme-dark .messaging .message-thread .header-message-thread,
+body.theme-dark .messaging .message-thread .user-profile-details,
+body.theme-dark .thread-msg-list .thread-msg-preview,
+body.theme-dark .notificaiton-preview {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.theme-dark .post-header,
+body.theme-dark .post-body,
+body.theme-dark .post-actions,
+body.theme-dark .comment-preview .comment-header,
+body.theme-dark .comment-preview .comment-action,
+body.theme-dark .input-comment .input-container,
+body.theme-dark .add-post .input-container,
+body.theme-dark .create-post-modal .container,
+body.theme-dark .comment-menu,
+body.theme-dark .post-menu {
+  background-color: #1f2937;
+  color: #e6edf3;
+}
+
+body.theme-dark .social-details {
+  background-color: #1f2937;
+  color: #9aa4b2;
+  padding-bottom: 6px;
+}
+
+body.theme-dark .post-preview hr {
+  border-color: rgba(255, 255, 255, 0.12);
+  margin: 6px 0 4px 0;
+}
+
+body.theme-dark .post-actions {
+  margin-bottom: 0;
+  padding-bottom: 8px;
+}
+
+body.theme-dark .social-details .likes-container {
+  background-color: rgba(15, 20, 25, 0.85);
+}
+
+body.theme-dark .social-details .likes-container .likes {
+  background-color: #1f2937;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+body.theme-dark .post-header .details .name,
+body.theme-dark .comment-preview .comment-details .name h3,
+body.theme-dark .msg-preview .details .fullname h1,
+body.theme-dark .messaging .list-msg .title-container p,
+body.theme-dark .messaging .message-thread .header-message-thread .fullname,
+body.theme-dark .post-menu .container .delete-container p,
+body.theme-dark .comment-menu .container .delete-container p {
+  color: #e6edf3;
+}
+
+body.theme-dark .post-body .link,
+body.theme-dark .post-body .link a,
+body.theme-dark .msg-preview .details .last-msg p,
+body.theme-dark .comment-preview .comment-details p,
+body.theme-dark .comment-preview .comment-text,
+body.theme-dark .comment-preview .comment-action button,
+body.theme-dark .messaging .list-msg .filter-container input,
+body.theme-dark .messaging .message-thread .send-msg-container textarea {
+  color: #c7d0dc;
+}
+
+body.theme-dark .add-post .input-container,
+body.theme-dark .input-comment .input-container,
+body.theme-dark .messaging .list-msg .filter-container input,
+body.theme-dark .messaging .message-thread .send-msg-container textarea,
+body.theme-dark .create-post-modal .input-container input,
+body.theme-dark .create-post-modal .input-container textarea {
+  background-color: #0f1419;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.theme-dark .add-post .btns-container button,
+body.theme-dark .post-actions button,
+body.theme-dark .comment-preview .comment-action,
+body.theme-dark .comment-preview .comment-action button,
+body.theme-dark .create-post-modal .btns-add-container .btn {
+  background-color: transparent;
+  color: #9aa4b2;
+}
+
+body.theme-dark .add-post .btns-container button:hover,
+body.theme-dark .post-actions button:hover,
+body.theme-dark .comment-preview .comment-action button:hover,
+body.theme-dark .msg-preview .container:hover,
+body.theme-dark .comment-menu .container:hover,
+body.theme-dark .post-menu .container:hover,
+body.theme-dark .post-menu .copy-to-clip-board:hover {
+  background-color: #223044;
+  color: #e6edf3;
+}
+
+body.theme-dark .post-actions button {
+  border: 1px solid transparent;
+}
+
+body.theme-dark .post-actions button.liked {
+  color: #4aa3ff;
+}
+
+body.theme-dark .comment-preview .comment-action {
+  background-color: transparent;
+}
+
+body.theme-dark .msg-preview .container {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+body.theme-dark .msg-preview .container.chooseen-chat {
+  background-color: #1b2a3a;
+  border-left-color: #4aa3ff;
+}
+
+body.theme-dark .notificaiton-preview.unread {
+  background-color: #1b2a3a;
+}
+
+body.theme-dark .notifications-list .no-activities-container {
+  color: #c7d0dc;
+}
+
+body.theme-dark .right-side-bar .container .preview:hover,
+body.theme-dark .notificaiton-preview:hover {
+  background-color: #223044;
+}
+
+body.theme-dark .create-post-modal .title {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+body.theme-dark .create-post-modal .btns-add-container .btn {
+  border-color: rgba(255, 255, 255, 0.12);
 }

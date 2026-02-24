@@ -33,7 +33,6 @@ const Feed = lazy(() => import('../pages/Feed'))
 const SpecificPost = lazy(() => import('./SpecificPost'))
 const Profile = lazy(() => import('./Profile'))
 const MyNetwork = lazy(() => import('./MyNetwork'))
-const Map = lazy(() => import('./Map'))
 const Message = lazy(() => import('./Message'))
 const Notifications = lazy(() => import('./Notifications'))
 const Connections = lazy(() => import('./Connections'))
@@ -152,7 +151,6 @@ export function Main() {
           />
           <PrivateRoute path="/main/profile/:userId" component={Profile} />
           <PrivateRoute path="/main/mynetwork" component={MyNetwork} />
-          <PrivateRoute path="/main/map" component={Map} />
           <PrivateRoute path="/main/message/:userId?" component={Message} />
           <PrivateRoute path="/main/notifications" component={Notifications} />
           <PrivateRoute path="/main/connections" component={Connections} />

@@ -154,13 +154,6 @@ export const Home = (props) => {
           <div className="feature-cards">
             <div className="feature-card">
               <div className="feature-icon">
-                <FontAwesomeIcon icon="map-marked-alt" />
-              </div>
-              <h3>Interactive Maps</h3>
-              <p>Discover travel destinations and connect with travelers worldwide</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">
                 <FontAwesomeIcon icon="comments" />
               </div>
               <h3>Real-time Messaging</h3>

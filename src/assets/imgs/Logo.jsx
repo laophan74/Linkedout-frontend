@@ -5,7 +5,7 @@ export function Logo() {
   return (
     <div 
       className="flex items-center cursor-pointer transition-all duration-300 ease-in-out mr-2.5 hover:opacity-90 select-none" 
-      onClick={() => history.push(`/`)}
+      onClick={() => history.push('/main/feed')}
     >
       <div className="flex items-center justify-center text-[28px] font-bold text-[#0073b1] bg-white w-[42px] h-[42px] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.15)] transition-shadow md:text-[24px] md:w-[36px] md:h-[36px]">
         <span className="flex items-center justify-center">T</span>

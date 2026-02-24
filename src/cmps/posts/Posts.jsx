@@ -2,12 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AddPost } from './AddPost'
 import { PostsList } from './PostsList'
-import { SortBy } from './SortBy'
-import {
-  loadPosts,
-  addFilterByPosts,
-  getPostsLength,
-} from '../../store/actions/postActions'
+import { loadPosts, getPostsLength } from '../../store/actions/postActions'
 import loadongGif from '../../assets/imgs/loading-gif.gif'
 
 export const Posts = () => {
@@ -21,14 +16,6 @@ export const Posts = () => {
     dispatch(getPostsLength())
   }, [dispatch])
 
-  const onSetSort = (value) => {
-    const filterBy = {
-      sort: +value,
-    }
-    dispatch(addFilterByPosts(filterBy))
-    dispatch(loadPosts())
-    dispatch(getPostsLength())
-  }
 
   // Show loading spinner during initial load
   if (isPostsLoading && posts.length === 0)
@@ -49,7 +36,6 @@ export const Posts = () => {
   return (
     <section className="posts">
       <AddPost />
-      <SortBy onSetSort={onSetSort} />
       {posts && <PostsList />}
     </section>
   )

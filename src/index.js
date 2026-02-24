@@ -51,6 +51,8 @@ import {
   faExclamationCircle,
   faMapMarkedAlt,
   faComments,
+  faSun,
+  faMoon,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -94,7 +96,9 @@ library.add(
   faLock,
   faExclamationCircle,
   faMapMarkedAlt,
-  faComments
+  faComments,
+  faSun,
+  faMoon
 )
 
 const root = ReactDOM.createRoot(document.getElementById('root'))

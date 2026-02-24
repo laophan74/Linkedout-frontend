@@ -193,14 +193,6 @@ export const Signup = () => {
           <h2>Why Join TravelsIn?</h2>
           <div className="features-list">
             <div className="feature-item">
-              <FontAwesomeIcon icon="map-marked-alt" className="feature-icon" />
-              <div className="feature-text">
-                <h3>Discover New Places</h3>
-                <p>Find hidden gems and popular destinations shared by fellow travelers</p>
-              </div>
-            </div>
-            
-            <div className="feature-item">
               <FontAwesomeIcon icon="user-friends" className="feature-icon" />
               <div className="feature-text">
                 <h3>Connect with Travelers</h3>
