@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom'
 
 export const PostActions = ({
   post,
-  onToggleShowComment,
   onLikePost,
   onSharePost,
   loggedInUser,
@@ -17,6 +16,12 @@ export const PostActions = ({
   })
 
   const likeBtnStyle = isLogedInUserLikePost ? 'liked' : ''
+  
+  const handleCommentClick = () => {
+    // Navigate to detail page instead of toggle inline comments
+    history.push(`/main/post/${post.userId}/${post._id}`)
+  }
+
   return (
     <section className="post-actions">
       <button className={'like ' + likeBtnStyle} onClick={onLikePost}>
@@ -26,7 +31,7 @@ export const PostActions = ({
         />
         <span>Like</span>
       </button>
-      <button className="comment" onClick={onToggleShowComment}>
+      <button className="comment" onClick={handleCommentClick}>
         <FontAwesomeIcon
           className="comment-icon icon"
           icon="fa-solid fa-comment"

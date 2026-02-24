@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Comments } from '../../comments/Comments'
 import { PostActions } from './PostActions'
 import { PostBody } from './PostBody'
 import { PostHeader } from './PostHeader'
@@ -12,14 +11,11 @@ import { PostMenu } from './PostMenu'
 import { savePost, removePost } from '../../../store/actions/postActions'
 import { saveActivity } from '../../../store/actions/activityAction'
 import { ImgPreview } from '../../profile/ImgPreview'
-import { useParams } from 'react-router-dom'
 
 export const PostPreview = ({ post }) => {
   const dispatch = useDispatch()
-  const params = useParams()
 
   const [userPost, setUserPost] = useState(null)
-  const [isShowComments, setIsShowComments] = useState(false)
   const [isShowMenu, setIsShowMenu] = useState(false)
   const [isShowImgPreview, setIsShowImgPreview] = useState(false)
 
@@ -27,7 +23,6 @@ export const PostPreview = ({ post }) => {
 
   useEffect(() => {
     loadUserPost(post.userId)
-    if (params.postId) setIsShowComments(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUser])
 
@@ -43,10 +38,6 @@ export const PostPreview = ({ post }) => {
     if (!post) return
     const userPost = await userService.getById(id)
     setUserPost(() => userPost)
-  }
-
-  const onToggleShowComment = () => {
-    setIsShowComments((prev) => !prev)
   }
 
   const onSharePost = async () => {
@@ -120,24 +111,14 @@ export const PostPreview = ({ post }) => {
       <SocialDetails
         comments={post.comments}
         post={post}
-        onToggleShowComment={onToggleShowComment}
       />
       <hr />
       <PostActions
         post={post}
-        onToggleShowComment={onToggleShowComment}
         onLikePost={onLikePost}
         loggedInUser={loggedInUser}
         onSharePost={onSharePost}
       />
-
-      {isShowComments && (
-        <Comments
-          comments={post.comments}
-          postId={post._id}
-          userPostId={post.userId}
-        />
-      )}
 
       {isShowMenu && (
         <PostMenu

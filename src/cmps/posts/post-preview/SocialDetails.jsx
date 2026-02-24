@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { LikeList } from '../../LikeList'
 
-export function SocialDetails({ comments, shares, post, onToggleShowComment }) {
+export function SocialDetails({ comments, shares, post }) {
   const [isShowLikes, setisShowLikes] = useState(false)
 
   const toggleLikes = () => {
@@ -21,7 +21,7 @@ export function SocialDetails({ comments, shares, post, onToggleShowComment }) {
         </span>
       </div>
       <div className="share-comment">
-        <div className="comment-count" onClick={onToggleShowComment}>
+        <div className="comment-count">
           <p>
             {!comments?.length
               ? ''
