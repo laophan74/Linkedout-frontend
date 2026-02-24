@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import TimeAgo from 'react-timeago'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import loadingCircle from '../../../assets/imgs/loading-circle.gif'
 
 export const PostHeader = ({ post, userPost }) => {

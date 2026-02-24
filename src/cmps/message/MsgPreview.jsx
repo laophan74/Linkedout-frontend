@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux'
-import { ReactSnip } from '@strg/react-snip'
 import { useEffect, useState } from 'react'
 import loadingGif from '../../assets/imgs/loading-circle.gif'
 
@@ -57,7 +56,6 @@ export function MsgPreview({
   }, [chat, chats])
 
   const isChatChooseen = chooseenChatId === chat._id ? 'chooseen-chat' : ''
-  const containerStyle = `container ${isChatChooseen}`
 
   if (!theNotLoggedUserChat)
     return (

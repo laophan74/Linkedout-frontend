@@ -1,10 +1,9 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { useState } from 'react' 
 
 export const InputComment = ({ onSaveComment }) => {
   const { loggedInUser } = useSelector((state) => state.userModule)
-  const { imgUrl, _id } = loggedInUser
+  const { _id } = loggedInUser
 
   const [newComment, setNewComment] = useState({
     txt: '',

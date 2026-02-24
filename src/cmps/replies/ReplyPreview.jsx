@@ -9,9 +9,10 @@ export const ReplyPreview = ({ reply, updateReply }) => {
   const history = useHistory()
   const { loggedInUser } = useSelector((state) => state.userModule)
   const [userReply, setUserReply] = useState(null)
-  const [isShowMenu, setIsShowMenu] = useState(false)
+  const [ isShowMenu, setIsShowMenu] = useState(false)
 
-  const onLikeReply = () => {
+  // eslint-disable-next-line no-unused-vars
+  const handleLikeReply = () => {
     const replyToUpdate = { ...reply }
     const isAlreadyLike = replyToUpdate.reactions.some(
       (reaction) => reaction.userId === loggedInUser._id
@@ -99,45 +100,39 @@ export const ReplyPreview = ({ reply, updateReply }) => {
                 {isLoggedInUserOwner && (
                   <>
                     <li>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault()
+                      <button
+                        onClick={() => {
                           // TODO: Handle edit
                           toggleMenu()
                         }}
-                        className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        className="w-full text-left block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
                         Edit
-                      </a>
+                      </button>
                     </li>
                     <li>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault()
+                      <button
+                        onClick={() => {
                           // TODO: Handle delete
                           toggleMenu()
                         }}
-                        className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        className="w-full text-left block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
                         Remove
-                      </a>
+                      </button>
                     </li>
                   </>
                 )}
                 <li>
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault()
+                  <button
+                    onClick={() => {
                       // TODO: Handle report
                       toggleMenu()
                     }}
-                    className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    className="w-full text-left block py-2 px-4 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
                   >
                     Report
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>

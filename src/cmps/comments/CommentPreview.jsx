@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { removeComment } from '../../store/actions/postActions'
 import { useHistory } from 'react-router-dom'
 import { userService } from '../../services/user/userService'
@@ -12,12 +11,11 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
   const dispatch = useDispatch()
   const history = useHistory()
 
-  const { userId, createdAt, postId, reactions, replies } = comment
+  const { userId, createdAt, postId, replies } = comment
   const [userComment, setUserComment] = useState(null)
   const [isShowMenu, setIsShowMenu] = useState(false)
   const [isShowReplyForm, setIsShowReplyForm] = useState(false)
   const [isShowReplyList, setIsShowReplyList] = useState(false)
-  const [isFirstFocus, setIsFirstFocus] = useState(true)
 
   const [replyField, setReplyField] = useState({
     txt: '',
@@ -82,7 +80,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
 
   const isLoggedInUserOwner = comment.userId === loggedInUser._id
 
-  const { profession, imgUrl, fullname } = userComment
+  const { imgUrl, fullname } = userComment
 
   const articleClass = isReply 
     ? 'p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900'
@@ -141,44 +139,38 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
                 {isLoggedInUserOwner && (
                   <>
                     <li>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault()
+                      <button
+                        onClick={() => {
                           // TODO: Handle edit
                           toggleMenu()
                         }}
-                        className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        className="w-full text-left block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
                         Edit
-                      </a>
+                      </button>
                     </li>
                     <li>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault()
+                      <button
+                        onClick={() => {
                           onRemoveComment()
                         }}
-                        className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        className="w-full text-left block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                       >
                         Remove
-                      </a>
+                      </button>
                     </li>
                   </>
                 )}
                 <li>
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault()
+                  <button
+                    onClick={() => {
                       // TODO: Handle report
                       toggleMenu()
                     }}
-                    className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    className="w-full text-left block py-2 px-4 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
                   >
                     Report
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>
