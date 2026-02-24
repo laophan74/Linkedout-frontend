@@ -32,6 +32,10 @@ const SpecificPost = (props) => {
         console.log('[SpecificPost] Loading post with ID:', params.postId)
         setLoadError(false)
         setLoadTimeout(false)
+        
+        // Clear old posts to prevent mismatch errors
+        dispatch({ type: 'SET_POSTS', posts: [] })
+        
         dispatch(setCurrPage(null))
         const filterBy = {
           _id: params.postId,
@@ -71,17 +75,17 @@ const SpecificPost = (props) => {
 
   // Check if loaded but no matching post found
   useEffect(() => {
-    if (!isPostsLoading && !loadError && !loadTimeout && posts) {
+    if (!isPostsLoading && !loadError && !loadTimeout && posts && posts.length > 0) {
       console.log('[SpecificPost] Load complete. Posts:', posts.length, 'Expected ID:', params.postId)
-      if (posts.length === 0) {
-        console.error('[SpecificPost] No posts returned from API')
-        setLoadError(true)
-      } else if (posts[0]._id !== params.postId) {
+      if (posts[0]._id !== params.postId) {
         console.error('[SpecificPost] Post ID mismatch. Got:', posts[0]._id, 'Expected:', params.postId)
         setLoadError(true)
       } else {
         console.log('[SpecificPost] Post loaded successfully')
       }
+    } else if (!isPostsLoading && !loadError && !loadTimeout && posts && posts.length === 0) {
+      console.error('[SpecificPost] No posts returned from API')
+      setLoadError(true)
     }
   }, [isPostsLoading, posts, params.postId, loadError, loadTimeout])
 
