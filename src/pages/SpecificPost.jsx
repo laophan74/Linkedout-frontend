@@ -23,23 +23,67 @@ const SpecificPost = (props) => {
   const { loggedInUser } = useSelector((state) => state.userModule)
   
   const [userPost, setUserPost] = useState(null)
+  const [loadError, setLoadError] = useState(false)
+  const [loadTimeout, setLoadTimeout] = useState(false)
 
   useEffect(() => {
-    dispatch(setCurrPage(null))
-    const filterBy = {
-      _id: params.postId,
-    }
-    dispatch(setFilterByPosts(filterBy))
-    dispatch(loadPosts())
-    dispatch(getPostsLength())
+    const loadPostData = async () => {
+      try {
+        console.log('[SpecificPost] Loading post with ID:', params.postId)
+        setLoadError(false)
+        setLoadTimeout(false)
+        dispatch(setCurrPage(null))
+        const filterBy = {
+          _id: params.postId,
+        }
+        dispatch(setFilterByPosts(filterBy))
+        await dispatch(loadPosts())
+        dispatch(getPostsLength())
 
-    // Reset user post when loading new post
-    setUserPost(null)
+        // Reset user post when loading new post
+        setUserPost(null)
+      } catch (err) {
+        console.error('[SpecificPost] Error loading post:', err)
+        setLoadError(true)
+        dispatch({ type: 'SET_IS_POSTS_LOADING', isLoading: false })
+      }
+    }
+
+    loadPostData()
 
     return () => {
       dispatch(setFilterByPosts(null))
     }
-  }, [dispatch, params.postId, params.userId])
+  }, [dispatch, params.postId])
+
+  // Timeout check - if loading takes too long, show error
+  useEffect(() => {
+    if (!isPostsLoading) return
+
+    const timeoutId = setTimeout(() => {
+      console.error('[SpecificPost] Post loading timeout - taking too long')
+      setLoadTimeout(true)
+      dispatch({ type: 'SET_IS_POSTS_LOADING', isLoading: false })
+    }, 10000) // 10 second timeout
+
+    return () => clearTimeout(timeoutId)
+  }, [isPostsLoading, dispatch])
+
+  // Check if loaded but no matching post found
+  useEffect(() => {
+    if (!isPostsLoading && !loadError && !loadTimeout && posts) {
+      console.log('[SpecificPost] Load complete. Posts:', posts.length, 'Expected ID:', params.postId)
+      if (posts.length === 0) {
+        console.error('[SpecificPost] No posts returned from API')
+        setLoadError(true)
+      } else if (posts[0]._id !== params.postId) {
+        console.error('[SpecificPost] Post ID mismatch. Got:', posts[0]._id, 'Expected:', params.postId)
+        setLoadError(true)
+      } else {
+        console.log('[SpecificPost] Post loaded successfully')
+      }
+    }
+  }, [isPostsLoading, posts, params.postId, loadError, loadTimeout])
 
   useEffect(() => {
     if (posts && posts.length > 0) {
@@ -90,6 +134,25 @@ const SpecificPost = (props) => {
 
   // Show loading when posts are being fetched or when the loaded post doesn't match the URL
   const isCorrectPostLoaded = posts && posts.length > 0 && posts[0]._id === params.postId
+  
+  // Show error state if loading failed or timed out
+  if (loadError || loadTimeout) {
+    return (
+      <section className="post-detail-container">
+        <div className="p-8 text-center bg-white dark:bg-gray-900 rounded-lg">
+          <p className="text-red-600 dark:text-red-400 mb-4 text-lg">
+            {loadTimeout ? 'Request timeout. The server is taking too long to respond.' : 'Failed to load post. The post may not exist or there was a network error.'}
+          </p>
+          <button 
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            onClick={() => window.location.reload()}
+          >
+            Reload Page
+          </button>
+        </div>
+      </section>
+    )
+  }
   
   if (isPostsLoading || !isCorrectPostLoaded) {
     return (

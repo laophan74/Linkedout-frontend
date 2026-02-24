@@ -59,7 +59,9 @@ function mapBackendPost(backendPost) {
 }
 
 async function query(filterBy = {}) {
+  console.log('[postService.query] Fetching posts with filter:', filterBy)
   const posts = await httpService.get(ENDPOINTS.POST_LIST, filterBy)
+  console.log('[postService.query] Received posts:', posts?.length || 0, 'posts')
   return Array.isArray(posts) ? posts.map(mapBackendPost) : posts
 }
 
