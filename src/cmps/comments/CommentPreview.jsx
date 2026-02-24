@@ -84,11 +84,13 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
 
   const { profession, imgUrl, fullname } = userComment
 
-  const marginClass = isReply ? 'mb-3 ml-6 lg:ml-12' : 'p-6 text-base bg-white dark:bg-gray-900'
-  const borderClass = isReply ? '' : replies?.length ? '' : 'border-t border-gray-200 dark:border-gray-700'
+  const articleClass = isReply 
+    ? 'p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900'
+    : 'p-6 text-base bg-white rounded-lg dark:bg-gray-900'
+  const borderClass = isReply ? '' : 'border-t border-gray-200 dark:border-gray-700'
 
   return (
-    <article className={`${marginClass} ${!isReply && 'rounded-lg'} ${borderClass}`}>
+    <article className={`${articleClass} ${borderClass}`}>
       <footer className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <p 
@@ -217,7 +219,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
       {isShowReplyForm && (
         <div className="mt-4 ml-0 lg:ml-6">
           <form className="mb-4" onSubmit={(e) => { e.preventDefault(); addReply() }}>
-            <div className="py-2 px-4 mb-4 bg-white rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+            <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
               <label htmlFor={`reply-${comment._id}`} className="sr-only">Your reply</label>
               <textarea
                 id={`reply-${comment._id}`}
@@ -232,7 +234,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
             {replyField.txt && (
               <button
                 type="submit"
-                className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+                className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
               >
                 Post reply
               </button>

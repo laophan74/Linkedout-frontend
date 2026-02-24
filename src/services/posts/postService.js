@@ -12,6 +12,27 @@ export const postService = {
   likePost,
 }
 
+// Map backend comment fields to frontend schema
+function mapBackendComment(backendComment) {
+  if (!backendComment) return backendComment
+  
+  // Extract userId from createdBy (which can be string ID or full object)
+  const createdByObj = backendComment.createdBy
+  const userId = typeof createdByObj === 'object' ? createdByObj._id : createdByObj
+  
+  return {
+    ...backendComment,
+    _id: backendComment._id,
+    userId: userId,
+    txt: backendComment.txt,
+    reactions: backendComment.likes || [],
+    likes: backendComment.likes || [],
+    replies: backendComment.replies || [],
+    postId: backendComment.postId,
+    createdBy: backendComment.createdBy, // Keep original for reference
+  }
+}
+
 // Map backend post fields to frontend schema
 function mapBackendPost(backendPost) {
   if (!backendPost) return backendPost
@@ -30,7 +51,7 @@ function mapBackendPost(backendPost) {
     link: backendPost.link || '',
     title: backendPost.title || '',
     reactions: backendPost.likes || [],
-    comments: backendPost.comments || [],
+    comments: (backendPost.comments || []).map(mapBackendComment),
     txt: backendPost.txt, // Keep original for backend compatibility
     createdBy: backendPost.createdBy, // Keep original for backend compatibility
     likes: backendPost.likes, // Keep original for backend compatibility

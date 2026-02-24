@@ -133,10 +133,7 @@ const SpecificPost = (props) => {
       </article>
 
       {/* Comments Section */}
-      <section className="post-detail-comments">
-        <h2>Comments</h2>
-        <Comments postId={post._id} comments={post.comments} userPostId={post.userId} />
-      </section>
+      <Comments postId={post._id} comments={post.comments} userPostId={post.userId} />
     </section>
   )
 }
