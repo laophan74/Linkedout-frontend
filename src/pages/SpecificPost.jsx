@@ -25,6 +25,7 @@ const SpecificPost = (props) => {
   const [userPost, setUserPost] = useState(null)
   const [loadError, setLoadError] = useState(false)
   const [loadTimeout, setLoadTimeout] = useState(false)
+  const [expectedPostId, setExpectedPostId] = useState(null)
 
   useEffect(() => {
     const loadPostData = async () => {
@@ -32,6 +33,7 @@ const SpecificPost = (props) => {
         console.log('[SpecificPost] Loading post with ID:', params.postId)
         setLoadError(false)
         setLoadTimeout(false)
+        setExpectedPostId(params.postId) // Track which post we're loading
         
         // Clear old posts to prevent mismatch errors
         dispatch({ type: 'SET_POSTS', posts: [] })
@@ -75,19 +77,27 @@ const SpecificPost = (props) => {
 
   // Check if loaded but no matching post found
   useEffect(() => {
-    if (!isPostsLoading && !loadError && !loadTimeout && posts && posts.length > 0) {
-      console.log('[SpecificPost] Load complete. Posts:', posts.length, 'Expected ID:', params.postId)
-      if (posts[0]._id !== params.postId) {
-        console.error('[SpecificPost] Post ID mismatch. Got:', posts[0]._id, 'Expected:', params.postId)
+    // Only validate when loading is done AND we have an expected post ID
+    if (!isPostsLoading && expectedPostId && !loadError && !loadTimeout) {
+      if (!posts || posts.length === 0) {
+        console.error('[SpecificPost] No posts returned from API for ID:', expectedPostId)
         setLoadError(true)
+      } else if (posts[0]._id !== expectedPostId) {
+        // Post mismatch - might be old data, wait a bit before erroring
+        console.warn('[SpecificPost] Post ID mismatch. Got:', posts[0]._id, 'Expected:', expectedPostId)
+        const mismatchTimer = setTimeout(() => {
+          // Check again after delay - if still mismatched, it's an error
+          if (posts && posts.length > 0 && posts[0]._id !== expectedPostId) {
+            console.error('[SpecificPost] Post ID still mismatched after delay - setting error')
+            setLoadError(true)
+          }
+        }, 2000) // Wait 2 seconds before declaring error
+        return () => clearTimeout(mismatchTimer)
       } else {
-        console.log('[SpecificPost] Post loaded successfully')
+        console.log('[SpecificPost] Post loaded successfully:', posts[0]._id)
       }
-    } else if (!isPostsLoading && !loadError && !loadTimeout && posts && posts.length === 0) {
-      console.error('[SpecificPost] No posts returned from API')
-      setLoadError(true)
     }
-  }, [isPostsLoading, posts, params.postId, loadError, loadTimeout])
+  }, [isPostsLoading, posts, expectedPostId, loadError, loadTimeout])
 
   useEffect(() => {
     if (posts && posts.length > 0) {
@@ -136,8 +146,8 @@ const SpecificPost = (props) => {
     })
   }
 
-  // Show loading when posts are being fetched or when the loaded post doesn't match the URL
-  const isCorrectPostLoaded = posts && posts.length > 0 && posts[0]._id === params.postId
+  // Show loading when posts are being fetched or when the loaded post doesn't match the expected ID
+  const isCorrectPostLoaded = posts && posts.length > 0 && posts[0]._id === expectedPostId
   
   // Show error state if loading failed or timed out
   if (loadError || loadTimeout) {
