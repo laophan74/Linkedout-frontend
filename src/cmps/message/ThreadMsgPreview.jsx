@@ -21,29 +21,29 @@ export function ThreadMsgPreview({ msg }) {
   }, [])
 
   return (
-    <section className="thread-msg-preview">
-      <div className="container-msg">
-        <div
-          className="img-container"
+    <section className="mb-4">
+      <div className="flex items-start mb-2">
+        <img 
+          src={userMsg?.imgUrl || loadingCircle}
+          alt={userMsg?.fullname}
+          className="mr-3 w-8 h-8 rounded-full cursor-pointer"
           onClick={() => history.push(`/main/profile/${userMsg?._id}`)}
-        >
-          {(userMsg?.imgUrl && (
-            <img src={userMsg?.imgUrl || ''} alt="" className="img" />
-          )) || <img src={loadingCircle} className="img" alt="" />}
-        </div>
-
-        <div className="name-time-container">
-          <div className="fullname">
-            <h3>{userMsg?.fullname}</h3>
-          </div>
-          <div className="time">
-            <span>
+        />
+        <div className="flex items-center space-x-3">
+          <p 
+            className="text-sm text-gray-900 dark:text-white font-semibold cursor-pointer hover:underline"
+            onClick={() => history.push(`/main/profile/${userMsg?._id}`)}
+          >
+            {userMsg?.fullname}
+          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            <time pubdate dateTime={msg.createdAt} title={new Date(msg.createdAt).toLocaleString()}>
               <TimeAgo date={msg.createdAt} />
-            </span>
-          </div>
+            </time>
+          </p>
         </div>
       </div>
-      <div className="the-msg">
+      <div className="ml-11 text-gray-700 dark:text-gray-300">
         <p>{msg.txt}</p>
       </div>
     </section>

@@ -65,27 +65,33 @@ export function ConnectionPreview({ user }) {
 
   if (!user || isConnected) return
   return (
-    <li className="connection-preview">
-      <Link to={`/main/profile/${user?._id}`}>
-        <div className="bg">
-          {(user.imgUrl && (
-            <img src={user.imgUrl} alt="" className="img-profile" />
-          )) || <img src={loadingCircle} alt="" />}
-        </div>
-        <div className="fullname">
-          <p>{user.fullname}</p>
-        </div>
-        <div className="profession">
-          <p>{user.profession}</p>
-        </div>
-      </Link>
-      <div className="followers-count">
-        <p> {user.connections?.length} conections</p>
+    <li className="p-4 mb-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition">
+      <div className="flex items-center mb-3">
+        <Link to={`/main/profile/${user?._id}`} className="flex-1">
+          <div className="flex items-center">
+            {(user.imgUrl && (
+              <img src={user.imgUrl} alt="" className="w-10 h-10 rounded-full mr-3 cursor-pointer" />
+            )) || <img src={loadingCircle} alt="" className="w-10 h-10 rounded-full mr-3" />}
+            <div>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white hover:underline">
+                {user.fullname}
+              </p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                {user.profession}
+              </p>
+            </div>
+          </div>
+        </Link>
       </div>
-
-      <div className="btn-container" onClick={connectProfile}>
-        <button>{!isConnected ? 'Connect' : 'Disconnect'}</button>
+      <div className="flex items-center justify-between text-xs mb-3">
+        <p className="text-gray-600 dark:text-gray-400">{user.connections?.length} connections</p>
       </div>
+      <button 
+        onClick={connectProfile}
+        className="w-full py-2 px-3 text-xs font-medium text-white bg-primary-700 hover:bg-primary-800 rounded transition"
+      >
+        {!isConnected ? 'Connect' : 'Disconnect'}
+      </button>
     </li>
   )
 }

@@ -30,7 +30,6 @@
 
 @import 'cmps/header';
 @import 'cmps/left-side-bar';
-@import 'cmps/right-side-bar';
 @import 'cmps/posts';
 @import 'cmps/input';
 @import 'cmps/nav';
@@ -49,24 +48,18 @@
 @import 'cmps/community-panel';
 @import 'cmps/create-post-modal';
 @import 'cmps/connection-list';
-@import 'cmps/connection-preview';
-@import 'cmps/my-connection-preview';
 @import 'cmps/like-preview';
 @import 'cmps/like-list';
 @import 'cmps/reply-list';
 @import 'cmps/reply-preview';
 @import 'cmps/post-menu';
 @import 'cmps/comment-menu';
-@import 'cmps/img-profile-preview';
 @import 'cmps/edit-modal';
 @import 'cmps/messaging';
 @import 'cmps/list-msg';
 @import 'cmps/message-thread';
-@import 'cmps/msg-preview';
 @import 'cmps/thread-msg-list';
-@import 'cmps/thread-msg-preview';
 @import 'cmps/notfications-list';
-@import 'cmps/notificaiton-preview';
 
 .app {
   background-color: $main-background;
@@ -230,9 +223,7 @@ body.theme-dark .social-details .likes-container .likes {
 
 body.theme-dark .post-header .details .name,
 body.theme-dark .comment-preview .comment-details .name h3,
-body.theme-dark .msg-preview .details .fullname h1,
 body.theme-dark .messaging .list-msg .title-container p,
-body.theme-dark .messaging .message-thread .header-message-thread .fullname,
 body.theme-dark .post-menu .container .delete-container p,
 body.theme-dark .comment-menu .container .delete-container p {
   color: #e6edf3;
@@ -240,7 +231,6 @@ body.theme-dark .comment-menu .container .delete-container p {
 
 body.theme-dark .post-body .link,
 body.theme-dark .post-body .link a,
-body.theme-dark .msg-preview .details .last-msg p,
 body.theme-dark .comment-preview .comment-details p,
 body.theme-dark .comment-preview .comment-text,
 body.theme-dark .comment-preview .comment-action button,
@@ -271,7 +261,6 @@ body.theme-dark .create-post-modal .btns-add-container .btn {
 body.theme-dark .add-post .btns-container button:hover,
 body.theme-dark .post-actions button:hover,
 body.theme-dark .comment-preview .comment-action button:hover,
-body.theme-dark .msg-preview .container:hover,
 body.theme-dark .comment-menu .container:hover,
 body.theme-dark .post-menu .container:hover,
 body.theme-dark .post-menu .copy-to-clip-board:hover {
@@ -279,38 +268,8 @@ body.theme-dark .post-menu .copy-to-clip-board:hover {
   color: #e6edf3;
 }
 
-body.theme-dark .post-actions button {
-  border: 1px solid transparent;
-}
-
-body.theme-dark .post-actions button.liked {
-  color: #4aa3ff;
-}
-
 body.theme-dark .comment-preview .comment-action {
   background-color: transparent;
-}
-
-body.theme-dark .msg-preview .container {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-}
-
-body.theme-dark .msg-preview .container.chooseen-chat {
-  background-color: #1b2a3a;
-  border-left-color: #4aa3ff;
-}
-
-body.theme-dark .notificaiton-preview.unread {
-  background-color: #1b2a3a;
-}
-
-body.theme-dark .notifications-list .no-activities-container {
-  color: #c7d0dc;
-}
-
-body.theme-dark .right-side-bar .container .preview:hover,
-body.theme-dark .notificaiton-preview:hover {
-  background-color: #223044;
 }
 
 body.theme-dark .create-post-modal .title {

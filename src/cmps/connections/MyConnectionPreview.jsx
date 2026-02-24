@@ -22,27 +22,34 @@ export function MyConnectionPreview({ connection }) {
   if (!user) return
 
   return (
-    <section className="my-connection-preview">
-      <div className="container">
-        <div className="img-profile">
-          <img src={user.imgUrl} alt="" className="img" />
-        </div>
-        <div className="fullname">
-          <Link to={`/main/profile/${user._id}`}>
-            <h3>{user.fullname}</h3>
-            <p>{user.profession || ' '}</p>
+    <section className="p-4 mb-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition">
+      <div className="flex items-start justify-between">
+        <Link to={`/main/profile/${user._id}`} className="flex-1 flex items-start">
+          <img src={user.imgUrl} alt="" className="w-10 h-10 rounded-full mr-3 cursor-pointer" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-gray-900 dark:text-white hover:underline cursor-pointer">
+              {user.fullname}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              {user.profession || 'No profession'}
+            </p>
             {connection?.connected && (
-              <p>
-                connected <TimeAgo date={connection?.connected} />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Connected <TimeAgo date={connection?.connected} />
               </p>
             )}
-          </Link>
-        </div>
-        <div className="btns">
-          <button onClick={() => history.push(`/main/message/${user?._id}`)}>
+          </div>
+        </Link>
+        <div className="flex items-center gap-2 ml-2">
+          <button 
+            onClick={() => history.push(`/main/message/${user?._id}`)}
+            className="py-1 px-3 text-xs font-medium text-white bg-primary-700 hover:bg-primary-800 rounded transition"
+          >
             Message
           </button>
-          <FontAwesomeIcon className="dots-icon" icon="fa-solid fa-ellipsis" />
+          <button className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition">
+            <FontAwesomeIcon icon="fa-solid fa-ellipsis" />
+          </button>
         </div>
       </div>
     </section>

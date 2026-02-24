@@ -15,37 +15,34 @@ export const PostHeader = ({ post, userPost }) => {
 
   const { imgUrl, profession, fullname } = userPost
   return (
-    <section className="post-header">
-      <div
-        className="img-actor"
-        onClick={() => history.push(`/main/profile/${userPost?._id}`)}
-      >
-        <img src={imgUrl} className="img" alt={fullname}></img>
-      </div>
-
-      <div className="details">
-        <Link to={`/main/profile/${userPost?._id}`}>
-          <div className="name">
-            <h3>{fullname}</h3>
+    <section className="flex justify-between items-start">
+      <div className="flex items-start">
+        <img 
+          src={imgUrl} 
+          className="mr-3 w-10 h-10 rounded-full cursor-pointer"
+          alt={fullname}
+          onClick={() => history.push(`/main/profile/${userPost?._id}`)}
+        />
+        <div>
+          <p 
+            className="inline-flex text-sm text-gray-900 dark:text-white font-semibold cursor-pointer hover:underline mb-1"
+            onClick={() => history.push(`/main/profile/${userPost?._id}`)}
+          >
+            {fullname}
+          </p>
+          <div className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+            {profession}
           </div>
-        </Link>
-        <div
-          className="time-and-description-container"
-          onClick={() => history.push(`/main/post/${post.userId}/${post._id}`)}
-        >
-          <div className="description">
-            <p>{profession}</p>
-          </div>
-          <div className="time">
-            <span>
+          <p className="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:underline" onClick={() => history.push(`/main/post/${post.userId}/${post._id}`)}>
+            <time pubdate dateTime={post.createdAt} title={new Date(post.createdAt).toLocaleString()}>
               <TimeAgo date={post.createdAt} />
-            </span>{' '}
+            </time>
             {post?.position?.lat && post?.position?.lng && (
-              <span className="logo-location">
+              <span className="ml-2">
                 <FontAwesomeIcon icon="fa-solid fa-location-dot" />
               </span>
             )}
-          </div>
+          </p>
         </div>
       </div>
     </section>
