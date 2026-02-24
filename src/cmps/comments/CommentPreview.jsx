@@ -5,19 +5,18 @@ import { removeComment } from '../../store/actions/postActions'
 import { useHistory } from 'react-router-dom'
 import { userService } from '../../services/user/userService'
 import { utilService } from '../../services/utilService'
-import { CommentMenu } from './CommentMenu'
 import { ReplyList } from '../replies/ReplyList'
 import TimeAgo from 'react-timeago'
 
-export const CommentPreview = ({ comment, onSaveComment }) => {
+export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
   const dispatch = useDispatch()
   const history = useHistory()
 
   const { userId, createdAt, postId, reactions, replies } = comment
   const [userComment, setUserComment] = useState(null)
-  const [isShowinputComment, setIsShowinputComment] = useState(false)
-  const [isShowreplyList, setIsShowReplyList] = useState(false)
   const [isShowMenu, setIsShowMenu] = useState(false)
+  const [isShowReplyForm, setIsShowReplyForm] = useState(false)
+  const [isShowReplyList, setIsShowReplyList] = useState(false)
   const [isFirstFocus, setIsFirstFocus] = useState(true)
 
   const [replyField, setReplyField] = useState({
@@ -35,34 +34,15 @@ export const CommentPreview = ({ comment, onSaveComment }) => {
     setUserComment(userComment)
   }
 
-  const onLikeComment = () => {
-    const commentToSave = { ...comment }
-    const isAlreadyLike = commentToSave.reactions.some(
-      (reaction) => reaction.userId === loggedInUser._id
-    )
-    if (isAlreadyLike) {
-      commentToSave.reactions = commentToSave.reactions.filter(
-        (reaction) => reaction.userId !== loggedInUser._id
-      )
-    } else if (!isAlreadyLike) {
-      commentToSave.reactions.push({
-        userId: loggedInUser._id,
-        fullname: loggedInUser.fullname,
-        reaction: 'like',
-      })
-    }
-    onSaveComment(commentToSave)
-  }
-
   const onRemoveComment = () => {
     dispatch(removeComment(comment))
+    toggleMenu()
   }
 
   const addReply = () => {
-    if (replyField.txt === '' || !replyField.txt) return
+    if (!replyField.txt.trim()) return
     const commentToSave = { ...comment }
-    setIsShowReplyList(true)
-    const newRpely = {
+    const newReply = {
       _id: utilService.makeId(24),
       userId: loggedInUser._id,
       postId: postId,
@@ -71,11 +51,11 @@ export const CommentPreview = ({ comment, onSaveComment }) => {
       reactions: [],
       createdAt: new Date().getTime(),
     }
-    commentToSave.replies.unshift(newRpely)
+    commentToSave.replies.unshift(newReply)
     onSaveComment(commentToSave)
-    setReplyField({
-      txt: '',
-    })
+    setReplyField({ txt: '' })
+    setIsShowReplyForm(false)
+    setIsShowReplyList(true)
   }
 
   const updateReply = (replyToUpdate) => {
@@ -87,126 +67,213 @@ export const CommentPreview = ({ comment, onSaveComment }) => {
     onSaveComment(commentToSave)
   }
 
-  const handleChange = async ({ target }) => {
+  const handleChange = ({ target }) => {
     const field = target.name
     let value = target.type === 'number' ? +target.value || '' : target.value
     setReplyField({ [field]: value })
   }
 
-  // useEffect intentionally empty for dependencies warning
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {}, [userId])
-
   useEffect(() => {
     loadUserComment(userId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [userId])
 
-  if (!userComment) return
+  if (!userComment) return null
 
-  const isLogedInUserLikeComment = comment?.reactions.some((reaction) => {
-    return loggedInUser._id === reaction.userId
-  })
+  const isLoggedInUserOwner = comment.userId === loggedInUser._id
 
-  const likeBtnStyle = isLogedInUserLikeComment ? 'liked' : ''
+  const { profession, imgUrl, fullname } = userComment
 
-  const { profession, imgUrl } = userComment
-
-  const inputRef = (elInput) => {
-    if (elInput && isFirstFocus) elInput.focus()
-    setIsFirstFocus(false)
-  }
-
-  if (!comment) return <div>Loading</div>
+  const marginClass = isReply ? 'mb-3 ml-6 lg:ml-12' : 'p-6 text-base bg-white dark:bg-gray-900'
+  const borderClass = isReply ? '' : replies?.length ? '' : 'border-t border-gray-200 dark:border-gray-700'
 
   return (
-    <section className="comment-preview">
-      <div
-        className="img-container"
-        onClick={() => history.push(`/main/profile/${userComment?._id}`)}
-      >
-        <img src={imgUrl} alt="" className="img-profile" />
-      </div>
-      <div className="container">
-        <div className="comment-header">
-          <div className="comment-details">
-            <div className="name">
-              <h3>{userComment.fullname}</h3>
-              <p>{profession}</p>
-            </div>
-            <div>
-              <span>
-                <TimeAgo date={createdAt} />
-              </span>
-              <FontAwesomeIcon
-                onClick={toggleMenu}
-                className="dots-icon"
-                icon="fa-solid fa-ellipsis"
-              />
-            </div>
-          </div>
-          <div className="comment-text">
-            <p>{comment.txt}</p>
-          </div>
+    <article className={`${marginClass} ${!isReply && 'rounded-lg'} ${borderClass}`}>
+      <footer className="flex justify-between items-center mb-2">
+        <div className="flex items-center">
+          <p 
+            className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold cursor-pointer hover:underline"
+            onClick={() => history.push(`/main/profile/${userComment._id}`)}
+          >
+            <img
+              className="mr-2 w-6 h-6 rounded-full"
+              src={imgUrl}
+              alt={fullname}
+            />
+            {fullname}
+          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            <time pubdate dateTime={createdAt} title={new Date(createdAt).toLocaleString()}>
+              <TimeAgo date={createdAt} />
+            </time>
+          </p>
         </div>
-        <div className="comment-action">
-          <span>{reactions?.length || ''}</span>
-          <button className={'like ' + likeBtnStyle} onClick={onLikeComment}>
-            Like
+        
+        {/* Menu Button */}
+        <div className="relative">
+          <button
+            id={`dropdownComment${comment._id}`}
+            onClick={toggleMenu}
+            className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            type="button"
+          >
+            <svg
+              className="w-4 h-4"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 16 3"
+            >
+              <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+            </svg>
+            <span className="sr-only">Comment settings</span>
           </button>
-          |
-          <button onClick={() => setIsShowinputComment((prev) => !prev)}>
-            Reply
-          </button>
-          |
-          {comment.replies?.length ? (
-            <button onClick={() => setIsShowReplyList((prev) => !prev)}>
-              {isShowreplyList && isShowreplyList
-                ? `Hide ${comment.replies?.length} replies`
-                : `Show ${comment.replies?.length} replies`}
-            </button>
-          ) : (
-            ''
+
+          {/* Dropdown Menu */}
+          {isShowMenu && (
+            <div
+              className="z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 absolute right-0 top-full mt-1"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ul className="py-1 text-sm text-gray-700 dark:text-gray-200">
+                {isLoggedInUserOwner && (
+                  <>
+                    <li>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          // TODO: Handle edit
+                          toggleMenu()
+                        }}
+                        className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        Edit
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          onRemoveComment()
+                        }}
+                        className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        Remove
+                      </a>
+                    </li>
+                  </>
+                )}
+                <li>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      // TODO: Handle report
+                      toggleMenu()
+                    }}
+                    className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    Report
+                  </a>
+                </li>
+              </ul>
+            </div>
           )}
         </div>
+      </footer>
 
-        {isShowinputComment && (
-          <div className="input-reply">
-            <div className="img-loggedUser">
-              <img src={loggedInUser.imgUrl} alt="" className="img" />
-            </div>
-            <div className="input-container">
-              <input
-                ref={inputRef}
-                type="text"
-                placeholder="Add a reply..."
-                onChange={handleChange}
-                id="txt"
+      {/* Comment Text */}
+      <p className="text-gray-500 dark:text-gray-400">{comment.txt}</p>
+
+      {/* Comment Actions */}
+      <div className="flex items-center mt-4 space-x-4">
+        <button
+          type="button"
+          onClick={() => setIsShowReplyForm(!isShowReplyForm)}
+          className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium"
+        >
+          <svg
+            className="mr-1.5 w-3.5 h-3.5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 20 18"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z"
+            />
+          </svg>
+          Reply
+        </button>
+      </div>
+
+      {/* Reply Form */}
+      {isShowReplyForm && (
+        <div className="mt-4 ml-0 lg:ml-6">
+          <form className="mb-4" onSubmit={(e) => { e.preventDefault(); addReply() }}>
+            <div className="py-2 px-4 mb-4 bg-white rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+              <label htmlFor={`reply-${comment._id}`} className="sr-only">Your reply</label>
+              <textarea
+                id={`reply-${comment._id}`}
+                rows="3"
                 name="txt"
                 value={replyField.txt}
+                onChange={handleChange}
+                className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                placeholder="Write a reply..."
               />
             </div>
-          </div>
-        )}
+            {replyField.txt && (
+              <button
+                type="submit"
+                className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+              >
+                Post reply
+              </button>
+            )}
+          </form>
+        </div>
+      )}
 
-        {replyField.txt && (
-          <button className="reply-btn" onClick={() => addReply()}>
-            Reply
-          </button>
-        )}
+      {/* Replies List */}
+      {replies && replies.length > 0 && (
+        <div className="mt-4">
+          {!isShowReplyList && (
+            <button
+              onClick={() => setIsShowReplyList(true)}
+              className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
+            >
+              Show {replies.length} {replies.length === 1 ? 'reply' : 'replies'}
+            </button>
+          )}
+          {isShowReplyList && (
+            <>
+              <button
+                onClick={() => setIsShowReplyList(false)}
+                className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium mb-3"
+              >
+                Hide {replies.length} {replies.length === 1 ? 'reply' : 'replies'}
+              </button>
+              <ReplyList replies={replies} updateReply={updateReply} />
+            </>
+          )}
+        </div>
+      )}
 
-        {isShowreplyList && (
-          <ReplyList replies={replies} updateReply={updateReply} />
-        )}
-
-        {isShowMenu && (
-          <CommentMenu
-            toggleMenu={toggleMenu}
-            onRemoveComment={onRemoveComment}
-            commentUserId={comment.userId}
-          />
-        )}
-      </div>
-    </section>
+      {/* Close menu when clicking outside */}
+      {isShowMenu && (
+        <div
+          className="fixed inset-0"
+          onClick={toggleMenu}
+          style={{ zIndex: 9 }}
+        />
+      )}
+    </article>
   )
 }

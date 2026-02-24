@@ -10,6 +10,7 @@ export const CommentsList = ({ comments, onSaveComment }) => {
           key={comment._id}
           comment={comment}
           onSaveComment={onSaveComment}
+          isReply={false}
         />
       ))}
     </section>

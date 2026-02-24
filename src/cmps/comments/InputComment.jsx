@@ -6,7 +6,6 @@ export const InputComment = ({ onSaveComment }) => {
   const { loggedInUser } = useSelector((state) => state.userModule)
   const { imgUrl, _id } = loggedInUser
 
-  const [isFirstFocus, setIsFirstFocus] = useState(true)
   const [newComment, setNewComment] = useState({
     txt: '',
     userId: _id,
@@ -18,61 +17,34 @@ export const InputComment = ({ onSaveComment }) => {
     setNewComment((prevCred) => ({ ...prevCred, [field]: value }))
   }
 
-  const doSubmit = () => {
+  const doSubmit = (e) => {
+    e.preventDefault()
+    if (!newComment.txt.trim()) return
     onSaveComment(newComment)
     setNewComment(() => ({ txt: '', userId: _id }))
   }
 
-  const inputRef = (elInput) => {
-    if (elInput && isFirstFocus) elInput.focus()
-    setIsFirstFocus(false)
-  }
   return (
-    <section>
-      <form className="input-comment" action="">
-        <div>
-          <div className="img-profile">
-            <img src={imgUrl} alt="" className="img" />
-          </div>
-
-          <div className="input-container">
-            <input
-              ref={inputRef}
-              type="text"
-              placeholder="Add a Comment.."
-              required
-              onChange={handleChange}
-              id="txt"
-              name="txt"
-              value={newComment.txt}
-            />
-            <span>
-              <FontAwesomeIcon
-                className="smile icon"
-                icon="fa-solid fa-face-smile"
-              />
-            </span>
-            <span>
-              <FontAwesomeIcon
-                className="photo icon"
-                icon="fa-solid fa-image"
-              />
-            </span>
-          </div>
-        </div>
-        <div className="post-btn-container">
-          {newComment.txt && (
-            <button
-              onClick={(ev) => {
-                ev.preventDefault()
-                doSubmit()
-              }}
-            >
-              Post
-            </button>
-          )}
-        </div>
-      </form>
-    </section>
+    <form className="mb-6" onSubmit={doSubmit}>
+      <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+        <label htmlFor="comment" className="sr-only">Your comment</label>
+        <textarea 
+          id="comment" 
+          rows="6"
+          name="txt"
+          value={newComment.txt}
+          onChange={handleChange}
+          className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+          placeholder="Write a comment..." 
+          required
+        />
+      </div>
+      <button 
+        type="submit"
+        className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800"
+      >
+        Post comment
+      </button>
+    </form>
   )
 }
