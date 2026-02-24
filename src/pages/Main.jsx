@@ -147,7 +147,7 @@ export function Main() {
           <PrivateRoute path="/main/feed" component={Feed} />
           <PrivateRoute
             path="/main/post/:userId/:postId"
-            component={SpecificPost}
+            render={(props) => <SpecificPost key={`${props.match.params.userId}-${props.match.params.postId}`} {...props} />}
           />
           <PrivateRoute path="/main/profile/:userId" component={Profile} />
           <PrivateRoute path="/main/mynetwork" component={MyNetwork} />

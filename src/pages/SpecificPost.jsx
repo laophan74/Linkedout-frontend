@@ -33,10 +33,13 @@ const SpecificPost = (props) => {
     dispatch(loadPosts())
     dispatch(getPostsLength())
 
+    // Reset user post when loading new post
+    setUserPost(null)
+
     return () => {
       dispatch(setFilterByPosts(null))
     }
-  }, [dispatch, params.postId])
+  }, [dispatch, params.postId, params.userId])
 
   useEffect(() => {
     if (posts && posts.length > 0) {
