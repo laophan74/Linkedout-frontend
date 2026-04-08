@@ -6,9 +6,9 @@ import { PostBody } from '../cmps/posts/post-preview/PostBody'
 import { SocialDetails } from '../cmps/posts/post-preview/SocialDetails'
 import { Comments } from '../cmps/comments/Comments'
 import { userService } from '../services/user/userService'
+import { postService } from '../services/posts/postService'
 import {
   getPostsLength,
-  loadPosts,
   setCurrPage,
   setFilterByPosts,
   savePost,
@@ -39,11 +39,8 @@ const SpecificPost = (props) => {
         dispatch({ type: 'SET_POSTS', posts: [] })
         
         dispatch(setCurrPage(null))
-        const filterBy = {
-          _id: params.postId,
-        }
-        dispatch(setFilterByPosts(filterBy))
-        await dispatch(loadPosts())
+        const post = await postService.getById(params.postId)
+        dispatch({ type: 'SET_POSTS', posts: [post] })
         dispatch(getPostsLength())
 
         // Reset user post when loading new post
