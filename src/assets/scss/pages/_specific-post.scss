@@ -23,7 +23,6 @@
   }
 
   .post-detail {
-    // background-color: #fff; // Removed - now handled by Tailwind classes
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 40px;
@@ -117,7 +116,7 @@
         flex: 1;
         padding: 10px 16px;
         border: 1px solid #d1d5db;
-        background-color: #f9fafb;
+        background-color: transparent;
         border-radius: 6px;
         cursor: pointer;
         font-size: 14px;
@@ -153,7 +152,7 @@
     }
 
     .comments {
-      background-color: #fff;
+      background-color: #ffffff;
       border: 1px solid #e5e7eb;
       border-radius: 8px;
       padding: 24px;
@@ -183,7 +182,7 @@
 body.theme-dark {
   .post-detail-container {
     .post-detail {
-      background-color: #161b22;
+      background-color: #111827;
       border-color: #30363d;
 
       .post-detail-header {
@@ -228,7 +227,7 @@ body.theme-dark {
 
         .action-btn {
           border-color: #30363d;
-          background-color: #0f1419;
+          background-color: transparent;
           color: #9aa4b2;
 
           &:hover {
@@ -251,7 +250,7 @@ body.theme-dark {
       }
 
       .comments {
-        background-color: #161b22;
+        background-color: #111827;
         border-color: #30363d;
 
         .input-comment {

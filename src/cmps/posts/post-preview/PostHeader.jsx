@@ -15,7 +15,7 @@ export const PostHeader = ({ post, userPost }) => {
 
   const { imgUrl, profession, fullname } = userPost
   return (
-    <section className="flex justify-between items-start">
+    <section className="post-header flex justify-between items-start">
       <div className="flex items-start">
         <img 
           src={imgUrl} 

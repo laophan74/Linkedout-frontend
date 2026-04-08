@@ -82,13 +82,12 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
 
   const { imgUrl, fullname } = userComment
 
-  const articleClass = isReply 
-    ? 'p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900'
-    : 'p-6 text-base bg-white rounded-lg dark:bg-gray-900'
-  const borderClass = isReply ? '' : 'border-t border-gray-200 dark:border-gray-700'
+  const articleClass = isReply
+    ? 'p-6 mb-3 ml-6 lg:ml-12 text-base bg-transparent rounded-lg border border-gray-200 dark:border-gray-700'
+    : 'p-6 text-base bg-transparent rounded-lg border border-gray-200 dark:border-gray-700'
 
   return (
-    <article className={`${articleClass} ${borderClass}`}>
+    <article className={articleClass}>
       <footer className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <p 

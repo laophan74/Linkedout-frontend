@@ -66,7 +66,7 @@ export const Comments = ({ postId, comments: initialComments, userPostId }) => {
   if (!comments) return <div>Loading</div>
   
   return (
-    <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
+    <section className="comments bg-white dark:bg-[#111827] py-8 lg:py-16 antialiased">
       <div className="max-w-2xl mx-auto px-4">
         {/* Comments Header */}
         <div className="flex justify-between items-center mb-6">

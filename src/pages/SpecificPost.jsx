@@ -184,7 +184,7 @@ const SpecificPost = (props) => {
 
   return (
     <section className="post-detail-container">
-      <article className="post-detail bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+      <article className="post-detail bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-700">
         {/* Post Header */}
         <div className="post-detail-header">
           <PostHeader post={post} userPost={userPost} />
@@ -266,7 +266,9 @@ const SpecificPost = (props) => {
       </article>
 
       {/* Comments Section */}
-      <Comments postId={post._id} comments={post.comments} userPostId={post.userId} />
+      <div className="post-detail-comments">
+        <Comments postId={post._id} comments={post.comments} userPostId={post.userId} />
+      </div>
     </section>
   )
 }

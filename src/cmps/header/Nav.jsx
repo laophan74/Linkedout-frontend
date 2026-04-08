@@ -12,13 +12,10 @@ export const Nav = () => {
   const { unreadMessages } = useSelector((state) => state.activityModule)
 
   const getInitialTheme = () => {
-    if (typeof window === 'undefined') return 'light'
+    if (typeof window === 'undefined') return 'dark'
     const storedTheme = localStorage.getItem(THEME_STORAGE_KEY)
     if (storedTheme === 'dark' || storedTheme === 'light') return storedTheme
-    const prefersDark =
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    return prefersDark ? 'dark' : 'light'
+    return 'dark'
   }
 
   const [theme, setTheme] = useState(getInitialTheme)
