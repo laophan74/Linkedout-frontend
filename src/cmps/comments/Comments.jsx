@@ -3,17 +3,30 @@ import { CommentsList } from './CommentsList'
 import { useDispatch, useSelector } from 'react-redux'
 import { saveComment } from '../../store/actions/postActions'
 import { saveActivity } from '../../store/actions/activityAction'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { utilService } from '../../services/utilService'
 
 export const Comments = ({ postId, comments: initialComments, userPostId }) => {
   const dispatch = useDispatch()
   const { loggedInUser } = useSelector((state) => state.userModule)
   const [comments, setComments] = useState(initialComments || [])
+  const previousPostId = useRef(postId)
 
-  // Sync with initial comments from Redux (when post updates)
   useEffect(() => {
-    setComments(initialComments || [])
+    if (previousPostId.current !== postId) {
+      setComments(initialComments || [])
+      previousPostId.current = postId
+    }
+  }, [postId, initialComments])
+
+  useEffect(() => {
+    setComments((prevComments) => {
+      const hasTempComment = (prevComments || []).some(
+        (c) => typeof c._id === 'string' && c._id.startsWith('temp_')
+      )
+      if (hasTempComment) return prevComments
+      return initialComments || []
+    })
   }, [initialComments])
 
   const onSaveComment = async (comment) => {
