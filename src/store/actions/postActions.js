@@ -113,6 +113,19 @@ export function removePost(postId) {
   }
 }
 
+export function likePost(postId) {
+  return async (dispatch) => {
+    try {
+      const likedPost = await postService.likePost(postId)
+      dispatch({ type: 'UPDATE_POST', post: likedPost })
+      socketService.emit('post-updated', likedPost)
+      return likedPost
+    } catch (err) {
+      console.log('err:', err)
+    }
+  }
+}
+
 export function saveComment(comment) {
   return async (dispatch) => {
     try {

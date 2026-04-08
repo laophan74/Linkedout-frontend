@@ -5,16 +5,17 @@ export const PostActions = ({
   onLikePost,
   onSharePost,
   loggedInUser,
+  isLiked,
 }) => {
   const history = useHistory()
 
-  const isLogedInUserLikePost = post?.reactions?.some((reaction) => {
-    return (
-      loggedInUser && loggedInUser._id && loggedInUser?._id === reaction.userId
-    )
-  })
+  const isLogedInUserLikePost = isLiked
 
-  const likeBtnStyle = isLogedInUserLikePost ? 'liked' : ''
+  const likeBtnStyle = isLogedInUserLikePost
+    ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'
+    : 'text-gray-600 dark:text-gray-400'
+
+  const likeBtnFill = isLogedInUserLikePost ? 'currentColor' : 'none'
   
   const handleCommentClick = () => {
     // Navigate to detail page instead of toggle inline comments
@@ -23,12 +24,12 @@ export const PostActions = ({
 
   return (
     <section className="post-actions">
-      <button className={'like ' + likeBtnStyle + ' text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'} onClick={onLikePost}>
+      <button className={`${likeBtnStyle} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200`} onClick={onLikePost}>
         <svg
           className="mr-1.5 w-3.5 h-3.5"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
-          fill="none"
+          fill={likeBtnFill}
           viewBox="0 0 20 20"
         >
           <path
@@ -39,7 +40,7 @@ export const PostActions = ({
             d="M4.008 8.714H1V18h3.008M4.008 8.714c2.763.071 4.527.055 6.011 0 0-3.707.785-6.714 3.008-6.714 1.497 0 1.994 2.297 1.994 3.571 0 2.143-1.994 3.143-1.994 3.143h3.979c.114 0 .224.013.333.036l.086.023A1.5 1.5 0 0 1 18 10.205v.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-5.006V8.714Z"
           />
         </svg>
-        <span>Like</span>
+        <span>{isLogedInUserLikePost ? 'Liked' : 'Like'}</span>
       </button>
       <button className="comment text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={handleCommentClick}>
         <svg

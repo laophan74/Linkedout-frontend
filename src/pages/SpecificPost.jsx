@@ -11,7 +11,7 @@ import {
   getPostsLength,
   setCurrPage,
   setFilterByPosts,
-  savePost,
+  likePost,
 } from '../store/actions/postActions'
 import { saveActivity } from '../store/actions/activityAction'
 import loadingGif from '../assets/imgs/loading-gif.gif'
@@ -26,6 +26,8 @@ const SpecificPost = (props) => {
   const [loadError, setLoadError] = useState(false)
   const [loadTimeout, setLoadTimeout] = useState(false)
   const [isLoadingPost, setIsLoadingPost] = useState(true)
+  const [isLiked, setIsLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(0)
 
   useEffect(() => {
     const loadPostData = async () => {
@@ -47,6 +49,13 @@ const SpecificPost = (props) => {
         setPost(loadedPost)
         dispatch({ type: 'SET_POSTS', posts: [loadedPost] })
         dispatch(getPostsLength())
+
+        // Initialize like state
+        const userHasLiked = (loadedPost.reactions || loadedPost.likes || []).some(
+          (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
+        )
+        setIsLiked(userHasLiked)
+        setLikeCount((loadedPost.reactions || loadedPost.likes || []).length)
 
         // Reset user post when loading new post
         setUserPost(null)
@@ -95,33 +104,56 @@ const SpecificPost = (props) => {
   }
 
   const onLikePost = () => {
-    if (!post) return
+    if (!post || !loggedInUser) return
 
-    const isAlreadyLike = (post.reactions || post.likes || []).some(
-      (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
-    )
-    const newReactions = isAlreadyLike
-      ? (post.reactions || post.likes || []).filter(
+    // Optimistic update
+    const newIsLiked = !isLiked
+    const newLikeCount = newIsLiked ? likeCount + 1 : likeCount - 1
+
+    setIsLiked(newIsLiked)
+    setLikeCount(newLikeCount)
+
+    // Update local post state for immediate UI feedback
+    const newReactions = newIsLiked
+      ? [...(post.reactions || post.likes || []), loggedInUser._id]
+      : (post.reactions || post.likes || []).filter(
           (reaction) => reaction.userId !== loggedInUser._id && reaction !== loggedInUser._id
         )
-      : [...(post.reactions || post.likes || []), loggedInUser._id]
 
-    const postToSave = {
+    const optimisticPost = {
       ...post,
       reactions: newReactions,
       likes: newReactions,
     }
+    setPost(optimisticPost)
 
-    dispatch(savePost(postToSave)).then((savedPost) => {
+    // Send to backend
+    dispatch(likePost(post._id)).then((savedPost) => {
       if (savedPost?._id === post._id) {
+        // Update with server response
+        const serverUserHasLiked = (savedPost.reactions || savedPost.likes || []).some(
+          (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
+        )
+        const serverLikeCount = (savedPost.reactions || savedPost.likes || []).length
+
+        setIsLiked(serverUserHasLiked)
+        setLikeCount(serverLikeCount)
+        setPost(savedPost)
+
         const newActivity = {
-          type: isAlreadyLike ? 'remove-like' : 'add-like',
+          type: newIsLiked ? 'add-like' : 'remove-like',
           createdBy: loggedInUser._id,
           createdTo: post.userId,
           postId: post._id,
         }
         dispatch(saveActivity(newActivity))
       }
+    }).catch((err) => {
+      // Revert optimistic update on error
+      console.error('Error saving like:', err)
+      setIsLiked(!newIsLiked)
+      setLikeCount(likeCount)
+      setPost(post)
     })
   }
 
@@ -182,17 +214,27 @@ const SpecificPost = (props) => {
 
         {/* Social Details */}
         <div className="post-detail-social">
-          <SocialDetails post={postToRender} comments={postToRender.comments} />
+          <SocialDetails
+            post={{ ...postToRender, reactions: Array(likeCount).fill(null) }}
+            comments={postToRender.comments}
+          />
         </div>
 
         {/* Post Actions */}
         <div className="post-detail-actions">
-          <button className="action-btn like text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={onLikePost}>
+          <button
+            className={`action-btn like ${
+              isLiked
+                ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'
+                : 'text-gray-600 dark:text-gray-400'
+            } hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200`}
+            onClick={onLikePost}
+          >
             <svg
               className="mr-1.5 w-3.5 h-3.5"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
-              fill="none"
+              fill={isLiked ? "currentColor" : "none"}
               viewBox="0 0 20 20"
             >
               <path
@@ -203,7 +245,7 @@ const SpecificPost = (props) => {
                 d="M4.008 8.714H1V18h3.008M4.008 8.714c2.763.071 4.527.055 6.011 0 0-3.707.785-6.714 3.008-6.714 1.497 0 1.994 2.297 1.994 3.571 0 2.143-1.994 3.143-1.994 3.143h3.979c.114 0 .224.013.333.036l.086.023A1.5 1.5 0 0 1 18 10.205v.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-5.006V8.714Z"
               />
             </svg>
-            <span>Like</span>
+            <span>{isLiked ? 'Liked' : 'Like'}</span>
           </button>
           <button className="action-btn comment text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
             <svg

@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { userService } from '../../../services/user/userService'
 
 import { PostMenu } from './PostMenu'
-import { savePost, removePost } from '../../../store/actions/postActions'
+import { removePost, likePost } from '../../../store/actions/postActions'
 import { saveActivity } from '../../../store/actions/activityAction'
 import { ImgPreview } from '../../profile/ImgPreview'
 
@@ -18,13 +18,25 @@ export const PostPreview = ({ post }) => {
   const [userPost, setUserPost] = useState(null)
   const [isShowMenu, setIsShowMenu] = useState(false)
   const [isShowImgPreview, setIsShowImgPreview] = useState(false)
+  const [isLiked, setIsLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(0)
+  const [currentPost, setCurrentPost] = useState(post)
 
   const { loggedInUser } = useSelector((state) => state.userModule)
 
   useEffect(() => {
+    if (!post) return
+
     loadUserPost(post.userId)
+
+    const userHasLiked = (post.reactions || post.likes || []).some(
+      (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
+    )
+    setIsLiked(userHasLiked)
+    setLikeCount((post.reactions || post.likes || []).length)
+    setCurrentPost(post)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedInUser])
+  }, [loggedInUser, post])
 
   const toggleMenu = () => {
     setIsShowMenu((prevVal) => !prevVal)
@@ -55,31 +67,54 @@ export const PostPreview = ({ post }) => {
   }
 
   const onLikePost = () => {
-    const isAlreadyLike = (post.reactions || post.likes || []).some(
-      (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
-    )
-    const newReactions = isAlreadyLike
-      ? (post.reactions || post.likes || []).filter(
+    if (!loggedInUser) return
+
+    // Optimistic update
+    const newIsLiked = !isLiked
+    const newLikeCount = newIsLiked ? likeCount + 1 : likeCount - 1
+
+    setIsLiked(newIsLiked)
+    setLikeCount(newLikeCount)
+
+    // Send to backend
+    const newReactions = newIsLiked
+      ? [...(currentPost.reactions || currentPost.likes || []), loggedInUser._id]
+      : (currentPost.reactions || currentPost.likes || []).filter(
           (reaction) => reaction.userId !== loggedInUser._id && reaction !== loggedInUser._id
         )
-      : [...(post.reactions || post.likes || []), loggedInUser._id]
 
-    const postToSave = {
-      ...post,
+    const optimisticPost = {
+      ...currentPost,
       reactions: newReactions,
       likes: newReactions, // Keep likes for backend compatibility
     }
+    setCurrentPost(optimisticPost)
 
-    dispatch(savePost(postToSave)).then((savedPost) => {
+    dispatch(likePost(post._id)).then((savedPost) => {
       if (savedPost?._id === post._id) {
+        // Update with server response
+        const serverUserHasLiked = (savedPost.reactions || savedPost.likes || []).some(
+          (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
+        )
+        const serverLikeCount = (savedPost.reactions || savedPost.likes || []).length
+
+        setIsLiked(serverUserHasLiked)
+        setLikeCount(serverLikeCount)
+        setCurrentPost(savedPost)
+
         const newActivity = {
-          type: isAlreadyLike ? 'remove-like' : 'add-like',
+          type: newIsLiked ? 'add-like' : 'remove-like',
           createdBy: loggedInUser._id,
           createdTo: post.userId,
           postId: post._id,
         }
         dispatch(saveActivity(newActivity))
       }
+    }).catch((err) => {
+      // Revert optimistic update on error
+      console.error('Error saving like:', err)
+      setIsLiked(!newIsLiked)
+      setLikeCount(likeCount)
     })
   }
 
@@ -110,14 +145,15 @@ export const PostPreview = ({ post }) => {
       />
       <SocialDetails
         comments={post.comments}
-        post={post}
+        post={currentPost}
       />
       <hr className="border-gray-200 dark:border-gray-700" />
       <PostActions
-        post={post}
+        post={currentPost}
         onLikePost={onLikePost}
         loggedInUser={loggedInUser}
         onSharePost={onSharePost}
+        isLiked={isLiked}
       />
 
       {isShowMenu && (
