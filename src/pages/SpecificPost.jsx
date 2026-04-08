@@ -19,13 +19,13 @@ import loadingGif from '../assets/imgs/loading-gif.gif'
 const SpecificPost = (props) => {
   const dispatch = useDispatch()
   const params = useParams()
-  const { posts, isPostsLoading } = useSelector((state) => state.postModule)
   const { loggedInUser } = useSelector((state) => state.userModule)
   
+  const [post, setPost] = useState(null)
   const [userPost, setUserPost] = useState(null)
   const [loadError, setLoadError] = useState(false)
   const [loadTimeout, setLoadTimeout] = useState(false)
-  const [expectedPostId, setExpectedPostId] = useState(null)
+  const [isLoadingPost, setIsLoadingPost] = useState(true)
 
   useEffect(() => {
     const loadPostData = async () => {
@@ -33,14 +33,19 @@ const SpecificPost = (props) => {
         console.log('[SpecificPost] Loading post with ID:', params.postId)
         setLoadError(false)
         setLoadTimeout(false)
-        setExpectedPostId(params.postId) // Track which post we're loading
-        
+        setIsLoadingPost(true)
+
         // Clear old posts to prevent mismatch errors
         dispatch({ type: 'SET_POSTS', posts: [] })
-        
         dispatch(setCurrPage(null))
-        const post = await postService.getById(params.postId)
-        dispatch({ type: 'SET_POSTS', posts: [post] })
+
+        const loadedPost = await postService.getById(params.postId)
+        if (!loadedPost || loadedPost._id !== params.postId) {
+          throw new Error('Loaded post does not match requested id')
+        }
+
+        setPost(loadedPost)
+        dispatch({ type: 'SET_POSTS', posts: [loadedPost] })
         dispatch(getPostsLength())
 
         // Reset user post when loading new post
@@ -49,6 +54,8 @@ const SpecificPost = (props) => {
         console.error('[SpecificPost] Error loading post:', err)
         setLoadError(true)
         dispatch({ type: 'SET_IS_POSTS_LOADING', isLoading: false })
+      } finally {
+        setIsLoadingPost(false)
       }
     }
 
@@ -61,7 +68,7 @@ const SpecificPost = (props) => {
 
   // Timeout check - if loading takes too long, show error
   useEffect(() => {
-    if (!isPostsLoading) return
+    if (!isLoadingPost) return
 
     const timeoutId = setTimeout(() => {
       console.error('[SpecificPost] Post loading timeout - taking too long')
@@ -70,37 +77,13 @@ const SpecificPost = (props) => {
     }, 10000) // 10 second timeout
 
     return () => clearTimeout(timeoutId)
-  }, [isPostsLoading, dispatch])
-
-  // Check if loaded but no matching post found
-  useEffect(() => {
-    // Only validate when loading is done AND we have an expected post ID
-    if (!isPostsLoading && expectedPostId && !loadError && !loadTimeout) {
-      if (!posts || posts.length === 0) {
-        console.error('[SpecificPost] No posts returned from API for ID:', expectedPostId)
-        setLoadError(true)
-      } else if (posts[0]._id !== expectedPostId) {
-        // Post mismatch - might be old data, wait a bit before erroring
-        console.warn('[SpecificPost] Post ID mismatch. Got:', posts[0]._id, 'Expected:', expectedPostId)
-        const mismatchTimer = setTimeout(() => {
-          // Check again after delay - if still mismatched, it's an error
-          if (posts && posts.length > 0 && posts[0]._id !== expectedPostId) {
-            console.error('[SpecificPost] Post ID still mismatched after delay - setting error')
-            setLoadError(true)
-          }
-        }, 2000) // Wait 2 seconds before declaring error
-        return () => clearTimeout(mismatchTimer)
-      } else {
-        console.log('[SpecificPost] Post loaded successfully:', posts[0]._id)
-      }
-    }
-  }, [isPostsLoading, posts, expectedPostId, loadError, loadTimeout])
+  }, [isLoadingPost, dispatch])
 
   useEffect(() => {
-    if (posts && posts.length > 0) {
-      loadUserPost(posts[0].userId)
+    if (post) {
+      loadUserPost(post.userId)
     }
-  }, [posts])
+  }, [post])
 
   const loadUserPost = async (id) => {
     try {
@@ -112,9 +95,8 @@ const SpecificPost = (props) => {
   }
 
   const onLikePost = () => {
-    if (!posts || posts.length === 0) return
-    const post = posts[0]
-    
+    if (!post) return
+
     const isAlreadyLike = (post.reactions || post.likes || []).some(
       (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
     )
@@ -144,7 +126,7 @@ const SpecificPost = (props) => {
   }
 
   // Show loading when posts are being fetched or when the loaded post doesn't match the expected ID
-  const isCorrectPostLoaded = posts && posts.length > 0 && posts[0]._id === expectedPostId
+  const isCorrectPostLoaded = !isLoadingPost && post && post._id === params.postId
   
   // Show error state if loading failed or timed out
   if (loadError || loadTimeout) {
@@ -165,7 +147,7 @@ const SpecificPost = (props) => {
     )
   }
   
-  if (isPostsLoading || !isCorrectPostLoaded) {
+  if (isLoadingPost || !isCorrectPostLoaded) {
     return (
       <section className="post-detail-container">
         <div className="loading">
@@ -177,30 +159,30 @@ const SpecificPost = (props) => {
     )
   }
 
-  const post = posts[0]
+  const postToRender = post
 
   return (
     <section className="post-detail-container">
       <article className="post-detail bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-700">
         {/* Post Header */}
         <div className="post-detail-header">
-          <PostHeader post={post} userPost={userPost} />
+          <PostHeader post={postToRender} userPost={userPost} />
         </div>
 
         {/* Post Body */}
         <div className="post-detail-body">
           <PostBody 
-            body={post.body}
-            imgUrl={post.imgBodyUrl}
-            videoUrl={post.videoBodyUrl}
-            link={post.link}
-            title={post.title}
+            body={postToRender.body}
+            imgUrl={postToRender.imgBodyUrl}
+            videoUrl={postToRender.videoBodyUrl}
+            link={postToRender.link}
+            title={postToRender.title}
           />
         </div>
 
         {/* Social Details */}
         <div className="post-detail-social">
-          <SocialDetails post={post} comments={post.comments} />
+          <SocialDetails post={postToRender} comments={postToRender.comments} />
         </div>
 
         {/* Post Actions */}
@@ -264,7 +246,7 @@ const SpecificPost = (props) => {
 
       {/* Comments Section */}
       <div className="post-detail-comments">
-        <Comments postId={post._id} comments={post.comments} userPostId={post.userId} />
+        <Comments postId={postToRender._id} comments={postToRender.comments} userPostId={postToRender.userId} />
       </div>
     </section>
   )
