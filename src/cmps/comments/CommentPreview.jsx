@@ -12,7 +12,10 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
   const history = useHistory()
 
   const { userId, createdAt, postId, replies } = comment
-  const [userComment, setUserComment] = useState(null)
+  const { loggedInUser } = useSelector((state) => state.userModule)
+  const [userComment, setUserComment] = useState(
+    loggedInUser && loggedInUser._id === userId ? loggedInUser : null
+  )
   const [isShowMenu, setIsShowMenu] = useState(false)
   const [isShowReplyForm, setIsShowReplyForm] = useState(false)
   const [isShowReplyList, setIsShowReplyList] = useState(false)
@@ -20,7 +23,6 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
   const [replyField, setReplyField] = useState({
     txt: '',
   })
-  const { loggedInUser } = useSelector((state) => state.userModule)
 
   const toggleMenu = () => {
     setIsShowMenu((prevVal) => !prevVal)
@@ -72,9 +74,13 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
   }
 
   useEffect(() => {
+    if (loggedInUser && loggedInUser._id === userId) {
+      setUserComment(loggedInUser)
+      return
+    }
     loadUserComment(userId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId])
+  }, [userId, loggedInUser])
 
   if (!userComment) return null
 

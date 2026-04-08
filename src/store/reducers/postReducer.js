@@ -77,9 +77,10 @@ export function postReducer(state = INITIAL_STATE, action) {
         ...state,
         posts: state.posts.map((post) => {
           if (post._id === comment.postId) {
-            const postToReturn = { ...post }
-            postToReturn.comments.unshift(comment)
-            return postToReturn
+            return {
+              ...post,
+              comments: [comment, ...(post.comments || [])],
+            }
           }
           return post
         }),
@@ -90,14 +91,14 @@ export function postReducer(state = INITIAL_STATE, action) {
         ...state,
         posts: state.posts.map((post) => {
           if (post._id === action.comment.postId) {
-            const idx = post.comments.findIndex(
-              (c) => c._id === action.comment._id
-            )
-            post.comments[idx] = action.comment
-            return post
-          } else {
-            return post
+            return {
+              ...post,
+              comments: (post.comments || []).map((c) =>
+                c._id === action.comment._id ? action.comment : c
+              ),
+            }
           }
+          return post
         }),
       }
 
@@ -106,14 +107,14 @@ export function postReducer(state = INITIAL_STATE, action) {
         ...state,
         posts: state.posts.map((post) => {
           if (post._id === action.comment.postId) {
-            const idx = post.comments.findIndex(
-              (c) => c._id === action.comment._id
-            )
-            post.comments.splice(idx, 1)
-            return post
-          } else {
-            return post
+            return {
+              ...post,
+              comments: (post.comments || []).filter(
+                (c) => c._id !== action.comment._id
+              ),
+            }
           }
+          return post
         }),
       }
     default:
