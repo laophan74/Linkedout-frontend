@@ -24,13 +24,19 @@ export const PostPreview = ({ post }) => {
 
   const { loggedInUser } = useSelector((state) => state.userModule)
 
+  const getReactionUserId = (reaction) => {
+    if (!reaction) return null
+    if (typeof reaction === 'string') return reaction
+    return reaction.userId || reaction._id || null
+  }
+
   useEffect(() => {
-    if (!post) return
+    if (!post || !loggedInUser) return
 
     loadUserPost(post.userId)
 
     const userHasLiked = (post.reactions || post.likes || []).some(
-      (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
+      (reaction) => getReactionUserId(reaction) === loggedInUser._id
     )
     setIsLiked(userHasLiked)
     setLikeCount((post.reactions || post.likes || []).length)
@@ -80,7 +86,7 @@ export const PostPreview = ({ post }) => {
     const newReactions = newIsLiked
       ? [...(currentPost.reactions || currentPost.likes || []), loggedInUser._id]
       : (currentPost.reactions || currentPost.likes || []).filter(
-          (reaction) => reaction.userId !== loggedInUser._id && reaction !== loggedInUser._id
+          (reaction) => getReactionUserId(reaction) !== loggedInUser._id
         )
 
     const optimisticPost = {
@@ -94,7 +100,7 @@ export const PostPreview = ({ post }) => {
       if (savedPost?._id === post._id) {
         // Update with server response
         const serverUserHasLiked = (savedPost.reactions || savedPost.likes || []).some(
-          (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
+          (reaction) => getReactionUserId(reaction) === loggedInUser._id
         )
         const serverLikeCount = (savedPost.reactions || savedPost.likes || []).length
 

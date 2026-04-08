@@ -11,12 +11,12 @@ export const PostActions = ({
 
   const isLogedInUserLikePost = isLiked
 
-  const likeBtnStyle = isLogedInUserLikePost
-    ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'
-    : 'text-gray-600 dark:text-gray-400'
-
+  const likeBtnStyle = 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200'
+  const iconColorClass = isLogedInUserLikePost
+    ? 'text-blue-600 dark:text-blue-400'
+    : 'text-gray-500 dark:text-gray-400'
   const likeBtnFill = isLogedInUserLikePost ? 'currentColor' : 'none'
-  
+
   const handleCommentClick = () => {
     // Navigate to detail page instead of toggle inline comments
     history.push(`/main/post/${post.userId}/${post._id}`)
@@ -24,9 +24,9 @@ export const PostActions = ({
 
   return (
     <section className="post-actions">
-      <button className={`${likeBtnStyle} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200`} onClick={onLikePost}>
+      <button className={likeBtnStyle} onClick={onLikePost}>
         <svg
-          className="mr-1.5 w-3.5 h-3.5"
+          className={`mr-1.5 w-3.5 h-3.5 ${iconColorClass}`}
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill={likeBtnFill}
@@ -37,10 +37,10 @@ export const PostActions = ({
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="2"
-            d="M4.008 8.714H1V18h3.008M4.008 8.714c2.763.071 4.527.055 6.011 0 0-3.707.785-6.714 3.008-6.714 1.497 0 1.994 2.297 1.994 3.571 0 2.143-1.994 3.143-1.994 3.143h3.979c.114 0 .224.013.333.036l.086.023A1.5 1.5 0 0 1 18 10.205v.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-5.006V8.714Z"
+            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"
           />
         </svg>
-        <span>{isLogedInUserLikePost ? 'Liked' : 'Like'}</span>
+        <span>Like</span>
       </button>
       <button className="comment text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={handleCommentClick}>
         <svg

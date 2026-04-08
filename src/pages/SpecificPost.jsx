@@ -20,6 +20,7 @@ const SpecificPost = (props) => {
   const dispatch = useDispatch()
   const params = useParams()
   const { loggedInUser } = useSelector((state) => state.userModule)
+  const loggedInUserId = loggedInUser?._id
   
   const [post, setPost] = useState(null)
   const [userPost, setUserPost] = useState(null)
@@ -28,6 +29,12 @@ const SpecificPost = (props) => {
   const [isLoadingPost, setIsLoadingPost] = useState(true)
   const [isLiked, setIsLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(0)
+
+  const getReactionUserId = (reaction) => {
+    if (!reaction) return null
+    if (typeof reaction === 'string') return reaction
+    return reaction.userId || reaction._id || null
+  }
 
   useEffect(() => {
     const loadPostData = async () => {
@@ -52,7 +59,7 @@ const SpecificPost = (props) => {
 
         // Initialize like state
         const userHasLiked = (loadedPost.reactions || loadedPost.likes || []).some(
-          (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
+          (reaction) => getReactionUserId(reaction) === loggedInUserId
         )
         setIsLiked(userHasLiked)
         setLikeCount((loadedPost.reactions || loadedPost.likes || []).length)
@@ -73,7 +80,7 @@ const SpecificPost = (props) => {
     return () => {
       dispatch(setFilterByPosts(null))
     }
-  }, [dispatch, params.postId])
+  }, [dispatch, params.postId, loggedInUserId])
 
   // Timeout check - if loading takes too long, show error
   useEffect(() => {
@@ -104,7 +111,7 @@ const SpecificPost = (props) => {
   }
 
   const onLikePost = () => {
-    if (!post || !loggedInUser) return
+    if (!post || !loggedInUserId) return
 
     // Optimistic update
     const newIsLiked = !isLiked
@@ -117,7 +124,7 @@ const SpecificPost = (props) => {
     const newReactions = newIsLiked
       ? [...(post.reactions || post.likes || []), loggedInUser._id]
       : (post.reactions || post.likes || []).filter(
-          (reaction) => reaction.userId !== loggedInUser._id && reaction !== loggedInUser._id
+          (reaction) => getReactionUserId(reaction) !== loggedInUser._id
         )
 
     const optimisticPost = {
@@ -132,7 +139,7 @@ const SpecificPost = (props) => {
       if (savedPost?._id === post._id) {
         // Update with server response
         const serverUserHasLiked = (savedPost.reactions || savedPost.likes || []).some(
-          (reaction) => reaction.userId === loggedInUser._id || reaction === loggedInUser._id
+          (reaction) => getReactionUserId(reaction) === loggedInUserId
         )
         const serverLikeCount = (savedPost.reactions || savedPost.likes || []).length
 
@@ -223,18 +230,14 @@ const SpecificPost = (props) => {
         {/* Post Actions */}
         <div className="post-detail-actions">
           <button
-            className={`action-btn like ${
-              isLiked
-                ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'
-                : 'text-gray-600 dark:text-gray-400'
-            } hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200`}
+            className="action-btn like text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
             onClick={onLikePost}
           >
             <svg
-              className="mr-1.5 w-3.5 h-3.5"
+              className={`mr-1.5 w-3.5 h-3.5 ${isLiked ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
-              fill={isLiked ? "currentColor" : "none"}
+              fill={isLiked ? 'currentColor' : 'none'}
               viewBox="0 0 20 20"
             >
               <path
@@ -242,10 +245,10 @@ const SpecificPost = (props) => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M4.008 8.714H1V18h3.008M4.008 8.714c2.763.071 4.527.055 6.011 0 0-3.707.785-6.714 3.008-6.714 1.497 0 1.994 2.297 1.994 3.571 0 2.143-1.994 3.143-1.994 3.143h3.979c.114 0 .224.013.333.036l.086.023A1.5 1.5 0 0 1 18 10.205v.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-.5a1.5 1.5 0 0 1-1.5 1.5h-5.006V8.714Z"
+                d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"
               />
             </svg>
-            <span>{isLiked ? 'Liked' : 'Like'}</span>
+            <span>Like</span>
           </button>
           <button className="action-btn comment text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
             <svg
