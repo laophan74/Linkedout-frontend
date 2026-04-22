@@ -1,109 +1,129 @@
-.connection-preview {
-  background-color: white;
-  margin: 3px;
-  list-style-type: none;
+.network-profile-card {
+  list-style: none;
   border-radius: 10px;
-  min-height: 100px;
   border: 1px solid $border;
-  height: 275px;
-  width: 235px;
-  position: relative;
-  transition: box-shadow 0.2s;
-
-  &:hover {
-    box-shadow: 0 0 0 1px rgb(0 0 0 / 15%), 0 4px 6px rgb(0 0 0 / 20%);
-  }
+  min-height: 240px;
+  background-color: white;
+  overflow: hidden;
 
   .bg {
-    // background-color: lightblue;
-    background: url('../../imgs/bg.svg');
-    height: 20%;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    position: relative;
+    background-color: #a0b4b7;
+    height: 70px;
 
-    .img-profile {
-      border-radius: 50%;
-      width: 72px;
-      height: 72px;
-      position: absolute;
-      top: 10%;
-      left: 5%;
-      transform: translate(0, 10%);
-      object-fit: cover;
+    .profile-container {
+      display: flex;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+
+      .img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+        transform: translate(0, 50%);
+        background-color: lemonchiffon;
+      }
     }
   }
-  .fullname {
-    padding: 0 10px;
-    margin: 35px 0 0 0;
+
+  .profile-name {
+    margin: 55px 0 0 0;
+    padding: 0 10px 24px 10px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid $border;
+
+    h1 {
+      font-size: 24px;
+      text-align: center;
+      color: #111827;
+      margin: 0;
+    }
+
+    .professional {
+      color: #6b7280;
+      text-align: center;
+      margin-top: 4px;
+    }
+  }
+
+  .views {
+    padding: 5px 10px;
+    border-bottom: 1px solid $border;
+
     p {
-      padding-top: 5px;
-    }
-  }
-  .profession {
-    padding: 0 10px;
-  }
-
-  .followers-count {
-    position: absolute;
-    padding: 0 10px;
-    bottom: 65px;
-    p {
+      color: #6b7280;
+      margin: 0;
+      text-align: center;
     }
   }
 
-  .btn-container {
-    position: absolute;
-    padding: 0 10px;
-    bottom: 15px;
-    width: 100%;
+  .my-items {
+    padding: 5px 10px;
 
     button {
       width: 100%;
-      border-radius: 35px;
-      padding: 7px 5px;
-      background-color: white;
-      color: #0a66c2;
-      border: 1px solid #0a66c2;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      border: 0;
+      background: transparent;
+      color: #6b7280;
+
+      p {
+        margin-right: 5px;
+      }
 
       &:hover {
-        background-color: #70b5f933;
+        background-color: #f3f4f6;
+      }
+
+      &:disabled {
+        cursor: default;
+        opacity: 0.85;
       }
     }
   }
 }
 
-@media (max-width: 1150px) {
-  .connection-preview {
-    min-height: 210px;
-    width: 40%;
-    // width: 180px;
+body.theme-dark .network-profile-card {
+  background-color: #161b22;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #e6edf3;
+
+  .profile-name {
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+
+    h1 {
+      color: #e6edf3;
+    }
+
+    .professional {
+      color: #9aa4b2;
+    }
+  }
+
+  .views {
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+
+    p {
+      color: #9aa4b2;
+    }
+  }
+
+  .my-items button {
+    color: #9aa4b2;
 
     &:hover {
-    }
-
-    .bg {
-      .img-profile {
-      }
-    }
-    .fullname {
-      a {
-        margin-left: 15px;
-      }
-    }
-    .profession {
-    }
-
-    .followers-count {
-      p {
-      }
-    }
-
-    .btn-container {
-      button {
-        &:hover {
-        }
-      }
+      background-color: #223044;
+      color: #e6edf3;
     }
   }
 }

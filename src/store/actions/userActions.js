@@ -106,6 +106,34 @@ export function updateUser(user) {
   };
 }
 
+export function connectToUser(userId) {
+  return async (dispatch) => {
+    try {
+      await userService.connectUser(userId);
+      const refreshedLoggedInUser = await userService.getProfile();
+      dispatch({ type: "UPDATE_LOGGED_IN_USER", user: refreshedLoggedInUser });
+      return refreshedLoggedInUser;
+    } catch (err) {
+      console.log("cannot connect to user:", err);
+      throw err;
+    }
+  };
+}
+
+export function disconnectFromUser(userId) {
+  return async (dispatch) => {
+    try {
+      await userService.disconnectUser(userId);
+      const refreshedLoggedInUser = await userService.getProfile();
+      dispatch({ type: "UPDATE_LOGGED_IN_USER", user: refreshedLoggedInUser });
+      return refreshedLoggedInUser;
+    } catch (err) {
+      console.log("cannot disconnect from user:", err);
+      throw err;
+    }
+  };
+}
+
 export function removeUser(userId) {
   return async (dispatch) => {
     try {

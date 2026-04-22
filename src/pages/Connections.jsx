@@ -1,46 +1,64 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
-
 import { MyConnectionPreview } from '../cmps/connections/MyConnectionPreview'
+import { userService } from '../services/user/userService'
+import loadingGif from '../assets/imgs/loading-gif.gif'
 
 function Connections() {
-  const [connections, setConnections] = useState(null)
-  const [field, setField] = useState({ fullname: '' })
+  const [connections, setConnections] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const { loggedInUser } = useSelector((state) => state.userModule)
 
-  const handleChange = async ({ target }) => {
-    const field = target.name
-    let value = target.type === 'number' ? +target.value || '' : target.value
-    setField({ [field]: value })
-    setFilter(value)
-  }
-
   useEffect(() => {
-    if (loggedInUser?.connections) {
-      setConnections([...loggedInUser?.connections])
-    }
-  }, [loggedInUser])
+    const loadConnections = async () => {
+      if (!loggedInUser?._id) return
 
-  const setFilter = (txt) => {
-    const regex = new RegExp(txt, 'i')
-    const filteredCnnections = [...loggedInUser?.connections].filter(
-      (connection) => {
-        return regex.test(connection.fullname)
+      try {
+        setIsLoading(true)
+        const loadedConnections = await userService.getConnections(loggedInUser._id)
+        setConnections(Array.isArray(loadedConnections) ? loadedConnections : [])
+      } catch (err) {
+        console.error('Failed to load connections:', err)
+        setConnections([])
+      } finally {
+        setIsLoading(false)
       }
-    )
-    setConnections(filteredCnnections)
-  }
+    }
 
-  if (!loggedInUser) return
+    loadConnections()
+  }, [loggedInUser?._id])
+
+  const filteredConnections = useMemo(() => {
+    const normalizedTerm = searchTerm.trim().toLowerCase()
+    if (!normalizedTerm) return connections
+
+    return connections.filter((connection) =>
+      connection?.fullname?.toLowerCase().includes(normalizedTerm)
+    )
+  }, [connections, searchTerm])
+
+  if (!loggedInUser) return null
+
+  if (isLoading) {
+    return (
+      <section className="connections-page">
+        <div className="connections-loading">
+          <img className="loading-gif" src={loadingGif} alt="Loading connections..." />
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="connections-page">
       <div className="left main">
         <div className="container">
           <div className="count">
-            <h3>{loggedInUser.connections?.length} Connections</h3>
+            <h3>{connections.length} Connections</h3>
+            <p>Stay in touch with the people already in your network.</p>
           </div>
 
           <div className="filter-container">
@@ -48,10 +66,8 @@ function Connections() {
               <FontAwesomeIcon className="search-icon" icon="fas fa-search" />
               <input
                 type="text"
-                onChange={handleChange}
-                id="fullname"
-                name="fullname"
-                value={field.fullname}
+                onChange={(ev) => setSearchTerm(ev.target.value)}
+                value={searchTerm}
                 placeholder="Search by name"
                 className="connections-input"
               />
@@ -59,9 +75,20 @@ function Connections() {
           </div>
 
           <div className="my-connection-list">
-            {connections?.map((connection) => (
+            {!filteredConnections.length && (
+              <div className="connections-empty">
+                <h4>No connections found</h4>
+                <p>
+                  {searchTerm
+                    ? 'Try a different name or clear the search.'
+                    : 'Connect with people from My Network to see them here.'}
+                </p>
+              </div>
+            )}
+
+            {filteredConnections.map((connection) => (
               <MyConnectionPreview
-                key={connection.userId}
+                key={connection._id}
                 connection={connection}
               />
             ))}
@@ -70,7 +97,13 @@ function Connections() {
       </div>
 
       <div className="right aside">
-        <div></div>
+        <div className="connections-aside-card">
+          <h4>Grow your network</h4>
+          <p>
+            Search through your existing connections, start conversations, and
+            keep your professional circle active.
+          </p>
+        </div>
       </div>
     </section>
   )

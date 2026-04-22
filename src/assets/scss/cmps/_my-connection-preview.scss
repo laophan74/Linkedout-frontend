@@ -1,94 +1,155 @@
 .my-connection-preview {
-  background-color: white;
+  padding: 10px 14px;
   border-bottom: 1px solid $border;
 
-  .container {
-    width: 100%;
-    padding: 10px 10px 10px 30px;
+  .connection-card {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 112px;
+    padding: 14px;
+    border-radius: 14px;
+    background: white;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
+  }
 
-    .img-profile {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 15%;
+  .avatar-shell {
+    flex: 0 0 56px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+    background: linear-gradient(90deg, #f9c97c 0%, #a2e9c1 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition:
+      transform 0.25s ease,
+      background 0.25s ease;
 
-      .img {
-        width: 72px;
-        height: 72px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
+    &:hover {
+      transform: scale(1.08);
+      background: linear-gradient(90deg, #c9a9e9 0%, #7ee7fc 100%);
     }
+  }
 
-    .fullname {
-      width: 65%;
+  .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-      display: flex;
-      flex-direction: column;
-    }
+  .content-shell {
+    flex: 1;
+    min-width: 0;
+    margin-left: 14px;
+    padding-left: 14px;
+    border-left: 1px solid #d1d5db;
+  }
 
-    .btns {
-      width: 30%;
+  .text-block {
+    min-width: 0;
+  }
 
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
+  .name-link {
+    text-decoration: none;
+  }
 
-      button {
-        color: #0a66c2;
-        border: unset;
-        background-color: white;
-        border-radius: 30px;
-        width: 50%;
-        padding: 5px 7px;
-        border: 1px solid #0a66c2;
-        width: 70%;
+  h3 {
+    margin: 0;
+    color: #111827;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
 
-        &:hover {
-          background-color: #70b5f933;
-        }
-      }
+  h4 {
+    margin: 0.2rem 0 0;
+    font-size: 0.92rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #6b7280;
+  }
 
-      .dots-icon {
-        font-size: 30px;
-      }
+  .action-shell {
+    margin-left: 16px;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+
+  .message-btn {
+    color: #0a66c2;
+    border: 1px solid #0a66c2;
+    background-color: white;
+    border-radius: 30px;
+    padding: 8px 16px;
+    min-width: 96px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      background-color: #70b5f933;
     }
   }
 }
 
-@media (max-width: 870px) {
+body.theme-dark .my-connection-preview {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+
+  .connection-card {
+    background: #161b22;
+    box-shadow: 0 14px 28px rgba(2, 6, 23, 0.25);
+  }
+
+  .content-shell {
+    border-left-color: rgba(255, 255, 255, 0.12);
+  }
+
+  h3 {
+    color: #e6edf3;
+  }
+
+  h4 {
+    color: #9aa4b2;
+  }
+
+  .message-btn {
+    background-color: transparent;
+    color: #7ee7fc;
+    border-color: #7ee7fc;
+
+    &:hover {
+      background-color: #223044;
+      color: #e6edf3;
+    }
+  }
+}
+
+@media (max-width: 700px) {
   .my-connection-preview {
-    .container {
-      .img-profile {
-        width: 10%;
-        .img {
-          width: 32px;
-          height: 32px;
-        }
-      }
+    padding: 8px 10px;
 
-      .fullname {
-        width: 60%;
-        a {
-          margin-left: 15px;
-        }
-      }
+    .connection-card {
+      padding: 12px;
+      min-height: 104px;
+    }
 
-      .btns {
-        width: 40%;
-        button {
-          padding: 3px;
-          font-size: 14px;
-          &:hover {
-          }
-        }
+    .content-shell {
+      margin-left: 12px;
+      padding-left: 12px;
+    }
 
-        .dots-icon {
-          font-size: 25px;
-        }
-      }
+    .action-shell {
+      margin-left: 12px;
+    }
+
+    .message-btn {
+      min-width: 84px;
+      padding: 7px 12px;
     }
   }
 }

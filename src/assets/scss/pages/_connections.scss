@@ -1,9 +1,8 @@
 .connections-page {
   padding-top: 60px;
   min-height: 100vh;
-
   display: grid;
-  grid-template-columns: minmax(0, 17fr) minmax(300px, 7fr);
+  grid-template-columns: minmax(0, 17fr) minmax(260px, 7fr);
   grid-template-areas: 'main aside';
   column-gap: 2.4rem;
   row-gap: 2.4rem;
@@ -14,49 +13,58 @@
     .container {
       background-color: white;
       border-radius: 10px;
-      padding: 5px;
+      padding: 0;
+      border: 1px solid $border;
+      overflow: hidden;
+
       .count {
-        padding: 1.2rem 20px 0.4rem;
+        padding: 1.2rem 20px 0.6rem;
+
+        h3 {
+          margin: 0;
+        }
+
         p {
+          margin: 0.35rem 0 0;
+          color: #6b7280;
         }
       }
 
       .filter-container {
         display: flex;
         justify-content: space-evenly;
-        padding: 1.2rem 20px 0.4rem;
+        padding: 0.8rem 20px 1rem;
         border-bottom: 1px solid $border;
 
         .search {
           position: relative;
+          width: 100%;
+          max-width: 360px;
 
           .search-icon {
             position: absolute;
-            transform: translate(50%, 50%);
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
             color: #666666;
           }
 
           .connections-input {
-            width: 230px;
-            border-radius: 5px;
-            border: n1px solid $border;
-            background-color: #e4e4e498;
-            padding: 0 0.8rem 0 40px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid $border;
+            background-color: #f3f4f6;
+            padding: 0 0.9rem 0 40px;
             line-height: 1.75;
             font-weight: 400;
             font-size: 14px;
-            height: 34px;
-
-            transition: width 0.3s;
-
-            &:focus {
-              // width: 380px;
-            }
+            height: 40px;
           }
         }
       }
 
       .my-connection-list {
+        min-height: 160px;
       }
     }
   }
@@ -64,11 +72,42 @@
   .right {
     grid-area: aside;
 
-    div {
-      height: 400px;
+    .connections-aside-card {
       background-color: white;
       border-radius: 10px;
+      border: 1px solid $border;
+      padding: 1.2rem;
+
+      h4 {
+        margin: 0 0 0.5rem;
+      }
+
+      p {
+        margin: 0;
+        color: #6b7280;
+        line-height: 1.5;
+      }
     }
+  }
+}
+
+.connections-loading,
+.connections-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 220px;
+  text-align: center;
+  padding: 1.5rem;
+
+  h4 {
+    margin: 0 0 0.4rem;
+  }
+
+  p {
+    margin: 0;
+    color: #6b7280;
   }
 }
 
@@ -76,35 +115,9 @@
   .connections-page {
     grid-template-columns: minmax(0, 1fr);
     column-gap: 0;
-    .left {
-      .container {
-        .count {
-          p {
-          }
-        }
-
-        .filter-container {
-          padding-bottom: 25px;
-          .search {
-            .search-icon {
-            }
-
-            .connections-input {
-              &:focus {
-              }
-            }
-          }
-        }
-
-        .my-connection-list {
-        }
-      }
-    }
 
     .right {
       display: none;
-      div {
-      }
     }
   }
 }

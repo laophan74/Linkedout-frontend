@@ -48,6 +48,8 @@
 @import 'cmps/community-panel';
 @import 'cmps/create-post-modal';
 @import 'cmps/connection-list';
+@import 'cmps/connection-preview';
+@import 'cmps/my-connection-preview';
 @import 'cmps/like-preview';
 @import 'cmps/like-list';
 @import 'cmps/reply-list';
@@ -148,6 +150,7 @@ body.theme-dark .add-post,
 body.theme-dark .community-panel,
 body.theme-dark .feed-identity-module,
 body.theme-dark .connection-preview,
+body.theme-dark .network-profile-card,
 body.theme-dark .my-connection-preview,
 body.theme-dark .messaging .container,
 body.theme-dark .messaging .list-msg,

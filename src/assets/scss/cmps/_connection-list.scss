@@ -1,15 +1,46 @@
 .connection-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.2rem;
-  margin: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 0;
   padding: 0;
+  list-style: none;
 }
 
-@media (max-width: 1150px) {
+.connection-list-empty {
+  margin-top: 1rem;
+  padding: 2.5rem 1.25rem;
+  border: 1px dashed #c8d1dc;
+  border-radius: 16px;
+  text-align: center;
+  background: #fafcff;
+
+  h3 {
+    margin: 0 0 0.45rem;
+    color: #1f2937;
+    font-size: 1.05rem;
+  }
+
+  p {
+    margin: 0;
+    color: #6b7280;
+  }
+}
+
+@media (max-width: 1250px) {
   .connection-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .connection-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .connection-list {
+    grid-template-columns: 1fr;
   }
 }
