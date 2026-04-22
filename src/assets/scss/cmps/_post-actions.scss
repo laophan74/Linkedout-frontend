@@ -1,52 +1,89 @@
-.post-actions {
+/* Post Actions - Circular Button Style */
+.button-container {
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-around;
-  margin-bottom: 5px;
+  gap: 1.5rem;
+  padding: 10px 0;
+}
 
-  button {
-    // background-color: white; // Removed - now handled by Tailwind classes (transparent, inherits from parent)
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    color: #b2b2b2;
-    padding: 10px;
-    border-radius: 5px;
+.button {
+  cursor: pointer;
+  text-decoration: none;
+  color: #4b5563;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  border: 2px solid #e5e7eb;
+  transition: all 0.45s ease-in-out;
+  flex-shrink: 0;
 
-    &:hover {
-      background-color: #00000014;
-      color: #000000e6;
-    }
+  &:hover {
+    transform: rotate(360deg);
+    transform-origin: center center;
+    background-color: #ffffff;
+    color: #2d2e32;
 
-    &.liked {
-      color: #378fe9;
-    }
-
-    .icon {
-      width: 30px;
-      height: 30px;
-      margin-right: 5px;
+    .btn-svg {
+      filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(305deg)
+        brightness(103%) contrast(103%);
     }
   }
+
+  .btn-svg {
+    width: 22px;
+    height: 22px;
+    transition: filter 0.45s ease-in-out;
+    stroke: #4b5563;
+  }
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (max-width: 460px) {
-  .post-actions {
-    button {
-      svg {
-      }
-      span {
-        display: none;
-      }
-      &:hover {
-      }
+  .button-container {
+    gap: 1rem;
+  }
 
-      &.liked {
-      }
+  .button {
+    width: 36px;
+    height: 36px;
 
-      .icon {
-      }
+    .btn-svg {
+      width: 20px;
+      height: 20px;
     }
   }
 }
+
+/* Dark Mode */
+body.theme-dark {
+  .button {
+    background-color: #2d2e32;
+    border-color: #2d2e32;
+    color: #ffffff;
+
+    .btn-svg {
+      stroke: #ffffff;
+    }
+
+    &:hover {
+      background-color: #ffffff;
+      color: #2d2e32;
+
+      .btn-svg {
+        stroke: #2d2e32;
+      }
+    }
+
+    &.liked svg path {
+      fill: #dc2626;
+    }
+  }
+}
+

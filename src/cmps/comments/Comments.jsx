@@ -9,25 +9,28 @@ import { utilService } from '../../services/utilService'
 export const Comments = ({ postId, comments: initialComments, userPostId }) => {
   const dispatch = useDispatch()
   const { loggedInUser } = useSelector((state) => state.userModule)
-  const [comments, setComments] = useState(initialComments || [])
+  const post = useSelector((state) => state.postModule.posts.find(p => p._id === postId))
+  const comments = post ? post.comments || [] : initialComments || []
+  const [optimisticComments, setOptimisticComments] = useState([])
   const previousPostId = useRef(postId)
 
+  // Reset optimistic comments when postId changes
   useEffect(() => {
     if (previousPostId.current !== postId) {
-      setComments(initialComments || [])
+      setOptimisticComments([])
       previousPostId.current = postId
     }
-  }, [postId, initialComments])
+  }, [postId])
 
-  useEffect(() => {
-    setComments((prevComments) => {
-      const hasTempComment = (prevComments || []).some(
-        (c) => typeof c._id === 'string' && c._id.startsWith('temp_')
-      )
-      if (hasTempComment) return prevComments
-      return initialComments || []
-    })
-  }, [initialComments])
+  // Combine store comments with optimistic comments
+  const allComments = [...comments, ...optimisticComments]
+
+  // Sort comments by createdAt in descending order (newest first)
+  const sortedComments = [...allComments].sort((a, b) => {
+    const dateA = new Date(a.createdAt || 0).getTime()
+    const dateB = new Date(b.createdAt || 0).getTime()
+    return dateB - dateA
+  })
 
   const onSaveComment = async (comment) => {
     // Create optimistic comment with temporary ID
@@ -41,19 +44,15 @@ export const Comments = ({ postId, comments: initialComments, userPostId }) => {
       replies: [],
     }
 
-    // Add to local state immediately (optimistic update)
-    setComments((prevComments) => [...(prevComments || []), optimisticComment])
+    // Add to optimistic state immediately (optimistic update)
+    setOptimisticComments((prev) => [...prev, optimisticComment])
 
     // Submit to server in background
     const commentToSave = { ...comment, postId }
     dispatch(saveComment(commentToSave)).then((savedComment) => {
       if (savedComment) {
-        // Replace temporary comment with real comment from server
-        setComments((prevComments) =>
-          prevComments.map((c) =>
-            c._id === tempId ? savedComment : c
-          )
-        )
+        // Remove optimistic comment since Redux store is updated
+        setOptimisticComments((prev) => prev.filter((c) => c._id !== tempId))
 
         // Create activity
         const newActivity = {
@@ -70,21 +69,17 @@ export const Comments = ({ postId, comments: initialComments, userPostId }) => {
     }).catch((err) => {
       // On error, remove the optimistic comment
       console.error('Error saving comment:', err)
-      setComments((prevComments) =>
-        prevComments.filter((c) => c._id !== tempId)
-      )
+      setOptimisticComments((prev) => prev.filter((c) => c._id !== tempId))
     })
   }
 
-  if (!comments) return <div>Loading</div>
-  
   return (
     <section className="comments bg-white dark:bg-[#111827] py-8 lg:py-16 antialiased">
       <div className="max-w-2xl mx-auto px-4">
         {/* Comments Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
-            Comments ({comments?.length || 0})
+            Comments ({allComments.length})
           </h2>
         </div>
 
@@ -94,7 +89,7 @@ export const Comments = ({ postId, comments: initialComments, userPostId }) => {
         {/* Comments List */}
         <CommentsList
           postId={postId}
-          comments={comments}
+          comments={sortedComments}
           onSaveComment={onSaveComment}
         />
       </div>
