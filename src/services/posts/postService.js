@@ -66,7 +66,10 @@ async function query(filterBy = {}) {
 }
 
 async function getPostsLength(filterBy = {}) {
-  const posts = await httpService.get(ENDPOINTS.POST_LIST)
+  const filterWithoutPagination = { ...filterBy }
+  delete filterWithoutPagination.page
+  delete filterWithoutPagination.limit
+  const posts = await httpService.get(ENDPOINTS.POST_LIST, filterWithoutPagination)
   return posts.length
 }
 

@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Posts } from '../cmps/posts/Posts'
 import { RightSideBar } from '../cmps/RightSideBar'
 import { LeftSideBar } from '../cmps/LeftSideBar'
-import { setCurrPage, setNextPage } from '../store/actions/postActions'
+import {
+  setCurrPage,
+  setNextPage,
+  setFilterByPosts,
+} from '../store/actions/postActions'
 import loadongGif from '../assets/imgs/loading-gif.gif'
 
 const Feed = () => {
@@ -12,7 +16,13 @@ const Feed = () => {
 
   useEffect(() => {
     dispatch(setCurrPage('home'))
-    dispatch(setNextPage(1))
+    dispatch(setFilterByPosts({ page: 1, limit: 5 }))
+    dispatch(setNextPage(2))
+
+    return () => {
+      dispatch(setFilterByPosts({}))
+      dispatch(setNextPage(1))
+    }
   }, [dispatch])
 
   if (!loggedInUser)

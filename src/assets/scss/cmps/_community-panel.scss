@@ -1,23 +1,89 @@
 .community-panel {
-  // background-color: white; // Removed - now handled by Tailwind classes
-  min-height: 300px;
-  border-radius: 10px;
-  margin: 10px 0;
   position: sticky;
   top: 76px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
 
-  div {
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+  .community-card {
+    border: 1px solid $border;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  .network-card {
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #fafafa;
+    }
+  }
+
+  .network-copy {
+    h3 {
+      margin: 0 0 2px;
+      font-size: 0.98rem;
+      font-weight: 500;
+      color: #191919;
+      line-height: 1.35;
     }
 
     p {
-      text-align: center;
+      margin: 0;
+      color: #8c8c8c;
+      font-size: 0.88rem;
+      line-height: 1.35;
     }
+  }
+
+  .network-count {
+    color: #0a66c2;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .quick-links-card {
+    padding: 10px 0;
+  }
+
+  .quick-link {
+    width: 100%;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 0;
+    background: transparent;
+    color: #191919;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f3f2ef;
+    }
+  }
+
+  .quick-link-icon {
+    width: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+  }
+
+  .quick-link-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #1f1f1f;
   }
 }

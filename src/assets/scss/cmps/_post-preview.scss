@@ -1,10 +1,8 @@
 .post-preview {
   border: 2px solid $border;
   min-height: 100px;
-  // background-color: white; // Removed - now handled by Tailwind classes
   border-radius: 10px;
   width: 100%;
-  // width: 60%;
   color: $clr4;
   margin: 15px 0;
   padding: 0 0 5px 0;
@@ -17,6 +15,7 @@
   .menu {
     position: relative;
     cursor: pointer;
+
     .dots-icon {
       position: absolute;
       padding: 10px;
@@ -24,5 +23,54 @@
       top: 0;
       font-size: 25px;
     }
+  }
+
+  .post-content-skeleton,
+  .post-social-skeleton {
+    padding: 8px 15px 12px;
+  }
+
+  .post-social-skeleton {
+    display: flex;
+    gap: 10px;
+  }
+
+  .skeleton-line,
+  .skeleton-pill {
+    display: block;
+    background: linear-gradient(90deg, #ececec 25%, #f5f5f5 50%, #ececec 75%);
+    background-size: 200% 100%;
+    animation: feed-skeleton 1.2s ease-in-out infinite;
+  }
+
+  .skeleton-line {
+    height: 12px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+
+  .skeleton-line-long {
+    width: 88%;
+  }
+
+  .skeleton-line-medium {
+    width: 62%;
+    margin-bottom: 0;
+  }
+
+  .skeleton-pill {
+    width: 96px;
+    height: 14px;
+    border-radius: 999px;
+  }
+}
+
+@keyframes feed-skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
   }
 }

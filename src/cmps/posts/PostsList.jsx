@@ -1,73 +1,137 @@
 import { PostPreview } from './post-preview/PostPreview'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import loadingGif from '../../assets/imgs/loading-gif.gif'
-import { useParams } from 'react-router-dom'
-import {
-  addPosts,
-  addFilterByPosts,
-  setNextPage,
-} from '../../store/actions/postActions'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { addPosts, setNextPage } from '../../store/actions/postActions'
+
+const INITIAL_VISIBLE_POSTS = 1
+const PAGE_BATCH_SIZE = 5
 
 export const PostsList = () => {
   const dispatch = useDispatch()
-  const params = useParams()
-  const { posts } = useSelector((state) => state.postModule)
-  const { pageNumber } = useSelector((state) => state.postModule)
-  const { isPostsLoading } = useSelector((state) => state.postModule)
-  const { postsLength } = useSelector((state) => state.postModule)
+  const [visibleCount, setVisibleCount] = useState(0)
+  const initialBatchTimeoutRef = useRef(null)
+  const prevPostsLengthRef = useRef(0)
 
-  const onLoadNextPage = () => {
-    const filterBy = {
-      pageNumber,
+  const { posts, pageNumber, isPostsLoading, postsLength, currPage } = useSelector(
+    (state) => state.postModule
+  )
+
+  const isFeedPage = currPage === 'home'
+  const visiblePosts = isFeedPage ? posts.slice(0, visibleCount) : posts
+
+  const onLoadNextPage = useCallback(() => {
+    if (!isFeedPage) return
+    if (isPostsLoading) return
+
+    if (visibleCount < posts.length) {
+      setVisibleCount((currentVisibleCount) =>
+        Math.min(currentVisibleCount + PAGE_BATCH_SIZE, posts.length)
+      )
+      return
     }
-    if (params.userId) filterBy.userId = params.userId
-    if (!postsLength && !posts) return
+
+    if (!postsLength && !posts?.length) return
     if (postsLength === posts?.length) return
-    dispatch(addFilterByPosts(filterBy))
+
     dispatch(addPosts())
     dispatch(setNextPage())
-  }
-
-  const handleScroll = () => {
-    if (posts?.length >= postsLength) return
-    if (
-      window.scrollY + window.innerHeight + 0.9 >=
-      document.documentElement.scrollHeight
-    ) {
-      onLoadNextPage()
-    }
-  }
+  }, [dispatch, isFeedPage, isPostsLoading, posts.length, postsLength, visibleCount])
 
   useEffect(() => {
+    if (!isFeedPage) {
+      setVisibleCount(posts.length)
+      prevPostsLengthRef.current = posts.length
+      return
+    }
+
+    if (initialBatchTimeoutRef.current) {
+      clearTimeout(initialBatchTimeoutRef.current)
+      initialBatchTimeoutRef.current = null
+    }
+
+    if (!posts.length) {
+      setVisibleCount(0)
+      prevPostsLengthRef.current = 0
+      return
+    }
+
+    const prevLength = prevPostsLengthRef.current
+    const hasNewBatch = posts.length > prevLength
+
+    if (prevLength === 0) {
+      setVisibleCount(INITIAL_VISIBLE_POSTS)
+      initialBatchTimeoutRef.current = setTimeout(() => {
+        setVisibleCount(Math.min(PAGE_BATCH_SIZE, posts.length))
+      }, 220)
+    } else if (hasNewBatch) {
+      setVisibleCount(posts.length)
+    } else {
+      setVisibleCount((currentVisibleCount) =>
+        Math.min(currentVisibleCount || PAGE_BATCH_SIZE, posts.length)
+      )
+    }
+
+    prevPostsLengthRef.current = posts.length
+
+    return () => {
+      if (initialBatchTimeoutRef.current) {
+        clearTimeout(initialBatchTimeoutRef.current)
+        initialBatchTimeoutRef.current = null
+      }
+    }
+  }, [isFeedPage, posts])
+
+  useEffect(() => {
+    if (!isFeedPage) return
+
+    const handleScroll = () => {
+      if (isPostsLoading) return
+      if (visibleCount >= postsLength && visibleCount >= posts.length) return
+
+      if (
+        window.scrollY + window.innerHeight + 160 >=
+        document.documentElement.scrollHeight
+      ) {
+        onLoadNextPage()
+      }
+    }
+
     window.addEventListener('scroll', handleScroll)
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [postsLength])
+  }, [isFeedPage, isPostsLoading, onLoadNextPage, pageNumber, posts?.length, postsLength, visibleCount])
 
   return (
     <section className="posts-list">
-      {posts.map((post,idx) => (
-        <PostPreview key={post._id+idx} post={post} />
+      {!posts.length && isPostsLoading && (
+        <div className="posts-list-loader">
+          <img className="loading-gif" src={loadingGif} alt="Loading posts" />
+        </div>
+      )}
+
+      {visiblePosts.map((post, idx) => (
+        <PostPreview
+          key={post._id + idx}
+          post={post}
+          loadPriority={idx === 0 ? 'primary' : 'secondary'}
+        />
       ))}
-      <div onClick={onLoadNextPage} className="load-more">
-        {!isPostsLoading && posts?.length < postsLength && (
-          <p className="load-btn">
-            <span>
-              <FontAwesomeIcon icon="fa-solid fa-caret-down" />
-            </span>
-          </p>
-        )}
-        {isPostsLoading && posts?.length < postsLength && (
+
+      {!!posts.length && isPostsLoading && posts?.length < postsLength && (
+        <div className="load-more">
           <span className="gif-container">
-            <img className="loading-gif" src={loadingGif} alt="" />
+            <img className="loading-gif" src={loadingGif} alt="Loading more posts" />
           </span>
-        )}
-        {posts?.length === postsLength &&  <p >No more posts</p>}
-      </div>
+        </div>
+      )}
+
+      {!!posts.length && posts?.length === postsLength && (
+        <div className="load-more">
+          <p>No more posts</p>
+        </div>
+      )}
     </section>
   )
 }

@@ -12,15 +12,19 @@ import { removePost, likePost } from '../../../store/actions/postActions'
 import { saveActivity } from '../../../store/actions/activityAction'
 import { ImgPreview } from '../../profile/ImgPreview'
 
-export const PostPreview = ({ post }) => {
+export const PostPreview = ({ post, loadPriority = 'secondary' }) => {
   const dispatch = useDispatch()
 
-  const [userPost, setUserPost] = useState(null)
+  const [userPost, setUserPost] = useState(
+    typeof post?.createdBy === 'object' ? post.createdBy : null
+  )
   const [isShowMenu, setIsShowMenu] = useState(false)
   const [isShowImgPreview, setIsShowImgPreview] = useState(false)
   const [isLiked, setIsLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(0)
   const [currentPost, setCurrentPost] = useState(post)
+  const [isBodyReady, setIsBodyReady] = useState(false)
+  const [isSocialReady, setIsSocialReady] = useState(false)
 
   const { loggedInUser } = useSelector((state) => state.userModule)
 
@@ -31,9 +35,27 @@ export const PostPreview = ({ post }) => {
   }
 
   useEffect(() => {
-    if (!post || !loggedInUser) return
+    let isMounted = true
 
-    loadUserPost(post.userId)
+    const loadPostUser = async () => {
+      const postUserFromPost =
+        typeof post?.createdBy === 'object' ? post.createdBy : null
+
+      if (postUserFromPost) {
+        setUserPost(postUserFromPost)
+        return
+      }
+
+      if (!post?.userId) return
+
+      const loadedUserPost = await userService.getById(post.userId)
+      if (isMounted) setUserPost(loadedUserPost)
+    }
+
+    if (!post || !loggedInUser) return undefined
+
+    setUserPost(typeof post?.createdBy === 'object' ? post.createdBy : null)
+    loadPostUser()
 
     const userHasLiked = (post.reactions || post.likes || []).some(
       (reaction) => getReactionUserId(reaction) === loggedInUser._id
@@ -41,8 +63,29 @@ export const PostPreview = ({ post }) => {
     setIsLiked(userHasLiked)
     setLikeCount((post.reactions || post.likes || []).length)
     setCurrentPost(post)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    return () => {
+      isMounted = false
+    }
   }, [loggedInUser, post])
+
+  useEffect(() => {
+    setIsBodyReady(false)
+    setIsSocialReady(false)
+
+    if (!userPost) return undefined
+
+    const bodyDelay = loadPriority === 'primary' ? 80 : 130
+    const socialDelay = loadPriority === 'primary' ? 160 : 240
+
+    const bodyTimeout = setTimeout(() => setIsBodyReady(true), bodyDelay)
+    const socialTimeout = setTimeout(() => setIsSocialReady(true), socialDelay)
+
+    return () => {
+      clearTimeout(bodyTimeout)
+      clearTimeout(socialTimeout)
+    }
+  }, [loadPriority, post._id, userPost])
 
   const toggleMenu = () => {
     setIsShowMenu((prevVal) => !prevVal)
@@ -50,12 +93,6 @@ export const PostPreview = ({ post }) => {
 
   const toggleShowImgPreview = () => {
     setIsShowImgPreview((prev) => !prev)
-  }
-
-  const loadUserPost = async (id) => {
-    if (!post) return
-    const userPost = await userService.getById(id)
-    setUserPost(() => userPost)
   }
 
   const onSharePost = async () => {
@@ -75,14 +112,12 @@ export const PostPreview = ({ post }) => {
   const onLikePost = () => {
     if (!loggedInUser) return
 
-    // Optimistic update
     const newIsLiked = !isLiked
     const newLikeCount = newIsLiked ? likeCount + 1 : likeCount - 1
 
     setIsLiked(newIsLiked)
     setLikeCount(newLikeCount)
 
-    // Send to backend
     const newReactions = newIsLiked
       ? [...(currentPost.reactions || currentPost.likes || []), loggedInUser._id]
       : (currentPost.reactions || currentPost.likes || []).filter(
@@ -92,36 +127,36 @@ export const PostPreview = ({ post }) => {
     const optimisticPost = {
       ...currentPost,
       reactions: newReactions,
-      likes: newReactions, // Keep likes for backend compatibility
+      likes: newReactions,
     }
     setCurrentPost(optimisticPost)
 
-    dispatch(likePost(post._id)).then((savedPost) => {
-      if (savedPost?._id === post._id) {
-        // Update with server response
-        const serverUserHasLiked = (savedPost.reactions || savedPost.likes || []).some(
-          (reaction) => getReactionUserId(reaction) === loggedInUser._id
-        )
-        const serverLikeCount = (savedPost.reactions || savedPost.likes || []).length
+    dispatch(likePost(post._id))
+      .then((savedPost) => {
+        if (savedPost?._id === post._id) {
+          const serverUserHasLiked = (savedPost.reactions || savedPost.likes || []).some(
+            (reaction) => getReactionUserId(reaction) === loggedInUser._id
+          )
+          const serverLikeCount = (savedPost.reactions || savedPost.likes || []).length
 
-        setIsLiked(serverUserHasLiked)
-        setLikeCount(serverLikeCount)
-        setCurrentPost(savedPost)
+          setIsLiked(serverUserHasLiked)
+          setLikeCount(serverLikeCount)
+          setCurrentPost(savedPost)
 
-        const newActivity = {
-          type: newIsLiked ? 'add-like' : 'remove-like',
-          createdBy: loggedInUser._id,
-          createdTo: post.userId,
-          postId: post._id,
+          const newActivity = {
+            type: newIsLiked ? 'add-like' : 'remove-like',
+            createdBy: loggedInUser._id,
+            createdTo: post.userId,
+            postId: post._id,
+          }
+          dispatch(saveActivity(newActivity))
         }
-        dispatch(saveActivity(newActivity))
-      }
-    }).catch((err) => {
-      // Revert optimistic update on error
-      console.error('Error saving like:', err)
-      setIsLiked(!newIsLiked)
-      setLikeCount(likeCount)
-    })
+      })
+      .catch((err) => {
+        console.error('Error saving like:', err)
+        setIsLiked(!newIsLiked)
+        setLikeCount(likeCount)
+      })
   }
 
   const onRemovePost = () => {
@@ -130,9 +165,7 @@ export const PostPreview = ({ post }) => {
 
   function copyToClipBoard() {
     const postUrl = `https://linkedout-frontend-laophan74.vercel.app/#/main/post/${post.userId}/${post._id}`
-    /* Copy the text inside the text field */
     navigator.clipboard.writeText(postUrl)
-    // alert('Copied the text: ' + postUrl)
   }
 
   return (
@@ -141,26 +174,41 @@ export const PostPreview = ({ post }) => {
         <FontAwesomeIcon className="dots-icon text-gray-500" icon="fa-solid fa-ellipsis" />
       </div>
       <PostHeader post={post} userPost={userPost} />
-      <PostBody
-        body={post.body}
-        imgUrl={post.imgBodyUrl}
-        videoUrl={post.videoBodyUrl}
-        link={post.link}
-        title={post.title}
-        toggleShowImgPreview={toggleShowImgPreview}
-      />
-      <SocialDetails
-        comments={post.comments}
-        post={currentPost}
-      />
-      <hr className="border-gray-200" />
-      <PostActions
-        post={currentPost}
-        onLikePost={onLikePost}
-        loggedInUser={loggedInUser}
-        onSharePost={onSharePost}
-        isLiked={isLiked}
-      />
+
+      {isBodyReady ? (
+        <PostBody
+          body={post.body}
+          imgUrl={post.imgBodyUrl}
+          videoUrl={post.videoBodyUrl}
+          link={post.link}
+          title={post.title}
+          toggleShowImgPreview={toggleShowImgPreview}
+        />
+      ) : (
+        <div className="post-content-skeleton">
+          <span className="skeleton-line skeleton-line-long"></span>
+          <span className="skeleton-line skeleton-line-medium"></span>
+        </div>
+      )}
+
+      {isSocialReady ? (
+        <>
+          <SocialDetails comments={post.comments} post={currentPost} />
+          <hr className="border-gray-200" />
+          <PostActions
+            post={currentPost}
+            onLikePost={onLikePost}
+            loggedInUser={loggedInUser}
+            onSharePost={onSharePost}
+            isLiked={isLiked}
+          />
+        </>
+      ) : (
+        <div className="post-social-skeleton">
+          <span className="skeleton-pill"></span>
+          <span className="skeleton-pill"></span>
+        </div>
+      )}
 
       {isShowMenu && (
         <PostMenu

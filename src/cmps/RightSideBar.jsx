@@ -1,89 +1,103 @@
-import { useEffect,useState ,useCallback} from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import { getUsers } from '../store/actions/userActions'
+const newsItems = [
+  {
+    title: 'NDIS to be cut by $15b',
+    meta: '15h ago - 2,704 readers',
+  },
+  {
+    title: '200m litres of diesel secured',
+    meta: '18h ago - 1,332 readers',
+  },
+  {
+    title: 'AI skills are driving sustainability',
+    meta: '23h ago - 278 readers',
+  },
+  {
+    title: "What's next for Apple?",
+    meta: '23h ago - 7,734 readers',
+  },
+  {
+    title: 'Property agents leading AI use',
+    meta: '23h ago - 813 readers',
+  },
+]
+
+const promotedItems = [
+  {
+    logo: 'C',
+    logoClassName: 'blue',
+    title: 'Your AI-powered workspace',
+    description:
+      'Teams ditch their old docs and collaborate effortlessly with Confluence.',
+  },
+  {
+    logo: 'AIB',
+    logoClassName: 'orange',
+    title: 'Get Your MBA from AIB',
+    description:
+      'Rated a Tier 1 MBA by CEO Magazine and 4.5 stars on Google. Learn more!',
+  },
+  {
+    logo: 'G',
+    logoClassName: 'green',
+    title: 'Upgrade Your Resume',
+    description:
+      "Make every word count with Grammarly's AI writing help.",
+  },
+]
 
 export const RightSideBar = () => {
-  const { users } = useSelector((state) => state.userModule)
-  const dispatch = useDispatch()
-  const history = useHistory()
-  const { loggedInUser } = useSelector((state) => state.userModule)
-
-  const [filteredUsers, setFilteredUsers] = useState([])
-
-  const filterUsers = useCallback(() => {
-    if (users && loggedInUser) {
-      const notConnected = users.filter(
-        (user) =>
-          !loggedInUser.connections.some(
-            (connection) => connection.userId === user._id
-          )
-      )
-      setFilteredUsers(notConnected)
-    }
-  }, [users, loggedInUser])
-
-  useEffect(() => {
-    filterUsers()
-  }, [filterUsers])
-
-
-
-  useEffect(() => {
-    dispatch(getUsers())
-  }, [dispatch])
-
-  const lengtConections = [0, 1, 2]
-  return filteredUsers.length > 0 && (
-    <section className="right-side-bar">
-      <div className="container bg-white rounded-lg border border-gray-200 p-6">
-        <div>
-          <h2 className="text-lg font-bold text-gray-900 mb-6">Add to your feed</h2>
-          <div className="space-y-3">
-            {filteredUsers?.length &&
-              lengtConections.map((num, idx) => (
-                <div
-                  key={filteredUsers[num]?._id || idx}
-                  className="p-4 rounded-lg border border-gray-200 hover:shadow-md transition cursor-pointer"
-                  onClick={() => history.push(`profile/${filteredUsers[num]?._id}`)}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center flex-1">
-                      <img src={filteredUsers[num]?.imgUrl} className="w-10 h-10 rounded-full mr-3" alt="" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-900 hover:underline">
-                          {filteredUsers[num]?.fullname}
-                        </p>
-                        <p className="text-xs text-gray-600">
-                          {filteredUsers[num]?.profession}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+  return (
+    <aside className="right-side-bar">
+      <section className="linkedin-sidebar-card linkedin-news-card">
+        <div className="news-header">
+          <div>
+            <h2>LinkedIn News</h2>
+            <p>Top stories</p>
           </div>
+
+          <button type="button" className="info-btn" aria-label="News info">
+            i
+          </button>
         </div>
-      </div>
-      <div className="else-container bg-white rounded-lg border border-gray-200">
-        <div>
-          <h3 className="text-gray-900">Promoted</h3>
+
+        <div className="news-list">
+          {newsItems.map((item) => (
+            <article className="news-item" key={item.title}>
+              <h3>{item.title}</h3>
+              <p>{item.meta}</p>
+            </article>
+          ))}
         </div>
-        <br />
-        <div>
-          <p className="text-gray-600">Looking for a full-stack developer for your project or team? I'm open to collaboration and exciting challenges.</p>
+
+        <button type="button" className="show-more-btn">
+          Show more news
+          <span className="chevron" aria-hidden="true">
+            v
+          </span>
+        </button>
+      </section>
+
+      <section className="linkedin-sidebar-card promoted-card">
+        <div className="promoted-header">
+          <p>Promoted</p>
+          <button type="button" aria-label="More promoted options">
+            ...
+          </button>
         </div>
-        <br />
-        <div className="img-container">
-          <a href="https://www.shlomi.dev/" target="_blank" rel="noreferrer">
-            <img
-              src="https://res.cloudinary.com/duajg3ah1/image/upload/v1741866031/6ed80c70-7184-4e22-af43-c1b9357bfb2c.png"
-              className="img"
-              alt={''}
-            />
-          </a>
+
+        <div className="promoted-list">
+          {promotedItems.map((item) => (
+            <article className="promoted-item" key={item.title}>
+              <div className={`promoted-logo ${item.logoClassName}`}>{item.logo}</div>
+
+              <div className="promoted-content">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            </article>
+          ))}
         </div>
-      </div>
-    </section>
+      </section>
+    </aside>
   )
 }
