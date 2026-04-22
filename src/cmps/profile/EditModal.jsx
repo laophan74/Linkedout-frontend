@@ -27,6 +27,7 @@ export function EditModal({ toggleShowEditModal, user }) {
   const [errorMsg, setErrorMsg] = useState('')
   const [isSaving, setIsSaving] = useState(false)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+  const [isUploadingBackground, setIsUploadingBackground] = useState(false)
   const [userToUpdate, setUserToUpdate] = useState({
     _id: user._id,
     fullname: user.fullname || '',
@@ -75,6 +76,24 @@ export function EditModal({ toggleShowEditModal, user }) {
       setErrorMsg('Could not upload the new avatar. Please try another image.')
     } finally {
       setIsUploadingAvatar(false)
+      if (ev.target) ev.target.value = ''
+    }
+  }
+
+  const onUploadBackground = async (ev) => {
+    try {
+      setIsUploadingBackground(true)
+      setErrorMsg('')
+      const res = await uploadImg(ev)
+      setUserToUpdate((prevState) => ({
+        ...prevState,
+        bg: res.url,
+      }))
+    } catch (err) {
+      console.error('Failed to upload background image:', err)
+      setErrorMsg('Could not upload the new background image. Please try another image.')
+    } finally {
+      setIsUploadingBackground(false)
       if (ev.target) ev.target.value = ''
     }
   }
@@ -242,6 +261,40 @@ export function EditModal({ toggleShowEditModal, user }) {
               <p>These text fields help complete the profile card without changing avatar or images.</p>
             </div>
 
+            <div className="cover-editor">
+              <div
+                className="cover-preview"
+                style={
+                  userToUpdate.bg || user.bg
+                    ? { backgroundImage: `url(${userToUpdate.bg || user.bg})` }
+                    : undefined
+                }
+              >
+                {!userToUpdate.bg && !user.bg && (
+                  <div className="cover-placeholder">
+                    <FontAwesomeIcon icon="fa-solid fa-image" />
+                    <span>Add a cover image</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="cover-copy">
+                <strong>Background image</strong>
+                <p>Upload a banner image from your computer to personalize the top of your profile.</p>
+                <label className="cover-upload-btn" htmlFor="profile-background-upload">
+                  <FontAwesomeIcon icon="fa-solid fa-plus" />
+                  <span>{isUploadingBackground ? 'Uploading...' : 'Choose image'}</span>
+                </label>
+                <input
+                  id="profile-background-upload"
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={onUploadBackground}
+                />
+              </div>
+            </div>
+
             <label htmlFor="address" className="field-group">
               <span className="field-label">Location</span>
               <input
@@ -279,19 +332,6 @@ export function EditModal({ toggleShowEditModal, user }) {
                 placeholder="Phone number"
               />
               {renderCounter('phone', fieldLimits.phone)}
-            </label>
-
-            <label htmlFor="bg" className="field-group">
-              <span className="field-label">Background image URL</span>
-              <input
-                id="bg"
-                name="bg"
-                type="text"
-                value={userToUpdate.bg}
-                onChange={handleChange}
-                placeholder="https://..."
-              />
-              {renderCounter('bg', fieldLimits.bg)}
             </label>
           </section>
 
