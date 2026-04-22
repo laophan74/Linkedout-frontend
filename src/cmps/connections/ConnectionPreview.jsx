@@ -38,7 +38,8 @@ export function ConnectionPreview({ user }) {
 
   if (!user || (isConnected && !isSubmitting)) return null
 
-  const { fullname, imgUrl, profession } = user
+  const { fullname, imgUrl, profession, headline, bio } = user
+  const cardHeadline = headline || profession || bio || 'Professional member'
 
   return (
     <li className="network-profile-card">
@@ -50,7 +51,7 @@ export function ConnectionPreview({ user }) {
 
       <div className="profile-name">
         <h1>{fullname}</h1>
-        <p className="professional">{profession}</p>
+        <p className="professional">{cardHeadline}</p>
       </div>
 
       <div className="views">

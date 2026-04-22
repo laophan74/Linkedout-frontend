@@ -1,149 +1,308 @@
-import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { updateUser } from '../../store/actions/userActions'
 import { uploadImg } from '../../services/imgUpload.service'
+import { updateUser } from '../../store/actions/userActions'
+
+const fieldLimits = {
+  fullname: 50,
+  additionalName: 50,
+  headline: 220,
+  bio: 500,
+  address: 120,
+  website: 150,
+  phone: 40,
+  bg: 280,
+}
+
+const normalizeWebsite = (value) => {
+  const trimmedValue = value.trim()
+  if (!trimmedValue) return ''
+  if (/^https?:\/\//i.test(trimmedValue)) return trimmedValue
+  return `https://${trimmedValue}`
+}
 
 export function EditModal({ toggleShowEditModal, user }) {
   const dispatch = useDispatch()
+  const [errorMsg, setErrorMsg] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
   const [userToUpdate, setUserToUpdate] = useState({
-    age: user.age,
-    bg: user.bg,
-    email: user.email,
-    fullname: user.fullname,
-    imgUrl: user.imgUrl,
-    phone: user.phone,
-    profession: user.profession,
-    birthDate: user.birthDate,
+    _id: user._id,
+    fullname: user.fullname || '',
+    additionalName: user.additionalName || '',
+    headline: user.headline || user.profession || '',
+    bio: user.bio || '',
+    address: user.address || '',
+    website: user.website || '',
+    phone: user.phone || '',
+    bg: user.bg || '',
+    imgUrl: user.imgUrl || '',
+    profession: user.profession || user.headline || '',
   })
 
-  const { age, email, fullname, imgUrl, phone, profession } =
-    userToUpdate
-
-  useEffect(() => {}, [])
+  const firstNamePlaceholder = useMemo(() => {
+    return userToUpdate.fullname?.split(' ')?.[0] || ''
+  }, [userToUpdate.fullname])
 
   const handleChange = ({ target }) => {
-    const field = target.name
-    const value = target.type === 'number' ? +target.value || '' : target.value
-    setUserToUpdate((prev) => {
-      return {
-        ...prev,
-        _id: user._id,
-        [field]: value,
-      }
-    })
+    const { name, value } = target
+    const limitedValue = fieldLimits[name]
+      ? value.slice(0, fieldLimits[name])
+      : value
+
+    setUserToUpdate((prevState) => ({
+      ...prevState,
+      [name]: limitedValue,
+      profession:
+        name === 'headline' ? limitedValue : prevState.headline || prevState.profession,
+    }))
+
+    if (errorMsg) setErrorMsg('')
   }
 
-  const onSaveUser = () => {
-    dispatch(updateUser({ ...user, ...userToUpdate })).then((res) => {
-      if (res) toggleShowEditModal()
-    })
-  }
-
-  const onUploadImg = async (ev) => {
-    const res = await uploadImg(ev)
-    setUserToUpdate((prev) => {
-      return {
-        ...prev,
+  const onUploadAvatar = async (ev) => {
+    try {
+      setIsUploadingAvatar(true)
+      setErrorMsg('')
+      const res = await uploadImg(ev)
+      setUserToUpdate((prevState) => ({
+        ...prevState,
         imgUrl: res.url,
-      }
-    })
+      }))
+    } catch (err) {
+      console.error('Failed to upload avatar:', err)
+      setErrorMsg('Could not upload the new avatar. Please try another image.')
+    } finally {
+      setIsUploadingAvatar(false)
+      if (ev.target) ev.target.value = ''
+    }
+  }
+
+  const onSaveUser = async (ev) => {
+    ev.preventDefault()
+
+    const normalizedFullname = userToUpdate.fullname.trim()
+    if (!normalizedFullname) {
+      setErrorMsg('Full name is required.')
+      return
+    }
+
+    const payload = {
+      ...user,
+      ...userToUpdate,
+      fullname: normalizedFullname,
+      headline: userToUpdate.headline.trim(),
+      profession: userToUpdate.headline.trim() || userToUpdate.profession.trim(),
+      bio: userToUpdate.bio.trim(),
+      address: userToUpdate.address.trim(),
+      website: normalizeWebsite(userToUpdate.website),
+      phone: userToUpdate.phone.trim(),
+      additionalName: userToUpdate.additionalName.trim(),
+      bg: userToUpdate.bg.trim(),
+      imgUrl: userToUpdate.imgUrl,
+    }
+
+    try {
+      setIsSaving(true)
+      const savedUser = await dispatch(updateUser(payload))
+      if (savedUser) toggleShowEditModal()
+    } catch (err) {
+      console.error('Failed to update profile:', err)
+      setErrorMsg('Could not save your profile right now. Please try again.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const renderCounter = (fieldName, limit) => {
+    return (
+      <span className="field-counter">
+        {(userToUpdate[fieldName] || '').length}/{limit}
+      </span>
+    )
   }
 
   return (
     <section className="edit-modal">
       <div className="bg" onClick={toggleShowEditModal}></div>
-      <div className="container">
-        <div className="title">
-          <p>Edit profile</p>
-          <span onClick={toggleShowEditModal}>
+
+      <article className="container">
+        <header className="title">
+          <div>
+            <h2>Edit intro</h2>
+            <p>Keep your profile details current so people can understand your work quickly.</p>
+          </div>
+          <button type="button" className="close-btn" onClick={toggleShowEditModal}>
             <FontAwesomeIcon icon="fa-solid fa-x" />
-          </span>
-        </div>
+          </button>
+        </header>
 
-        <div className="form-container">
-          <form className="form" action="">
-            <label htmlFor="imgUrl" className="add-file">
-              <div className="add-btn">
-                <p>Add image profile</p>
+        <form className="form-container" onSubmit={onSaveUser}>
+          <section className="form-section">
+            <div className="section-heading">
+              <h3>Basic info</h3>
+              <p>This is the main information people see first on your profile.</p>
+            </div>
 
-                <FontAwesomeIcon
-                  className="upload-logo"
-                  icon="fa-solid fa-cloud-arrow-up"
+            <div className="avatar-editor">
+              <div className="avatar-preview-shell">
+                <img
+                  src={userToUpdate.imgUrl || user.imgUrl}
+                  alt={userToUpdate.fullname || 'Profile'}
+                  className="avatar-preview"
+                />
+                <label className="avatar-upload-btn" htmlFor="profile-avatar-upload">
+                  <FontAwesomeIcon icon="fa-solid fa-plus" />
+                </label>
+                <input
+                  id="profile-avatar-upload"
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={onUploadAvatar}
                 />
               </div>
-              <input
-                onChange={onUploadImg}
-                id="imgUrl"
-                type="file"
-                name="imgUrl"
-                hidden
-              />
-              <img className="img-to-upload" src={imgUrl} alt="" />
-            </label>
+              <div className="avatar-copy">
+                <strong>Profile photo</strong>
+                <p>
+                  Click the + button to choose a new avatar from your device.
+                </p>
+                {isUploadingAvatar && <span>Uploading new avatar...</span>}
+              </div>
+            </div>
 
-            <label htmlFor="first-name" className="first-name">
-              <p>
-                Fullname <span>*</span>
-              </p>
+            <label htmlFor="fullname" className="field-group">
+              <span className="field-label">
+                Full name <strong>*</strong>
+              </span>
               <input
-                name="fullname"
-                onChange={handleChange}
                 id="fullname"
+                name="fullname"
                 type="text"
-                value={fullname || ''}
+                value={userToUpdate.fullname}
+                onChange={handleChange}
+                placeholder="Your full name"
               />
+              {renderCounter('fullname', fieldLimits.fullname)}
             </label>
 
-            <label htmlFor="email" className="email">
-              <p>Email</p>
+            <label htmlFor="additionalName" className="field-group">
+              <span className="field-label">Additional name</span>
               <input
-                name="email"
-                onChange={handleChange}
-                id="email"
-                type="email"
-                value={email || ''}
-              />
-            </label>
-
-            <label htmlFor="profession" className="profession">
-              <p>Profession</p>
-              <input
-                name="profession"
-                onChange={handleChange}
-                id="profession"
+                id="additionalName"
+                name="additionalName"
                 type="text"
-                value={profession || ''}
+                value={userToUpdate.additionalName}
+                onChange={handleChange}
+                placeholder={firstNamePlaceholder ? `${firstNamePlaceholder} ...` : 'Middle or additional name'}
               />
+              {renderCounter('additionalName', fieldLimits.additionalName)}
             </label>
 
-            <label htmlFor="age" className="age">
-              <p>Age</p>
-              <input
-                name="age"
+            <label htmlFor="headline" className="field-group">
+              <span className="field-label">
+                Headline <strong>*</strong>
+              </span>
+              <textarea
+                id="headline"
+                name="headline"
+                value={userToUpdate.headline}
                 onChange={handleChange}
-                id="age"
-                type="number"
-                value={age || ''}
+                rows="4"
+                placeholder="Example: Frontend developer building social experiences"
               />
+              {renderCounter('headline', fieldLimits.headline)}
+            </label>
+          </section>
+
+          <section className="form-section">
+            <div className="section-heading">
+              <h3>About</h3>
+              <p>Use this section to tell people what you do and what you are open to.</p>
+            </div>
+
+            <label htmlFor="bio" className="field-group">
+              <span className="field-label">About</span>
+              <textarea
+                id="bio"
+                name="bio"
+                value={userToUpdate.bio}
+                onChange={handleChange}
+                rows="5"
+                placeholder="Share a short summary about your experience, interests, or goals."
+              />
+              {renderCounter('bio', fieldLimits.bio)}
+            </label>
+          </section>
+
+          <section className="form-section">
+            <div className="section-heading">
+              <h3>Contact & links</h3>
+              <p>These text fields help complete the profile card without changing avatar or images.</p>
+            </div>
+
+            <label htmlFor="address" className="field-group">
+              <span className="field-label">Location</span>
+              <input
+                id="address"
+                name="address"
+                type="text"
+                value={userToUpdate.address}
+                onChange={handleChange}
+                placeholder="City, country"
+              />
+              {renderCounter('address', fieldLimits.address)}
             </label>
 
-            <label htmlFor="phone" className="phone">
-              <p>Phone</p>
+            <label htmlFor="website" className="field-group">
+              <span className="field-label">Website</span>
               <input
-                name="phone"
+                id="website"
+                name="website"
+                type="text"
+                value={userToUpdate.website}
                 onChange={handleChange}
+                placeholder="your-portfolio.com"
+              />
+              {renderCounter('website', fieldLimits.website)}
+            </label>
+
+            <label htmlFor="phone" className="field-group">
+              <span className="field-label">Phone</span>
+              <input
                 id="phone"
+                name="phone"
                 type="text"
-                value={phone || ''}
+                value={userToUpdate.phone}
+                onChange={handleChange}
+                placeholder="Phone number"
               />
+              {renderCounter('phone', fieldLimits.phone)}
             </label>
-          </form>
-        </div>
-        <div className="btn-save-container">
-          <button onClick={onSaveUser}>Save</button>
-        </div>
-      </div>
+
+            <label htmlFor="bg" className="field-group">
+              <span className="field-label">Background image URL</span>
+              <input
+                id="bg"
+                name="bg"
+                type="text"
+                value={userToUpdate.bg}
+                onChange={handleChange}
+                placeholder="https://..."
+              />
+              {renderCounter('bg', fieldLimits.bg)}
+            </label>
+          </section>
+
+          <footer className="btn-save-container">
+            {errorMsg && <p className="form-error">{errorMsg}</p>}
+            <button type="submit" disabled={isSaving}>
+              {isSaving ? 'Saving...' : 'Save'}
+            </button>
+          </footer>
+        </form>
+      </article>
     </section>
   )
 }

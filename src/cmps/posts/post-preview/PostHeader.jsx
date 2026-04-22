@@ -29,8 +29,9 @@ export const PostHeader = ({ post, userPost, isLoading = false }) => {
     )
   }
 
-  const { imgUrl, profession, fullname, username } = userPost
+  const { imgUrl, profession, headline, bio, fullname, username } = userPost
   const displayName = fullname || username || 'Linkedout member'
+  const userHeadline = headline || profession || bio
 
   return (
     <section className="post-header flex justify-between items-start">
@@ -48,7 +49,7 @@ export const PostHeader = ({ post, userPost, isLoading = false }) => {
           >
             {displayName}
           </p>
-          {!!profession && <div className="block text-sm text-gray-600 mb-1">{profession}</div>}
+          {!!userHeadline && <div className="block text-sm text-gray-600 mb-1">{userHeadline}</div>}
           <p
             className="text-xs text-gray-500 cursor-pointer hover:underline"
             onClick={() => history.push(`/main/post/${post.userId}/${post._id}`)}

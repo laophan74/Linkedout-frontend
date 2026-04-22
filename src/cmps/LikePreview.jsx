@@ -20,6 +20,8 @@ export function LikePreview({ reaction }) {
 
   if (!user) return
 
+  const userHeadline = user.headline || user.profession || user.bio || 'Professional member'
+
   return (
     <section className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 mb-3">
       <div className="flex items-center">
@@ -37,7 +39,7 @@ export function LikePreview({ reaction }) {
             {user.fullname}
           </p>
           <p className="text-xs text-gray-600">
-            {user.profession}
+            {userHeadline}
           </p>
         </div>
       </div>

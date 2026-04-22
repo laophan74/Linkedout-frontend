@@ -25,7 +25,7 @@ export function MyConnectionPreview({ connection }) {
             <Link to={`/main/profile/${connection._id}`} className="name-link">
               <h3>{connection.fullname}</h3>
             </Link>
-            <h4>{connection.profession || connection.bio || 'Professional member'}</h4>
+            <h4>{connection.headline || connection.profession || connection.bio || 'Professional member'}</h4>
           </div>
         </section>
 
