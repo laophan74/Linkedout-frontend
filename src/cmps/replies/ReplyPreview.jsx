@@ -50,11 +50,11 @@ export const ReplyPreview = ({ reply, updateReply }) => {
   }
 
   return (
-    <article className="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900">
+    <article className="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg">
       <footer className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <p 
-            className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold cursor-pointer hover:underline"
+            className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold cursor-pointer hover:underline"
             onClick={() => history.push(`/main/profile/${userReply._id}`)}
           >
             <img
@@ -64,7 +64,7 @@ export const ReplyPreview = ({ reply, updateReply }) => {
             />
             {userReply.fullname}
           </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-600">
             <time dateTime={reply.createdAt} title={new Date(reply.createdAt).toLocaleString()}>
               <TimeAgo date={reply.createdAt} />
             </time>
@@ -75,7 +75,7 @@ export const ReplyPreview = ({ reply, updateReply }) => {
         <div className="relative">
           <button
             onClick={toggleMenu}
-            className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
             type="button"
           >
             <svg
@@ -93,10 +93,10 @@ export const ReplyPreview = ({ reply, updateReply }) => {
           {/* Dropdown Menu */}
           {isShowMenu && (
             <div
-              className="z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 absolute right-0 top-full mt-1"
+              className="z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow absolute right-0 top-full mt-1"
               onClick={(e) => e.stopPropagation()}
             >
-              <ul className="py-1 text-sm text-gray-700 dark:text-gray-200">
+              <ul className="py-1 text-sm text-gray-700">
                 {isLoggedInUserOwner && (
                   <>
                     <li>
@@ -105,7 +105,7 @@ export const ReplyPreview = ({ reply, updateReply }) => {
                           // TODO: Handle edit
                           toggleMenu()
                         }}
-                        className="w-full text-left block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        className="w-full text-left block py-2 px-4 hover:bg-gray-100"
                       >
                         Edit
                       </button>
@@ -116,7 +116,7 @@ export const ReplyPreview = ({ reply, updateReply }) => {
                           // TODO: Handle delete
                           toggleMenu()
                         }}
-                        className="w-full text-left block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        className="w-full text-left block py-2 px-4 hover:bg-gray-100"
                       >
                         Remove
                       </button>
@@ -129,7 +129,7 @@ export const ReplyPreview = ({ reply, updateReply }) => {
                       // TODO: Handle report
                       toggleMenu()
                     }}
-                    className="w-full text-left block py-2 px-4 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
+                    className="w-full text-left block py-2 px-4 text-gray-700 hover:bg-gray-100"
                   >
                     Report
                   </button>
@@ -141,7 +141,7 @@ export const ReplyPreview = ({ reply, updateReply }) => {
       </footer>
 
       {/* Reply Text */}
-      <p className="text-gray-500 dark:text-gray-400">{reply.txt}</p>
+      <p className="text-gray-500">{reply.txt}</p>
 
       {/* Close menu when clicking outside */}
       {isShowMenu && (

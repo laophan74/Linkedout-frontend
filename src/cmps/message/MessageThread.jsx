@@ -23,17 +23,17 @@ export function MessageThread({
   }
 
   return (
-    <section className="flex flex-col h-full bg-white dark:bg-gray-900">
-      <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+    <section className="flex flex-col h-full bg-white">
+      <header className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
         <div
           className="flex items-center cursor-pointer group"
           onClick={() => history.push(`/main/profile/${chatWith?._id}`)}
         >
           <img src={chatWith?.imgUrl} alt="" className="w-10 h-10 rounded-full mr-3" />
-          <p className="text-sm font-semibold text-gray-900 dark:text-white group-hover:underline">{chatWith?.fullname}</p>
+          <p className="text-sm font-semibold text-gray-900 group-hover:underline">{chatWith?.fullname}</p>
         </div>
         <button
-          className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition"
+          className="p-2 text-gray-600 hover:bg-gray-100 rounded transition"
           onClick={() => {
             setMessagesToShow(null)
           }}
@@ -42,7 +42,7 @@ export function MessageThread({
         </button>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white dark:bg-gray-900">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
         <ThreadMsgList messagesToShow={messagesToShow} />
       </div>
 

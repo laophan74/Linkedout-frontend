@@ -59,14 +59,14 @@ export function MsgPreview({
 
   if (!theNotLoggedUserChat)
     return (
-      <div className="p-4 mb-3 bg-white dark:bg-gray-900 rounded flex items-center justify-center h-20">
+      <div className="p-4 mb-3 bg-white rounded flex items-center justify-center h-20">
         <img src={loadingGif} alt="loading" className="w-8 h-8" />
       </div>
     )
 
   return (
     <section 
-      className={`p-4 mb-3 border-b border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition ${isChatChooseen ? 'bg-gray-100 dark:bg-gray-800' : 'bg-white dark:bg-gray-900'}`}
+      className={`p-4 mb-3 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition ${isChatChooseen ? 'bg-gray-100' : 'bg-white'}`}
       onClick={onClickChat}
     >
       <div className="flex items-start">
@@ -85,14 +85,14 @@ export function MsgPreview({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between">
             <div className="flex-1 pr-2">
-              <p className="text-sm font-semibold text-gray-900 dark:text-white hover:underline cursor-pointer">
+              <p className="text-sm font-semibold text-gray-900 hover:underline cursor-pointer">
                 {theNotLoggedUserChat?.fullname}
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+              <p className="text-sm text-gray-600 truncate">
                 {lastMsg}
               </p>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ml-2" title={dateToShow}>
+            <p className="text-xs text-gray-500 whitespace-nowrap ml-2" title={dateToShow}>
               {slicedDate}
             </p>
           </div>

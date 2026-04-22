@@ -25,15 +25,15 @@ export const PostHeader = ({ post, userPost }) => {
         />
         <div>
           <p 
-            className="inline-flex text-sm text-gray-900 dark:text-white font-semibold cursor-pointer hover:underline mb-1"
+            className="inline-flex text-sm text-gray-900 font-semibold cursor-pointer hover:underline mb-1"
             onClick={() => history.push(`/main/profile/${userPost?._id}`)}
           >
             {fullname}
           </p>
-          <div className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+          <div className="block text-sm text-gray-600 mb-1">
             {profession}
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 cursor-pointer hover:underline" onClick={() => history.push(`/main/post/${post.userId}/${post._id}`)}>
+          <p className="text-xs text-gray-500 cursor-pointer hover:underline" onClick={() => history.push(`/main/post/${post.userId}/${post._id}`)}>
             <time dateTime={post.createdAt} title={new Date(post.createdAt).toLocaleString()}>
               <TimeAgo date={post.createdAt} />
             </time>
