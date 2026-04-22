@@ -171,8 +171,8 @@ const SpecificPost = (props) => {
   if (loadError || loadTimeout) {
     return (
       <section className="post-detail-container">
-        <div className="p-8 text-center bg-white dark:bg-gray-900 rounded-lg">
-          <p className="text-red-600 dark:text-red-400 mb-4 text-lg">
+        <div className="p-8 text-center bg-white rounded-lg">
+          <p className="text-red-600 mb-4 text-lg">
             {loadTimeout ? 'Request timeout. The server is taking too long to respond.' : 'Failed to load post. The post may not exist or there was a network error.'}
           </p>
           <button 
@@ -202,7 +202,7 @@ const SpecificPost = (props) => {
 
   return (
     <section className="post-detail-container">
-      <article className="post-detail bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-700">
+      <article className="post-detail bg-white border border-gray-200">
         {/* Post Header */}
         <div className="post-detail-header">
           <PostHeader post={postToRender} userPost={userPost} />

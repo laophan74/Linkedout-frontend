@@ -89,15 +89,15 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
   const { imgUrl, fullname } = userComment
 
   const articleClass = isReply
-    ? 'p-6 mb-3 ml-6 lg:ml-12 text-base bg-transparent rounded-lg border border-gray-200 dark:border-gray-700'
-    : 'p-6 text-base bg-transparent rounded-lg border border-gray-200 dark:border-gray-700'
+    ? 'p-6 mb-3 ml-6 lg:ml-12 text-base bg-transparent rounded-lg border border-gray-200'
+    : 'p-6 text-base bg-transparent rounded-lg border border-gray-200'
 
   return (
     <article className={articleClass}>
       <footer className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <p 
-            className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold cursor-pointer hover:underline"
+            className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold cursor-pointer hover:underline"
             onClick={() => history.push(`/main/profile/${userComment._id}`)}
           >
             <img
@@ -107,7 +107,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
             />
             {fullname}
           </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-600">
             <time dateTime={createdAt} title={new Date(createdAt).toLocaleString()}>
               <TimeAgo date={createdAt} />
             </time>
@@ -119,7 +119,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
           <button
             id={`dropdownComment${comment._id}`}
             onClick={toggleMenu}
-            className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
             type="button"
           >
             <svg
@@ -137,10 +137,10 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
           {/* Dropdown Menu */}
           {isShowMenu && (
             <div
-              className="z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 absolute right-0 top-full mt-1"
+              className="z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow absolute right-0 top-full mt-1"
               onClick={(e) => e.stopPropagation()}
             >
-              <ul className="py-1 text-sm text-gray-700 dark:text-gray-200">
+              <ul className="py-1 text-sm text-gray-700">
                 {isLoggedInUserOwner && (
                   <>
                     <li>
@@ -149,7 +149,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
                           // TODO: Handle edit
                           toggleMenu()
                         }}
-                        className="w-full text-left block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        className="w-full text-left block py-2 px-4 hover:bg-gray-100"
                       >
                         Edit
                       </button>
@@ -159,7 +159,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
                         onClick={() => {
                           onRemoveComment()
                         }}
-                        className="w-full text-left block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        className="w-full text-left block py-2 px-4 hover:bg-gray-100"
                       >
                         Remove
                       </button>
@@ -172,7 +172,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
                       // TODO: Handle report
                       toggleMenu()
                     }}
-                    className="w-full text-left block py-2 px-4 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
+                    className="w-full text-left block py-2 px-4 text-gray-700 hover:bg-gray-100"
                   >
                     Report
                   </button>
@@ -184,14 +184,14 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
       </footer>
 
       {/* Comment Text */}
-      <p className="text-gray-500 dark:text-gray-400">{comment.txt}</p>
+      <p className="text-gray-500">{comment.txt}</p>
 
       {/* Comment Actions */}
       <div className="flex items-center mt-4 space-x-4">
         <button
           type="button"
           onClick={() => setIsShowReplyForm(!isShowReplyForm)}
-          className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium"
+          className="flex items-center text-sm text-gray-500 hover:underline font-medium"
         >
           <svg
             className="mr-1.5 w-3.5 h-3.5"
@@ -216,7 +216,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
       {isShowReplyForm && (
         <div className="mt-4 ml-0 lg:ml-6">
           <form className="mb-4" onSubmit={(e) => { e.preventDefault(); addReply() }}>
-            <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+            <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
               <label htmlFor={`reply-${comment._id}`} className="sr-only">Your reply</label>
               <textarea
                 id={`reply-${comment._id}`}
@@ -224,14 +224,14 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
                 name="txt"
                 value={replyField.txt}
                 onChange={handleChange}
-                className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
                 placeholder="Write a reply..."
               />
             </div>
             {replyField.txt && (
               <button
                 type="submit"
-                className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+                className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 hover:bg-primary-800"
               >
                 Post reply
               </button>
@@ -246,7 +246,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
           {!isShowReplyList && (
             <button
               onClick={() => setIsShowReplyList(true)}
-              className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
+              className="text-sm text-blue-600 hover:underline font-medium"
             >
               Show {replies.length} {replies.length === 1 ? 'reply' : 'replies'}
             </button>
@@ -255,7 +255,7 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
             <>
               <button
                 onClick={() => setIsShowReplyList(false)}
-                className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium mb-3"
+                className="text-sm text-blue-600 hover:underline font-medium mb-3"
               >
                 Hide {replies.length} {replies.length === 1 ? 'reply' : 'replies'}
               </button>

@@ -97,38 +97,6 @@
   }
 }
 
-body.theme-dark .my-connection-preview {
-  border-bottom-color: rgba(255, 255, 255, 0.12);
-
-  .connection-card {
-    background: #161b22;
-    box-shadow: 0 14px 28px rgba(2, 6, 23, 0.25);
-  }
-
-  .content-shell {
-    border-left-color: rgba(255, 255, 255, 0.12);
-  }
-
-  h3 {
-    color: #e6edf3;
-  }
-
-  h4 {
-    color: #9aa4b2;
-  }
-
-  .message-btn {
-    background-color: transparent;
-    color: #7ee7fc;
-    border-color: #7ee7fc;
-
-    &:hover {
-      background-color: #223044;
-      color: #e6edf3;
-    }
-  }
-}
-
 @media (max-width: 700px) {
   .my-connection-preview {
     padding: 8px 10px;

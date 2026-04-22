@@ -31,19 +31,19 @@ export function ThreadMsgPreview({ msg }) {
         />
         <div className="flex items-center space-x-3">
           <p 
-            className="text-sm text-gray-900 dark:text-white font-semibold cursor-pointer hover:underline"
+            className="text-sm text-gray-900 font-semibold cursor-pointer hover:underline"
             onClick={() => history.push(`/main/profile/${userMsg?._id}`)}
           >
             {userMsg?.fullname}
           </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-600">
             <time dateTime={msg.createdAt} title={new Date(msg.createdAt).toLocaleString()}>
               <TimeAgo date={msg.createdAt} />
             </time>
           </p>
         </div>
       </div>
-      <div className="ml-11 text-gray-700 dark:text-gray-300">
+      <div className="ml-11 text-gray-700">
         <p>{msg.txt}</p>
       </div>
     </section>

@@ -61,29 +61,4 @@
   }
 }
 
-/* Dark Mode */
-body.theme-dark {
-  .button {
-    background-color: #2d2e32;
-    border-color: #2d2e32;
-    color: #ffffff;
-
-    .btn-svg {
-      stroke: #ffffff;
-    }
-
-    &:hover {
-      background-color: #ffffff;
-      color: #2d2e32;
-
-      .btn-svg {
-        stroke: #2d2e32;
-      }
-    }
-
-    &.liked svg path {
-      fill: #dc2626;
-    }
-  }
-}
 

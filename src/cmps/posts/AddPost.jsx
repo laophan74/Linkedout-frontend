@@ -10,48 +10,72 @@ export const AddPost = () => {
   const { loggedInUser } = useSelector((state) => state.userModule)
 
   const [isShowCreatePost, setIsShowCreatePost] = useState(false)
+  const [initialComposerAction, setInitialComposerAction] = useState(null)
 
-  const toggleShowCreatePost = () => {
-    setIsShowCreatePost((prev) => !prev)
+  const openComposer = (action = null) => {
+    setInitialComposerAction(action)
+    setIsShowCreatePost(true)
   }
 
-  const onAddPost = (post) => {
+  const closeComposer = () => {
+    setInitialComposerAction(null)
+    setIsShowCreatePost(false)
+  }
+
+  const onAddPost = async (post) => {
     const postToAdd = {
       ...post,
       userId: loggedInUser._id,
       fullname: loggedInUser.fullname,
     }
-    dispatch(savePost(postToAdd)).then(() => toggleShowCreatePost())
+    return await dispatch(savePost(postToAdd))
   }
 
   return (
-    <section className="add-post bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-lg" onClick={toggleShowCreatePost}>
+    <section className="add-post bg-white border-2 border-gray-200 rounded-lg" onClick={() => openComposer()}>
       <section className="top">
         <div className="img-container">
           <img src={loggedInUser.imgUrl} alt="" className="icon" />
         </div>
-        <button className="input-container bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+        <button type="button" className="input-container bg-white text-gray-600 hover:bg-gray-100">
           <span>Start a post</span>
         </button>
       </section>
 
       <section className="btns-container">
-        <button className="bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+        <button
+          type="button"
+          className="bg-white text-gray-600 hover:bg-gray-100"
+          onClick={(ev) => {
+            ev.stopPropagation()
+            openComposer('photo')
+          }}
+        >
           <FontAwesomeIcon className="photo icon" icon="fa-solid fa-image" />
           <span>Photo</span>
         </button>
-        <button className="bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-          <FontAwesomeIcon className="video icon" icon="fa-solid fa-video" />
-          <span>Video</span>
-        </button>
-        <button className="bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+        <button
+          type="button"
+          className="bg-white text-gray-600 hover:bg-gray-100"
+          onClick={(ev) => {
+            ev.stopPropagation()
+            openComposer()
+          }}
+        >
           <FontAwesomeIcon
             className="calendar icon"
             icon="fa-solid fa-calendar-days"
           />
           <span>Event</span>
         </button>
-        <button className="bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+        <button
+          type="button"
+          className="bg-white text-gray-600 hover:bg-gray-100"
+          onClick={(ev) => {
+            ev.stopPropagation()
+            openComposer()
+          }}
+        >
           <FontAwesomeIcon
             className="newspaper icon"
             icon="fa-solid fa-newspaper"
@@ -62,9 +86,10 @@ export const AddPost = () => {
       {
         <CreatePostModal
           isShowCreatePost={isShowCreatePost}
-          toggleShowCreatePost={toggleShowCreatePost}
+          toggleShowCreatePost={closeComposer}
           onAddPost={onAddPost}
           loggedInUser={loggedInUser}
+          initialAction={initialComposerAction}
         />
       }
     </section>

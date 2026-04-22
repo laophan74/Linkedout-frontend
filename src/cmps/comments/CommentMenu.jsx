@@ -17,11 +17,11 @@ export const CommentMenu = ({ toggleMenu, onRemoveComment, commentUserId }) => {
           toggleMenu()
         }}
       ></div>
-      <section className="comment-menu bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+      <section className="comment-menu bg-white border border-gray-200">
         <div className="container">
           {isLoggedInUserCanDelete && (
             <button
-              className="delete-container text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="delete-container text-gray-700 hover:bg-gray-100"
               onClick={() => setIsAskAgain((prev) => !prev)}
             >
               <FontAwesomeIcon
@@ -33,8 +33,8 @@ export const CommentMenu = ({ toggleMenu, onRemoveComment, commentUserId }) => {
           )}
         </div>
         {isAskAgain && (
-          <div className="ask-again bg-gray-100 dark:bg-gray-700">
-            <p className="text-gray-900 dark:text-white">Are you sure?</p>
+          <div className="ask-again bg-gray-100">
+            <p className="text-gray-900">Are you sure?</p>
             <div className="opts">
               <p className="yes opt-btn" onClick={onRemoveComment}>
                 yes

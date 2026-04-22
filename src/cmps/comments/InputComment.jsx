@@ -25,7 +25,7 @@ export const InputComment = ({ onSaveComment }) => {
 
   return (
     <form className="mb-6" onSubmit={doSubmit}>
-      <div className="py-2 px-4 mb-4 bg-[#f3f2ef] rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+      <div className="py-2 px-4 mb-4 bg-[#f3f2ef] rounded-lg rounded-t-lg border border-gray-200">
         <label htmlFor="comment" className="sr-only">Your comment</label>
         <textarea 
           id="comment" 
@@ -33,14 +33,14 @@ export const InputComment = ({ onSaveComment }) => {
           name="txt"
           value={newComment.txt}
           onChange={handleChange}
-          className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none bg-[#f3f2ef] dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+          className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none bg-[#f3f2ef]"
           placeholder="Write a comment..." 
           required
         />
       </div>
       <button 
         type="submit"
-        className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+        className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 hover:bg-primary-800"
       >
         Post comment
       </button>

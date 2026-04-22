@@ -124,7 +124,7 @@ export function NotificaitonPreview({ activity }) {
 
   return (
     <section
-      className={`p-4 mb-3 border-b border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition ${isActivityUnread ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-white dark:bg-gray-900'}`}
+      className={`p-4 mb-3 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition ${isActivityUnread ? 'bg-blue-50' : 'bg-white'}`}
       onClick={() => {
         history.push(link)
       }}
@@ -137,10 +137,10 @@ export function NotificaitonPreview({ activity }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between">
-            <p className="text-sm text-gray-900 dark:text-white flex-1">
+            <p className="text-sm text-gray-900 flex-1">
               {str}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ml-2">
+            <p className="text-xs text-gray-500 whitespace-nowrap ml-2">
               <TimeAgo date={activity.createdAt} />
             </p>
           </div>

@@ -92,38 +92,3 @@
     }
   }
 }
-
-body.theme-dark .network-profile-card {
-  background-color: #161b22;
-  border-color: rgba(255, 255, 255, 0.12);
-  color: #e6edf3;
-
-  .profile-name {
-    border-bottom-color: rgba(255, 255, 255, 0.12);
-
-    h1 {
-      color: #e6edf3;
-    }
-
-    .professional {
-      color: #9aa4b2;
-    }
-  }
-
-  .views {
-    border-bottom-color: rgba(255, 255, 255, 0.12);
-
-    p {
-      color: #9aa4b2;
-    }
-  }
-
-  .my-items button {
-    color: #9aa4b2;
-
-    &:hover {
-      background-color: #223044;
-      color: #e6edf3;
-    }
-  }
-}

@@ -21,7 +21,7 @@ export function LikePreview({ reaction }) {
   if (!user) return
 
   return (
-    <section className="flex items-center justify-between p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 mb-3">
+    <section className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 mb-3">
       <div className="flex items-center">
         <img 
           src={user.imgUrl}
@@ -31,12 +31,12 @@ export function LikePreview({ reaction }) {
         />
         <div>
           <p 
-            className="text-sm text-gray-900 dark:text-white font-semibold cursor-pointer hover:underline"
+            className="text-sm text-gray-900 font-semibold cursor-pointer hover:underline"
             onClick={() => history.push(`/main/profile/${user._id}`)}
           >
             {user.fullname}
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">
+          <p className="text-xs text-gray-600">
             {user.profession}
           </p>
         </div>

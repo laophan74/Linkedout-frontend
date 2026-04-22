@@ -77,31 +77,6 @@
       }
     }
 
-    .theme-toggle {
-      .theme-toggle-btn {
-        background: none;
-        border: none;
-        color: inherit;
-        display: flex;
-        font-size: 14px;
-        min-width: 80px;
-        justify-content: center;
-        height: 100%;
-        align-items: center;
-        flex-direction: column;
-        padding: 0;
-
-        &:hover {
-          color: #000000e6;
-        }
-
-        .nav-icon {
-          width: 25px;
-          height: 25px;
-        }
-      }
-    }
-
     .me-btn {
       border-right: 1px solid $border;
 
@@ -140,9 +115,6 @@
           display: none;
         }
         &.post-volunteer-btn {
-          display: none;
-        }
-        &.theme-toggle {
           display: none;
         }
       }
@@ -185,8 +157,6 @@
         }
         &.post-volunteer-btn {
         }
-        &.theme-toggle {
-        }
       }
 
       p {
@@ -226,9 +196,6 @@
           display: none;
         }
         &.post-volunteer-btn {
-          display: none;
-        }
-        &.theme-toggle {
           display: none;
         }
       }

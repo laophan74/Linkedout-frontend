@@ -37,10 +37,11 @@ export const httpService = {
 
 async function ajax(endpoint, method = 'GET', data = null) {
   try {
+    const payload = data?.formData || data
     const res = await axios({
       url: `${BASE_URL}${endpoint}`,
       method,
-      data,
+      data: method === 'GET' ? null : payload,
       params: method === 'GET' ? data : null,
     })
     if (res.data && res.data.success && 'data' in res.data) {

@@ -3,14 +3,6 @@ import { API_CONFIG } from '../config/constants'
 
 const ENDPOINTS = API_CONFIG.ENDPOINTS
 
-const toBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = (error) => reject(error)
-  })
-
 export const uploadImg = async (ev) => {
   try {
     const file = ev.target.files[0]
@@ -19,14 +11,14 @@ export const uploadImg = async (ev) => {
       throw new Error('No file selected')
     }
 
-    const base64File = await toBase64(file)
+    const formData = new FormData()
+    formData.append('image', file)
 
     const response = await httpService.post(ENDPOINTS.UPLOAD_IMAGE, {
-      imageData: base64File,
-      fileName: file.name,
+      formData,
     })
 
-    return response
+    return { url: response.imageUrl, publicId: response.publicId }
   } catch (err) {
     console.error('Error uploading image:', err?.message)
     throw err

@@ -1,58 +1,87 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { uploadImg, uploadVid } from '../../services/imgUpload.service'
+import { uploadImg } from '../../services/imgUpload.service'
 import LoadingGif from '../../assets/imgs/loading-gif.gif'
+
+const getEmptyPost = () => ({
+  body: '',
+  imgBodyUrl: null,
+  style: {
+    textAlign: 'ltr',
+  },
+})
 
 export const CreatePostModal = ({
   toggleShowCreatePost,
   onAddPost,
   isShowCreatePost,
   loggedInUser,
+  initialAction,
 }) => {
-  const initPost = {
-    body: '',
-    imgBodyUrl: null,
-    videoBodyUrl: null,
-    link: '',
-    title: '',
-    style: {
-      textAlign: 'ltr',
-    },
-  }
-
-  const [newPost, setNewPost] = useState(initPost)
+  const [newPost, setNewPost] = useState(getEmptyPost)
   const [isUploding, setIsUploding] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const textareaRef = useRef(null)
+  const imageInputRef = useRef(null)
 
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     const field = e.target.name
-    let value =
+    const value =
       e.target.type === 'number' ? +e.target.value || '' : e.target.value
-    setNewPost((prevCred) => ({
-      ...prevCred,
+    setNewPost((prevPost) => ({
+      ...prevPost,
       [field]: value,
     }))
   }
 
   useEffect(() => {
-    return () => {
-      setNewPost(null)
-    }
-  }, [])
+    if (!isShowCreatePost) return
 
-  const doSubmit = () => {
-    onAddPost(newPost)
+    textareaRef.current?.focus()
+
+    if (initialAction === 'photo') {
+      imageInputRef.current?.click()
+    }
+  }, [initialAction, isShowCreatePost])
+
+  const resetComposer = () => {
+    setNewPost(getEmptyPost())
+    setIsUploding(false)
+    setIsSubmitting(false)
   }
 
-  const inputRef = (elInput) => {
-    if (elInput) elInput.focus()
+  const handleClose = () => {
+    resetComposer()
+    toggleShowCreatePost()
+  }
+
+  const doSubmit = async () => {
+    const trimmedBody = newPost.body.trim()
+    const hasContent = trimmedBody || newPost.imgBodyUrl
+
+    if (!hasContent || isUploding || isSubmitting) return
+
+    try {
+      setIsSubmitting(true)
+      const savedPost = await onAddPost({
+        ...newPost,
+        body: trimmedBody,
+      })
+
+      if (savedPost) handleClose()
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const onUploadImg = async (ev) => {
+    const file = ev.target.files?.[0]
+    if (!file) return
+
     try {
       setIsUploding(true)
       const res = await uploadImg(ev)
-      setIsUploding(false)
       setNewPost((prev) => {
         return {
           ...prev,
@@ -60,27 +89,21 @@ export const CreatePostModal = ({
         }
       })
     } catch (err) {
-      setIsUploding(false)
       console.log(err)
+    } finally {
+      setIsUploding(false)
+      ev.target.value = ''
     }
   }
 
-  const onUploadVideo = async (ev) => {
-    try {
-      setIsUploding(true)
-      const res = await uploadVid(ev)
-      setIsUploding(false)
-      setNewPost((prev) => {
-        return {
-          ...prev,
-          videoBodyUrl: res.url,
-        }
-      })
-    } catch (err) {
-      setIsUploding(false)
-      console.log(err)
-    }
+  const removeImage = () => {
+    setNewPost((prev) => ({ ...prev, imgBodyUrl: null }))
   }
+
+  const isSubmitDisabled =
+    isUploding ||
+    isSubmitting ||
+    (!newPost.body.trim() && !newPost.imgBodyUrl)
 
   return (
     <section
@@ -89,7 +112,7 @@ export const CreatePostModal = ({
       }
       onClick={(ev) => {
         ev.stopPropagation()
-        toggleShowCreatePost()
+        handleClose()
       }}
     >
       <form
@@ -103,10 +126,13 @@ export const CreatePostModal = ({
         }}
       >
         <div className="title">
-          <h1>Create a post</h1>
-          <span className="close-icon" onClick={toggleShowCreatePost}>
+          <div>
+            <h1>Create a post</h1>
+            <p>Share an update with your network</p>
+          </div>
+          <button type="button" className="close-icon" onClick={handleClose}>
             <FontAwesomeIcon icon="fa-solid fa-x" />
-          </span>
+          </button>
         </div>
 
         <div className="name-container">
@@ -115,100 +141,63 @@ export const CreatePostModal = ({
           </div>
           <div className="name">
             <h2>{loggedInUser?.fullname}</h2>
+            <p>Posting to anyone</p>
           </div>
         </div>
 
         <div className="input-container">
           <textarea
-            required
-            ref={inputRef}
+            ref={textareaRef}
             onChange={handleChange}
             type="text"
             id="body"
             name="body"
-            value={newPost.txt}
+            value={newPost.body}
             placeholder="What do you want to talk about?"
           ></textarea>
         </div>
 
-        <div className="link-container">
-          <input
-            id="link"
-            name="link"
-            value={newPost.link}
-            onChange={handleChange}
-            type="text"
-            placeholder="Add a link here"
-          />
-        </div>
-
         <div className="is-loading-container">
-          <p>
-            {isUploding && (
-              <span>
-                <img src={LoadingGif} alt="" />
-              </span>
-            )}
-          </p>
-        </div>
-
-        <div className="container-video-body">
-          <div className="body-video">
-            {newPost.videoBodyUrl && (
-              <video width="100%" height="300" controls>
-                <source src={newPost.videoBodyUrl} type="video/mp4" />
-              </video>
-            )}
-          </div>
-        </div>
-
-        <div className="container-img-body">
-          <div className="body-img">
-            {newPost.imgBodyUrl && (
-              <img src={newPost.imgBodyUrl} alt="" className="img" />
-            )}
-          </div>
-        </div>
-
-        <div className="btns-add-container">
-          <div
-            className="cancel-btn btn"
-            onClick={() => {
-              setNewPost({
-                body: '',
-                imgBodyUrl: null,
-                videoBodyUrl: null,
-                title: '',
-                style: {
-                  textAlign: 'ltr',
-                },
-              })
-
-              toggleShowCreatePost()
-            }}
-          >
-            Cancel
-          </div>
-          {!newPost.videoBodyUrl && (
-            <div className="add-video-btn btn">
-              <label htmlFor="videoUrl" className="add-video-container">
-                <input
-                  onChange={onUploadVideo}
-                  id="videoUrl"
-                  type="file"
-                  name="videoUrl"
-                  accept="video/*"
-                  hidden
-                />
-                <p className="add-video-body">Add video</p>
-              </label>
-            </div>
+          {isUploding && (
+            <span>
+              <img src={LoadingGif} alt="Uploading media" />
+              Uploading media...
+            </span>
           )}
+        </div>
 
-          {!newPost.imgBodyUrl && (
-            <div className="add-img-btn btn">
-              <label htmlFor="imgUrl" className="add-img-container">
+        {newPost.imgBodyUrl && (
+          <div className="media-preview">
+            <div className="container-img-body">
+              <button
+                type="button"
+                className="remove-media-btn"
+                onClick={removeImage}
+              >
+                <FontAwesomeIcon icon="fa-solid fa-xmark" />
+              </button>
+              <div className="body-img">
+                <img src={newPost.imgBodyUrl} alt="" className="img" />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="modal-footer">
+          <ul className="composer-actions" aria-label="Post composer actions">
+            {!newPost.imgBodyUrl && (
+              <li className="icon-content">
+                <label
+                  htmlFor="imgUrl"
+                  className="action-btn"
+                  aria-label="Add photo"
+                  data-action="photo"
+                >
+                  <div className="filled"></div>
+                  <FontAwesomeIcon icon="fa-solid fa-image" />
+                </label>
                 <input
+                  ref={imageInputRef}
                   onChange={onUploadImg}
                   id="imgUrl"
                   type="file"
@@ -216,12 +205,19 @@ export const CreatePostModal = ({
                   accept="image/*"
                   hidden
                 />
-                <p className="add-img-body">Add photo</p>
-              </label>
-            </div>
-          )}
+                <div className="tooltip">Add photo</div>
+              </li>
+            )}
 
-          <button className="post-btn btn">Done</button>
+          </ul>
+
+          <button
+            type="submit"
+            className="primary-post-btn"
+            disabled={isSubmitDisabled}
+          >
+            {isSubmitting ? 'Posting...' : 'Post'}
+          </button>
         </div>
       </form>
     </section>

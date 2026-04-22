@@ -83,9 +83,6 @@ async function save(post) {
   const postToSave = {
     txt: post.body || post.txt,
     imgUrl: post.imgBodyUrl || post.imgUrl,
-    videoBodyUrl: post.videoBodyUrl,
-    link: post.link,
-    title: post.title,
   }
   const method = post._id ? 'put' : 'post'
   const endpoint = post._id ? ENDPOINTS.POST_BY_ID(post._id) : ENDPOINTS.POST_LIST

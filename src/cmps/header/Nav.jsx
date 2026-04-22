@@ -1,36 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 export const Nav = () => {
-  const THEME_STORAGE_KEY = 'theme'
   const { currPage } = useSelector((state) => state.postModule)
 
   const { loggedInUser } = useSelector((state) => state.userModule)
   const { unreadActivities } = useSelector((state) => state.activityModule)
   const { unreadMessages } = useSelector((state) => state.activityModule)
-
-  const getInitialTheme = () => {
-    if (typeof window === 'undefined') return 'dark'
-    const storedTheme = localStorage.getItem(THEME_STORAGE_KEY)
-    if (storedTheme === 'dark' || storedTheme === 'light') return storedTheme
-    return 'dark'
-  }
-
-  const [theme, setTheme] = useState(getInitialTheme)
-
-  useEffect(() => {
-    // Update body class for legacy SCSS
-    document.body.classList.toggle('theme-dark', theme === 'dark')
-    // Update html class for Tailwind dark mode
-    document.documentElement.classList.toggle('dark', theme === 'dark')
-    localStorage.setItem(THEME_STORAGE_KEY, theme)
-  }, [theme])
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
-  }
 
   return (
     <nav className="nav">
@@ -108,23 +85,6 @@ export const Nav = () => {
               <span className="txt">Me</span>
             </p>
           </Link>
-        </li>
-        <li className="theme-toggle">
-          <button
-            type="button"
-            className="theme-toggle-btn"
-            onClick={toggleTheme}
-            aria-label="Toggle dark mode"
-            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            <p>
-              <FontAwesomeIcon
-                className={`nav-icon ${theme === 'dark' ? 'curr-logo' : ''}`}
-                icon={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'}
-              />
-              <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
-            </p>
-          </button>
         </li>
         <li className="post-volunteer-btn">
           <p>
