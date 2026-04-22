@@ -32,6 +32,7 @@
 
   .post-social-skeleton {
     display: flex;
+    justify-content: space-between;
     gap: 10px;
   }
 
@@ -55,6 +56,10 @@
 
   .skeleton-line-medium {
     width: 62%;
+  }
+
+  .skeleton-line-short {
+    width: 42%;
     margin-bottom: 0;
   }
 

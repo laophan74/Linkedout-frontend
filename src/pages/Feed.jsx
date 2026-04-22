@@ -16,7 +16,7 @@ const Feed = () => {
 
   useEffect(() => {
     dispatch(setCurrPage('home'))
-    dispatch(setFilterByPosts({ page: 1, limit: 5 }))
+    dispatch(setFilterByPosts({ page: 1, limit: 1 }))
     dispatch(setNextPage(2))
 
     return () => {

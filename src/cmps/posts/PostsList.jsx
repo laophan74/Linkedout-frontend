@@ -1,99 +1,78 @@
-import { PostPreview } from './post-preview/PostPreview'
-import { useDispatch, useSelector } from 'react-redux'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import loadingGif from '../../assets/imgs/loading-gif.gif'
-import { addPosts, setNextPage } from '../../store/actions/postActions'
+import { useDispatch, useSelector } from 'react-redux'
+import { setFilterByPosts } from '../../store/actions/postActions'
+import { PostPreview } from './post-preview/PostPreview'
 
-const INITIAL_VISIBLE_POSTS = 1
-const PAGE_BATCH_SIZE = 5
+const INITIAL_POST_COUNT = 1
+const NEXT_BATCH_SIZE = 5
 
 export const PostsList = () => {
   const dispatch = useDispatch()
-  const [visibleCount, setVisibleCount] = useState(0)
-  const initialBatchTimeoutRef = useRef(null)
-  const prevPostsLengthRef = useRef(0)
+  const requestedInitialExpansionRef = useRef(false)
+  const [loadingPlaceholderCount, setLoadingPlaceholderCount] = useState(
+    INITIAL_POST_COUNT
+  )
 
-  const { posts, pageNumber, isPostsLoading, postsLength, currPage } = useSelector(
+  const { posts, isPostsLoading, postsLength, currPage, filterByPosts } = useSelector(
     (state) => state.postModule
   )
 
   const isFeedPage = currPage === 'home'
-  const visiblePosts = isFeedPage ? posts.slice(0, visibleCount) : posts
 
-  const onLoadNextPage = useCallback(() => {
-    if (!isFeedPage) return
-    if (isPostsLoading) return
-
-    if (visibleCount < posts.length) {
-      setVisibleCount((currentVisibleCount) =>
-        Math.min(currentVisibleCount + PAGE_BATCH_SIZE, posts.length)
+  const requestMorePosts = useCallback(
+    (nextLimit, placeholderCount) => {
+      setLoadingPlaceholderCount(placeholderCount)
+      dispatch(
+        setFilterByPosts({
+          ...filterByPosts,
+          page: 1,
+          limit: nextLimit,
+        })
       )
-      return
-    }
-
-    if (!postsLength && !posts?.length) return
-    if (postsLength === posts?.length) return
-
-    dispatch(addPosts())
-    dispatch(setNextPage())
-  }, [dispatch, isFeedPage, isPostsLoading, posts.length, postsLength, visibleCount])
+    },
+    [dispatch, filterByPosts]
+  )
 
   useEffect(() => {
     if (!isFeedPage) {
-      setVisibleCount(posts.length)
-      prevPostsLengthRef.current = posts.length
+      setLoadingPlaceholderCount(0)
+      requestedInitialExpansionRef.current = false
       return
-    }
-
-    if (initialBatchTimeoutRef.current) {
-      clearTimeout(initialBatchTimeoutRef.current)
-      initialBatchTimeoutRef.current = null
     }
 
     if (!posts.length) {
-      setVisibleCount(0)
-      prevPostsLengthRef.current = 0
+      setLoadingPlaceholderCount(INITIAL_POST_COUNT)
+      requestedInitialExpansionRef.current = false
       return
     }
 
-    const prevLength = prevPostsLengthRef.current
-    const hasNewBatch = posts.length > prevLength
-
-    if (prevLength === 0) {
-      setVisibleCount(INITIAL_VISIBLE_POSTS)
-      initialBatchTimeoutRef.current = setTimeout(() => {
-        setVisibleCount(Math.min(PAGE_BATCH_SIZE, posts.length))
-      }, 220)
-    } else if (hasNewBatch) {
-      setVisibleCount(posts.length)
-    } else {
-      setVisibleCount((currentVisibleCount) =>
-        Math.min(currentVisibleCount || PAGE_BATCH_SIZE, posts.length)
-      )
+    if (posts.length === 1 && !isPostsLoading && !requestedInitialExpansionRef.current) {
+      requestedInitialExpansionRef.current = true
+      const remainingPosts = Math.max(0, (postsLength || 0) - 1)
+      const placeholderCount = Math.min(NEXT_BATCH_SIZE, remainingPosts || NEXT_BATCH_SIZE)
+      requestMorePosts(INITIAL_POST_COUNT + NEXT_BATCH_SIZE, placeholderCount)
+      return
     }
 
-    prevPostsLengthRef.current = posts.length
-
-    return () => {
-      if (initialBatchTimeoutRef.current) {
-        clearTimeout(initialBatchTimeoutRef.current)
-        initialBatchTimeoutRef.current = null
-      }
+    if (!isPostsLoading) {
+      setLoadingPlaceholderCount(0)
     }
-  }, [isFeedPage, posts])
+  }, [isFeedPage, isPostsLoading, posts.length, postsLength, requestMorePosts])
 
   useEffect(() => {
     if (!isFeedPage) return
 
     const handleScroll = () => {
       if (isPostsLoading) return
-      if (visibleCount >= postsLength && visibleCount >= posts.length) return
+      if (!postsLength || posts.length >= postsLength) return
 
       if (
         window.scrollY + window.innerHeight + 160 >=
         document.documentElement.scrollHeight
       ) {
-        onLoadNextPage()
+        const remainingPosts = postsLength - posts.length
+        const nextBatchSize = Math.min(NEXT_BATCH_SIZE, remainingPosts)
+        requestMorePosts(posts.length + nextBatchSize, nextBatchSize)
       }
     }
 
@@ -101,33 +80,19 @@ export const PostsList = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [isFeedPage, isPostsLoading, onLoadNextPage, pageNumber, posts?.length, postsLength, visibleCount])
+  }, [isFeedPage, isPostsLoading, posts.length, postsLength, requestMorePosts])
 
   return (
     <section className="posts-list">
-      {!posts.length && isPostsLoading && (
-        <div className="posts-list-loader">
-          <img className="loading-gif" src={loadingGif} alt="Loading posts" />
-        </div>
-      )}
-
-      {visiblePosts.map((post, idx) => (
-        <PostPreview
-          key={post._id + idx}
-          post={post}
-          loadPriority={idx === 0 ? 'primary' : 'secondary'}
-        />
+      {posts.map((post, idx) => (
+        <PostPreview key={post._id + idx} post={post} />
       ))}
 
-      {!!posts.length && isPostsLoading && posts?.length < postsLength && (
-        <div className="load-more">
-          <span className="gif-container">
-            <img className="loading-gif" src={loadingGif} alt="Loading more posts" />
-          </span>
-        </div>
-      )}
+      {Array.from({ length: loadingPlaceholderCount }).map((_, idx) => (
+        <PostPreview key={`post-loading-${idx}`} isLoading />
+      ))}
 
-      {!!posts.length && posts?.length === postsLength && (
+      {!!posts.length && !isPostsLoading && postsLength === posts.length && (
         <div className="load-more">
           <p>No more posts</p>
         </div>

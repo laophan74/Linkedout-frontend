@@ -13,8 +13,12 @@ export const Posts = () => {
     if (currPage === 'home' && !filterByPosts?.limit) return
 
     dispatch(loadPosts())
-    dispatch(getPostsLength())
   }, [currPage, dispatch, filterByPosts?.page, filterByPosts?.limit, filterByPosts?.txt])
+
+  useEffect(() => {
+    if (!currPage) return
+    dispatch(getPostsLength())
+  }, [currPage, dispatch, filterByPosts?.txt, filterByPosts?.userId])
 
   return (
     <section className="posts">

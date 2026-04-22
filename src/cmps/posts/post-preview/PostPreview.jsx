@@ -1,30 +1,22 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useDispatch, useSelector } from 'react-redux'
+import { ImgPreview } from '../../profile/ImgPreview'
+import { saveActivity } from '../../../store/actions/activityAction'
+import { likePost, removePost } from '../../../store/actions/postActions'
+import { useEffect, useState } from 'react'
 import { PostActions } from './PostActions'
 import { PostBody } from './PostBody'
 import { PostHeader } from './PostHeader'
-import { SocialDetails } from './SocialDetails'
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { userService } from '../../../services/user/userService'
-
 import { PostMenu } from './PostMenu'
-import { removePost, likePost } from '../../../store/actions/postActions'
-import { saveActivity } from '../../../store/actions/activityAction'
-import { ImgPreview } from '../../profile/ImgPreview'
+import { SocialDetails } from './SocialDetails'
 
-export const PostPreview = ({ post, loadPriority = 'secondary' }) => {
+export const PostPreview = ({ post, isLoading = false }) => {
   const dispatch = useDispatch()
-
-  const [userPost, setUserPost] = useState(
-    typeof post?.createdBy === 'object' ? post.createdBy : null
-  )
   const [isShowMenu, setIsShowMenu] = useState(false)
   const [isShowImgPreview, setIsShowImgPreview] = useState(false)
   const [isLiked, setIsLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(0)
   const [currentPost, setCurrentPost] = useState(post)
-  const [isBodyReady, setIsBodyReady] = useState(false)
-  const [isSocialReady, setIsSocialReady] = useState(false)
 
   const { loggedInUser } = useSelector((state) => state.userModule)
 
@@ -35,57 +27,16 @@ export const PostPreview = ({ post, loadPriority = 'secondary' }) => {
   }
 
   useEffect(() => {
-    let isMounted = true
-
-    const loadPostUser = async () => {
-      const postUserFromPost =
-        typeof post?.createdBy === 'object' ? post.createdBy : null
-
-      if (postUserFromPost) {
-        setUserPost(postUserFromPost)
-        return
-      }
-
-      if (!post?.userId) return
-
-      const loadedUserPost = await userService.getById(post.userId)
-      if (isMounted) setUserPost(loadedUserPost)
-    }
-
-    if (!post || !loggedInUser) return undefined
-
-    setUserPost(typeof post?.createdBy === 'object' ? post.createdBy : null)
-    loadPostUser()
+    if (!post || !loggedInUser) return
 
     const userHasLiked = (post.reactions || post.likes || []).some(
       (reaction) => getReactionUserId(reaction) === loggedInUser._id
     )
+
     setIsLiked(userHasLiked)
     setLikeCount((post.reactions || post.likes || []).length)
     setCurrentPost(post)
-
-    return () => {
-      isMounted = false
-    }
   }, [loggedInUser, post])
-
-  useEffect(() => {
-    setIsBodyReady(false)
-    setIsSocialReady(false)
-
-    if (!userPost) return undefined
-
-    const bodyDelay = loadPriority === 'primary' ? 80 : 130
-    const socialDelay = loadPriority === 'primary' ? 160 : 240
-
-    const bodyTimeout = setTimeout(() => setIsBodyReady(true), bodyDelay)
-    const socialTimeout = setTimeout(() => setIsSocialReady(true), socialDelay)
-
-    return () => {
-      clearTimeout(bodyTimeout)
-      clearTimeout(socialTimeout)
-    }
-  }, [loadPriority, post._id, userPost])
 
   const toggleMenu = () => {
     setIsShowMenu((prevVal) => !prevVal)
@@ -168,47 +119,48 @@ export const PostPreview = ({ post, loadPriority = 'secondary' }) => {
     navigator.clipboard.writeText(postUrl)
   }
 
+  if (isLoading) {
+    return (
+      <section className="post-preview post-preview-loading bg-white border-2 border-gray-200 rounded-lg">
+        <PostHeader isLoading />
+        <div className="post-content-skeleton">
+          <span className="skeleton-line skeleton-line-long"></span>
+          <span className="skeleton-line skeleton-line-medium"></span>
+          <span className="skeleton-line skeleton-line-short"></span>
+        </div>
+        <div className="post-social-skeleton">
+          <span className="skeleton-pill"></span>
+          <span className="skeleton-pill"></span>
+        </div>
+      </section>
+    )
+  }
+
+  const userPost = typeof post?.createdBy === 'object' ? post.createdBy : null
+
   return (
     <section className="post-preview bg-white border-2 border-gray-200 rounded-lg">
       <div className="menu" onClick={toggleMenu}>
         <FontAwesomeIcon className="dots-icon text-gray-500" icon="fa-solid fa-ellipsis" />
       </div>
       <PostHeader post={post} userPost={userPost} />
-
-      {isBodyReady ? (
-        <PostBody
-          body={post.body}
-          imgUrl={post.imgBodyUrl}
-          videoUrl={post.videoBodyUrl}
-          link={post.link}
-          title={post.title}
-          toggleShowImgPreview={toggleShowImgPreview}
-        />
-      ) : (
-        <div className="post-content-skeleton">
-          <span className="skeleton-line skeleton-line-long"></span>
-          <span className="skeleton-line skeleton-line-medium"></span>
-        </div>
-      )}
-
-      {isSocialReady ? (
-        <>
-          <SocialDetails comments={post.comments} post={currentPost} />
-          <hr className="border-gray-200" />
-          <PostActions
-            post={currentPost}
-            onLikePost={onLikePost}
-            loggedInUser={loggedInUser}
-            onSharePost={onSharePost}
-            isLiked={isLiked}
-          />
-        </>
-      ) : (
-        <div className="post-social-skeleton">
-          <span className="skeleton-pill"></span>
-          <span className="skeleton-pill"></span>
-        </div>
-      )}
+      <PostBody
+        body={post.body}
+        imgUrl={post.imgBodyUrl}
+        videoUrl={post.videoBodyUrl}
+        link={post.link}
+        title={post.title}
+        toggleShowImgPreview={toggleShowImgPreview}
+      />
+      <SocialDetails comments={post.comments} post={currentPost} />
+      <hr className="border-gray-200" />
+      <PostActions
+        post={currentPost}
+        onLikePost={onLikePost}
+        loggedInUser={loggedInUser}
+        onSharePost={onSharePost}
+        isLiked={isLiked}
+      />
 
       {isShowMenu && (
         <PostMenu
