@@ -27,6 +27,7 @@
         a {
           p {
             position: relative;
+
             .number {
               position: absolute;
               top: 0;
@@ -36,7 +37,6 @@
               width: 17px;
               height: 17px;
               background-color: rgb(204 16 22);
-
               display: flex;
               justify-content: center;
               align-items: center;
@@ -50,6 +50,7 @@
 
         p {
           transition: rotate 0.3s;
+
           .curr-logo {
             animation-name: scaleinsoft;
             animation-duration: 0.3s;
@@ -78,23 +79,97 @@
     }
 
     .me-btn {
+      position: relative;
       border-right: 1px solid $border;
 
-      p {
-        .profile-icon {
-          width: 25px;
-          height: 25px;
-          background-color: burlywood;
-          border-radius: 50%;
-          object-fit: cover;
+      &.menu-open {
+        color: #191919;
+      }
+
+      .me-trigger {
+        min-width: 84px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 1px;
+        padding: 0 10px;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+          color: #000000e6;
+        }
+      }
+
+      .profile-icon {
+        width: 25px;
+        height: 25px;
+        background-color: burlywood;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .avatar-wrap,
+      .me-trigger-label,
+      .txt,
+      .down-icon {
+        display: flex;
+        align-items: center;
+      }
+
+      .me-trigger-label {
+        gap: 4px;
+      }
+
+      .down-icon {
+        font-size: 11px;
+        transition: transform 0.2s ease;
+
+        &.open {
+          transform: rotate(180deg);
+        }
+      }
+
+      .me-dropdown {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        min-width: 180px;
+        padding: 8px;
+        border: 1px solid $border;
+        border-radius: 12px;
+        background: white;
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+        z-index: 30;
+      }
+
+      .dropdown-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        color: #333;
+        font-size: 0.95rem;
+        text-align: left;
+        cursor: pointer;
+
+        &:hover {
+          background: #0a66c2;
+          color: white;
         }
 
-        span {
-          display: flex;
-          align-items: center;
-          .down-icon {
-            padding-left: 3px;
-          }
+        svg {
+          width: 14px;
+          flex-shrink: 0;
         }
       }
     }
@@ -105,80 +180,22 @@
   .nav {
     ul {
       li {
-        &.current-btn {
-        }
-
-        a {
-        }
-
-        &.volunteering-btn {
-          display: none;
-        }
+        &.volunteering-btn,
         &.post-volunteer-btn {
           display: none;
-        }
-      }
-
-      p {
-        &:hover {
-        }
-
-        .nav-icon {
         }
       }
 
       .me-btn {
         border-right: unset;
-        p {
-          .profile-icon {
-          }
-
-          span {
-            .down-icon {
-            }
-          }
-        }
       }
     }
   }
 }
+
 @media (max-width: 905px) {
   .nav {
     width: min-content;
-    ul {
-      li {
-        &.current-btn {
-        }
-
-        a {
-        }
-
-        &.volunteering-btn {
-        }
-        &.post-volunteer-btn {
-        }
-      }
-
-      p {
-        &:hover {
-        }
-
-        .nav-icon {
-        }
-      }
-
-      .me-btn {
-        p {
-          .profile-icon {
-          }
-
-          span {
-            .down-icon {
-            }
-          }
-        }
-      }
-    }
   }
 }
 
@@ -186,50 +203,23 @@
   .nav {
     ul {
       li {
-        &.current-btn {
-        }
-
-        a {
-        }
-
-        &.volunteering-btn {
-          display: none;
-        }
+        &.volunteering-btn,
         &.post-volunteer-btn {
           display: none;
         }
       }
 
-      p {
-        &:hover {
-        }
-
-        .nav-icon {
-        }
-      }
-
       .me-btn {
         border-right: unset;
-        p {
-          .profile-icon {
-          }
-
-          span {
-            .down-icon {
-            }
-          }
-        }
       }
     }
   }
 }
+
 @media (max-width: 545px) {
   .nav {
     ul {
       li {
-        &.current-btn {
-        }
-
         &.notifications,
         &.messaging {
           a {
@@ -242,16 +232,6 @@
           }
         }
 
-        &.me-btn {
-          a {
-            p {
-              .txt {
-                display: none;
-              }
-            }
-          }
-        }
-
         a {
           p {
             span {
@@ -259,31 +239,25 @@
             }
           }
         }
-
-        &.volunteering-btn {
-        }
-        &.post-volunteer-btn {
-        }
       }
 
       p {
         min-width: 65px;
-        &:hover {
-        }
-
-        .nav-icon {
-        }
       }
 
       .me-btn {
-        p {
-          .profile-icon {
-          }
+        .me-trigger {
+          min-width: 65px;
+        }
 
-          span {
-            .down-icon {
-            }
-          }
+        .txt,
+        .down-icon {
+          display: none;
+        }
+
+        .me-dropdown {
+          right: -6px;
+          min-width: 160px;
         }
       }
     }
@@ -300,7 +274,6 @@
               .number {
                 height: 17px;
                 right: 3px;
-                // top: 5px;
               }
             }
           }
@@ -316,64 +289,31 @@
             }
           }
         }
-
-        &.current-btn {
-        }
-
-        &.me-btn {
-          a {
-            p {
-              .txt {
-                display: none;
-              }
-            }
-          }
-        }
-
-        a {
-          p {
-            span {
-              display: none;
-            }
-          }
-        }
-
-        &.volunteering-btn {
-        }
-        &.post-volunteer-btn {
-        }
       }
 
       p {
         min-width: 50px;
-        &:hover {
-        }
-
-        .nav-icon {
-        }
       }
 
       .me-btn {
-        p {
-          .profile-icon {
-          }
+        .me-trigger {
+          min-width: 50px;
+          padding: 0 8px;
+        }
 
-          span {
-            .down-icon {
-            }
-          }
+        .txt,
+        .down-icon {
+          display: none;
         }
       }
     }
   }
 }
+
 @media (max-width: 290px) {
   .nav {
     ul {
       li {
-        &.current-btn {
-        }
-
         &.notifications,
         &.messaging {
           a {
@@ -384,49 +324,26 @@
             }
           }
         }
-
-        &.me-btn {
-          a {
-            p {
-              .txt {
-                display: none;
-              }
-            }
-          }
-        }
-
-        a {
-          p {
-            span {
-              display: none;
-            }
-          }
-        }
-
-        &.volunteering-btn {
-        }
-        &.post-volunteer-btn {
-        }
       }
 
       p {
         min-width: 40px;
-        &:hover {
-        }
-
-        .nav-icon {
-        }
       }
 
       .me-btn {
-        p {
-          .profile-icon {
-          }
+        .me-trigger {
+          min-width: 40px;
+          padding: 0 4px;
+        }
 
-          span {
-            .down-icon {
-            }
-          }
+        .txt,
+        .down-icon {
+          display: none;
+        }
+
+        .me-dropdown {
+          right: -12px;
+          min-width: 148px;
         }
       }
     }
