@@ -11,7 +11,7 @@ export function Logo() {
         <span className="flex items-center justify-center">T</span>
       </div>
       {/* Uncomment below for full logo with text */}
-      {/* <span className="text-[22px] font-bold ml-2.5 text-[#333] md:text-[18px]">TravelsIn</span> */}
+      {/* <span className="text-[22px] font-bold ml-2.5 text-[#333] md:text-[18px]">Linkedout</span> */}
     </div>
   )
 }

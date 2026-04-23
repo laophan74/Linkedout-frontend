@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a social media web-app inspired by LinkedIn, called **Linkedout**. The application allows users to create posts, like, comment, and interact with other users, focusing on providing an interactive and modern UI/UX for social networking purposes.
+This project is a social media web-app inspired by Linkedout, called **Linkedout**. The application allows users to create posts, like, comment, and interact with other users, focusing on providing an interactive and modern UI/UX for social networking purposes.
 
 For the live project, visit: [Linkedout on Vercel](https://linkedout-frontend-laophan74.vercel.app/#/)
 

@@ -172,7 +172,7 @@ function Profile() {
           <div className="bg" style={{ backgroundImage: `url(${user.bg})` }}>
             <div className="profile-top-actions">
               {!isLoggedInUserProfile && (
-                <button type="button" className="linkedin-badge" aria-label="LinkedIn style badge">
+                <button type="button" className="linkedin-badge" aria-label="Linkedout style badge">
                   in
                 </button>
               )}

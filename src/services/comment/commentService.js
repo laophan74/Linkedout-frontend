@@ -1,5 +1,6 @@
 import { httpService } from '../httpService'
 import { API_CONFIG } from '../../config/constants'
+import { userService } from '../user/userService'
 
 const ENDPOINTS = API_CONFIG.ENDPOINTS
 
@@ -19,7 +20,10 @@ function mapBackendReply(reply) {
     commentId: reply.commentId || reply.comment?._id || reply.comment,
     reactions: reply.likes || reply.reactions || [],
     likes: reply.likes || reply.reactions || [],
-    createdBy: reply.createdBy,
+    createdBy:
+      typeof reply.createdBy === 'object'
+        ? userService.normalizeUser(reply.createdBy)
+        : reply.createdBy,
   }
 }
 
@@ -40,7 +44,10 @@ function mapBackendComment(comment) {
     reactions: comment.likes || comment.reactions || [],
     likes: comment.likes || comment.reactions || [],
     replies: (comment.replies || []).map(mapBackendReply),
-    createdBy: comment.createdBy,
+    createdBy:
+      typeof comment.createdBy === 'object'
+        ? userService.normalizeUser(comment.createdBy)
+        : comment.createdBy,
   }
 }
 

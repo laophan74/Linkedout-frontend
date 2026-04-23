@@ -129,7 +129,7 @@ function MyNetwork() {
             <h1>Connect with people who can help you grow</h1>
             <p>
               Discover members from your broader community and keep your
-              network active the same way LinkedIn's My Network page does.
+              network active the same way Linkedout's My Network page does.
             </p>
           </div>
 
