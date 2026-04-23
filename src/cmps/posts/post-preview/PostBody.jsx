@@ -1,3 +1,7 @@
+import { useState } from 'react'
+
+const BODY_PREVIEW_LENGTH = 220
+
 export function PostBody({
   body,
   imgUrl,
@@ -5,7 +9,17 @@ export function PostBody({
   toggleShowImgPreview,
   link,
   title,
+  enableBodyTruncate = false,
 }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  const shouldTruncate =
+    enableBodyTruncate && body && body.length > BODY_PREVIEW_LENGTH
+  const displayedBody =
+    shouldTruncate && !isExpanded
+      ? body.slice(0, BODY_PREVIEW_LENGTH).trimEnd()
+      : body
+
   return (
     <section className="post-body">
       {title && (
@@ -15,7 +29,18 @@ export function PostBody({
       )}
       {body && (
         <div className="post-text">
-          <p className="text-gray-500">{body}</p>
+          <p className="text-gray-500">
+            {displayedBody}
+            {shouldTruncate && !isExpanded && (
+              <button
+                type="button"
+                className="read-more-btn"
+                onClick={() => setIsExpanded(true)}
+              >
+                ...read more
+              </button>
+            )}
+          </p>
         </div>
       )}
       {link && (

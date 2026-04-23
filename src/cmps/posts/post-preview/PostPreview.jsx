@@ -151,6 +151,7 @@ export const PostPreview = ({ post, isLoading = false }) => {
         link={post.link}
         title={post.title}
         toggleShowImgPreview={toggleShowImgPreview}
+        enableBodyTruncate
       />
       <SocialDetails comments={post.comments} post={currentPost} />
       <hr className="border-gray-200" />

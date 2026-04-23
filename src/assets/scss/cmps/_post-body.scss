@@ -1,19 +1,48 @@
 .post-body {
-  padding: 10px 0 0 0;
+  padding: 12px 0 0 0;
 
   .title {
     h1 {
-      font-size: 24px;
-      text-align: center;
-      padding: 0 15px;
+      color: #1f2328;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.35;
+      padding: 0 18px;
+      text-align: left;
     }
   }
+
   .post-text {
-    padding: 0 15px;
+    padding: 0 18px;
+
     p {
-      margin: 10px 0;
-      font-size: 20px;
+      color: #22272b;
+      font-size: 0.98rem;
+      font-weight: 400;
+      letter-spacing: 0.002em;
+      line-height: 1.68;
+      margin: 10px 0 12px;
+      text-wrap: pretty;
+      word-break: break-word;
     }
+
+    .read-more-btn {
+      background: transparent;
+      border: 0;
+      color: #525964;
+      cursor: pointer;
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-left: 4px;
+      padding: 0;
+
+      &:hover {
+        color: #0a66c2;
+        text-decoration: underline;
+      }
+    }
+
     .rtl {
       text-align: right;
     }
@@ -25,7 +54,7 @@
 
   .link {
     cursor: pointer;
-    padding: 5px 15px;
+    padding: 2px 18px 8px;
   }
 
   .img-container {
@@ -46,11 +75,23 @@
   .post-body {
     .title {
       h1 {
+        font-size: 1.02rem;
+        line-height: 1.4;
+        padding: 0 14px;
       }
     }
+
     .post-text {
       p {
+        font-size: 0.93rem;
+        line-height: 1.62;
+        margin: 8px 0 10px;
       }
+
+      .read-more-btn {
+        font-size: 0.88rem;
+      }
+
       .rtl {
       }
 
@@ -61,6 +102,8 @@
     .link {
       width: 100%;
       color: rgb(103, 103, 228);
+      padding: 2px 14px 8px;
+
       a {
       }
     }
