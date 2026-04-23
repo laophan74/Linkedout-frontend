@@ -73,7 +73,13 @@ async function save(chat) {
 function mapBackendChat(chat, loggedInUserId) {
   if (!chat) return chat
 
-  const participants = Array.isArray(chat.participants) ? chat.participants : []
+  const participants = Array.isArray(chat.participants)
+    ? chat.participants.map((participant) =>
+        typeof participant === 'object'
+          ? userService.normalizeUser(participant)
+          : participant
+      )
+    : []
   const participantIds = participants.map((p) => p?._id || p).filter(Boolean)
 
   const userId = participantIds[0] || chat.userId

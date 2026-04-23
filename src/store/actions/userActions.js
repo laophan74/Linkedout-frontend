@@ -74,9 +74,11 @@ export function signup(userCred) {
     try {
       const user = await userService.signup(userCred);
       dispatch({ type: "SIGNUP", user });
+      socketService.emit("setUserSocket", user._id);
       return user;
     } catch (err) {
       console.log("cannot signup:", err);
+      throw err;
     }
   };
 }

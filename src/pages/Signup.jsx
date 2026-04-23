@@ -4,6 +4,69 @@ import { login, signup, logout } from '../store/actions/userActions'
 import { useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Logo } from '../assets/imgs/Logo'
+import { VALIDATION_RULES } from '../config/constants'
+
+const normalizeCred = (cred, isSignin) => {
+  const normalizedCred = {
+    username: cred.username.trim(),
+    email: cred.email.trim(),
+    password: cred.password,
+    fullname: cred.fullname.trim(),
+  }
+
+  if (isSignin) {
+    delete normalizedCred.fullname
+    delete normalizedCred.email
+  }
+  return normalizedCred
+}
+
+const validateCred = (cred, isSignin) => {
+  const { username, email, password, fullname } = normalizeCred(cred, isSignin)
+
+  if (!username) return 'Username is required.'
+  if (!VALIDATION_RULES.USERNAME.PATTERN.test(username)) {
+    return 'Username can only contain letters, numbers, and underscores.'
+  }
+  if (username.length < VALIDATION_RULES.USERNAME.MIN_LENGTH) {
+    return `Username must be at least ${VALIDATION_RULES.USERNAME.MIN_LENGTH} characters.`
+  }
+  if (username.length > VALIDATION_RULES.USERNAME.MAX_LENGTH) {
+    return `Username must be at most ${VALIDATION_RULES.USERNAME.MAX_LENGTH} characters.`
+  }
+  if (!password) return 'Password is required.'
+  if (password.length < VALIDATION_RULES.PASSWORD.MIN_LENGTH) {
+    return `Password must be at least ${VALIDATION_RULES.PASSWORD.MIN_LENGTH} characters.`
+  }
+  if (password.length > VALIDATION_RULES.PASSWORD.MAX_LENGTH) {
+    return `Password must be at most ${VALIDATION_RULES.PASSWORD.MAX_LENGTH} characters.`
+  }
+
+  if (!isSignin) {
+    if (!email) return 'Email is required.'
+    if (!VALIDATION_RULES.EMAIL.PATTERN.test(email)) {
+      return 'Please enter a valid email address.'
+    }
+    if (!fullname) return 'Full name is required.'
+    if (fullname.length < VALIDATION_RULES.FULLNAME.MIN_LENGTH) {
+      return `Full name must be at least ${VALIDATION_RULES.FULLNAME.MIN_LENGTH} characters.`
+    }
+    if (fullname.length > VALIDATION_RULES.FULLNAME.MAX_LENGTH) {
+      return `Full name must be at most ${VALIDATION_RULES.FULLNAME.MAX_LENGTH} characters.`
+    }
+  }
+
+  return ''
+}
+
+const getErrorMessage = (err, fallbackText) => {
+  const serverMessage = err?.response?.data?.message || err?.message
+  if (!serverMessage) return fallbackText
+  if (typeof serverMessage === 'string' && serverMessage.startsWith('Error: ')) {
+    return serverMessage.slice(7)
+  }
+  return typeof serverMessage === 'string' ? serverMessage : fallbackText
+}
 
 export const Signup = () => {
   const dispatch = useDispatch()
@@ -12,9 +75,12 @@ export const Signup = () => {
   const [signin, setIsSignin] = useState(true)
   const [cred, setCred] = useState({
     username: '',
+    email: '',
     password: '',
     fullname: '',
   })
+  const [msg, setMsg] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { loggedInUser } = useSelector((state) => state.userModule)
 
@@ -22,16 +88,33 @@ export const Signup = () => {
     const field = target.name
     let value = target.type === 'number' ? +target.value || '' : target.value
     setCred((prevCred) => ({ ...prevCred, [field]: value }))
+    if (msg) setMsg('')
   }
 
   const cleanFields = () =>
-    setCred(() => ({ username: '', password: '', fullname: '' }))
+    setCred(() => ({ username: '', email: '', password: '', fullname: '' }))
 
   const doLogin = async () => {
-    dispatch(login(cred)).then((user) => {
-      if (user) history.push('/main/feed')
-    })
-    cleanFields()
+    const validationError = validateCred(cred, true)
+    if (validationError) {
+      setMsg(validationError)
+      return
+    }
+
+    setIsSubmitting(true)
+    setMsg('')
+
+    try {
+      const user = await dispatch(login(normalizeCred(cred, true)))
+      if (user) {
+        cleanFields()
+        history.push('/main/feed')
+      }
+    } catch (err) {
+      setMsg(getErrorMessage(err, 'Unable to sign in right now.'))
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const doLogout = async () => {
@@ -40,10 +123,26 @@ export const Signup = () => {
   }
 
   const doSignup = async () => {
-    dispatch(signup(cred)).then((user) => {
-      if (user) history.push('/main/feed')
-    })
-    cleanFields()
+    const validationError = validateCred(cred, false)
+    if (validationError) {
+      setMsg(validationError)
+      return
+    }
+
+    setIsSubmitting(true)
+    setMsg('')
+
+    try {
+      const user = await dispatch(signup(normalizeCred(cred, false)))
+      if (user) {
+        cleanFields()
+        history.push('/main/feed')
+      }
+    } catch (err) {
+      setMsg(getErrorMessage(err, 'Unable to create your account right now.'))
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const doSubmit = () => {
@@ -55,6 +154,8 @@ export const Signup = () => {
 
   const toggle = () => {
     setIsSignin((prevVal) => !prevVal)
+    setMsg('')
+    setIsSubmitting(false)
   }
 
   if (loggedInUser) {
@@ -98,7 +199,7 @@ export const Signup = () => {
       <div className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
-            <h1>{signin ? 'Welcome Back' : 'Join TravelsIn'}</h1>
+            <h1>{signin ? 'Welcome Back' : 'Join Linkedout'}</h1>
             <p>Connect with travelers around the world</p>
           </div>
           
@@ -122,6 +223,26 @@ export const Signup = () => {
                     id="fullname"
                     name="fullname"
                     value={cred.fullname}
+                    minLength={VALIDATION_RULES.FULLNAME.MIN_LENGTH}
+                    maxLength={VALIDATION_RULES.FULLNAME.MAX_LENGTH}
+                  />
+                </div>
+              </div>
+            )}
+
+            {!signin && (
+              <div className="input-group">
+                <label htmlFor="email">Email</label>
+                <div className="input-wrapper">
+                  <FontAwesomeIcon icon="envelope" className="input-icon" />
+                  <input
+                    required
+                    onChange={handleChange}
+                    type="email"
+                    placeholder="Enter your email"
+                    id="email"
+                    name="email"
+                    value={cred.email}
                   />
                 </div>
               </div>
@@ -139,6 +260,8 @@ export const Signup = () => {
                   value={cred.username}
                   placeholder="Enter your username"
                   required
+                  minLength={VALIDATION_RULES.USERNAME.MIN_LENGTH}
+                  maxLength={VALIDATION_RULES.USERNAME.MAX_LENGTH}
                 />
               </div>
             </div>
@@ -155,9 +278,26 @@ export const Signup = () => {
                   value={cred.password}
                   placeholder="Enter your password"
                   required
+                  minLength={VALIDATION_RULES.PASSWORD.MIN_LENGTH}
+                  maxLength={VALIDATION_RULES.PASSWORD.MAX_LENGTH}
                 />
               </div>
             </div>
+
+            {!signin && (
+              <div className="forgot-password">
+                <p>
+                  Use your full name, email, a username with letters, numbers, or underscores, and a password of at least 6 characters.
+                </p>
+              </div>
+            )}
+
+            {msg && (
+              <div className="error-message">
+                <FontAwesomeIcon icon="exclamation-circle" />
+                <p>{msg}</p>
+              </div>
+            )}
             
             {signin && (
               <div className="forgot-password">
@@ -167,8 +307,8 @@ export const Signup = () => {
               </div>
             )}
             
-            <button type="submit" className="auth-button">
-              {signin ? 'Sign In' : 'Create Account'}
+            <button type="submit" className="auth-button" disabled={isSubmitting}>
+              {signin ? (isSubmitting ? 'Signing In...' : 'Sign In') : (isSubmitting ? 'Creating Account...' : 'Create Account')}
             </button>
             
             <div className="mode-toggle">
@@ -190,7 +330,7 @@ export const Signup = () => {
         </div>
         
         <div className="auth-features">
-          <h2>Why Join TravelsIn?</h2>
+          <h2>Why Join Linkedout?</h2>
           <div className="features-list">
             <div className="feature-item">
               <FontAwesomeIcon icon="user-friends" className="feature-icon" />

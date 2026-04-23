@@ -51,7 +51,7 @@ export const RightSideBar = () => {
       <section className="linkedin-sidebar-card linkedin-news-card">
         <div className="news-header">
           <div>
-            <h2>LinkedIn News</h2>
+            <h2>Linkedout News</h2>
             <p>Top stories</p>
           </div>
 

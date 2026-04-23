@@ -137,7 +137,7 @@ export const Home = (props) => {
               </button>
               
               <div className="login-footer">
-                <span>New to TravelsIn?</span>
+                <span>New to Linkedout?</span>
                 <button 
                   className="create-account-link"
                   onClick={() => history.push(`/signup`)}
@@ -172,7 +172,7 @@ export const Home = (props) => {
       
       <footer className="home-footer">
         <div className="footer-content">
-          <p>&copy; 2023 TravelsIn. All rights reserved.</p>
+          <p>&copy; 2023 Linkedout. All rights reserved.</p>
           <div className="footer-links">
             <button onClick={() => {}}>About</button>
             <button onClick={() => {}}>Privacy</button>

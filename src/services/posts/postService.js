@@ -1,5 +1,6 @@
 import { httpService } from '../httpService'
 import { API_CONFIG } from '../../config/constants'
+import { userService } from '../user/userService'
 
 const ENDPOINTS = API_CONFIG.ENDPOINTS
 
@@ -29,7 +30,10 @@ function mapBackendComment(backendComment) {
     likes: backendComment.likes || [],
     replies: backendComment.replies || [],
     postId: backendComment.postId,
-    createdBy: backendComment.createdBy, // Keep original for reference
+    createdBy:
+      typeof backendComment.createdBy === 'object'
+        ? userService.normalizeUser(backendComment.createdBy)
+        : backendComment.createdBy, // Keep original for reference
   }
 }
 
@@ -53,8 +57,15 @@ function mapBackendPost(backendPost) {
     reactions: backendPost.likes || [],
     comments: (backendPost.comments || []).map(mapBackendComment),
     txt: backendPost.txt, // Keep original for backend compatibility
-    createdBy: backendPost.createdBy, // Keep original for backend compatibility
-    likes: backendPost.likes, // Keep original for backend compatibility
+    createdBy:
+      typeof backendPost.createdBy === 'object'
+        ? userService.normalizeUser(backendPost.createdBy)
+        : backendPost.createdBy, // Keep original for backend compatibility
+    likes: Array.isArray(backendPost.likes)
+      ? backendPost.likes.map((like) =>
+          typeof like === 'object' ? userService.normalizeUser(like) : like
+        )
+      : backendPost.likes, // Keep original for backend compatibility
   }
 }
 
