@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
+import eruda from 'eruda'
 import App from './App'
 import { store } from './store'
 
@@ -56,10 +57,19 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 const debugParams = new URLSearchParams(window.location.search)
-if (debugParams.has('debug')) {
-  import('eruda').then(({ default: eruda }) => {
-    eruda.init()
-  })
+const debugValue = debugParams.get('debug')
+
+if (debugValue === '0' || debugValue === 'false') {
+  localStorage.removeItem('mobileDebug')
+}
+
+if (
+  debugParams.has('debug') ||
+  window.location.hash.includes('debug') ||
+  localStorage.getItem('mobileDebug') === 'true'
+) {
+  localStorage.setItem('mobileDebug', 'true')
+  eruda.init()
 }
 
 library.add(
