@@ -104,6 +104,10 @@ export const Home = (props) => {
                     name="username"
                     value={creds.username}
                     placeholder="Email or username"
+                    autoComplete="username"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck="false"
                     required
                   />
                 </div>
