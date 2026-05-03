@@ -188,11 +188,6 @@ function Message() {
     if (!userId) return
 
     dispatch(loadChats(userId))
-    const intervalId = setInterval(() => {
-      dispatch(loadChats(userId))
-    }, 5000)
-
-    return () => clearInterval(intervalId)
   }, [dispatch, loggedInUser?._id])
 
   useEffect(() => {
@@ -234,9 +229,6 @@ function Message() {
         theNotLoggedUserChat={theNotLoggedUserChat}
         onSendMsg={onSendMsg}
       />
-      <div className="right-side-message">
-        <p>This ad could be yours</p>
-      </div>
     </section>
   )
 }

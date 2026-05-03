@@ -14,8 +14,10 @@ export function Messaging({
   theNotLoggedUserChat,
   onSendMsg,
 }) {
+  const hasOpenThread = messagesToShow !== null
+
   return (
-    <section className="messaging">
+    <section className={`messaging ${hasOpenThread ? 'has-open-thread' : ''}`}>
       <div className="container">
         <ListMsg
           chats={chats}
@@ -28,13 +30,19 @@ export function Messaging({
           setTheNotLoggedUserChat={setTheNotLoggedUserChat}
           theNotLoggedUserChat={theNotLoggedUserChat}
         />
-        {messagesToShow && (
+        {hasOpenThread ? (
           <MessageThread
             messagesToShow={messagesToShow}
             chatWith={chatWith}
             onSendMsg={onSendMsg}
             setMessagesToShow={setMessagesToShow}
           />
+        ) : (
+          <div className="message-empty-state">
+            <div className="empty-icon">in</div>
+            <h2>Select a conversation</h2>
+            <p>Choose a connection from the list to read messages or start a new conversation.</p>
+          </div>
         )}
       </div>
     </section>

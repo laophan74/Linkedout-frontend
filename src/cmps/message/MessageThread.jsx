@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ThreadMsgList } from './ThreadMsgList'
 import { useHistory } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { SendMessageForm } from './SendMessageForm'
 
 export function MessageThread({
@@ -11,29 +11,35 @@ export function MessageThread({
   onSendMsg,
 }) {
   const history = useHistory()
+  const messagesContainerRef = useRef(null)
 
   useEffect(() => {
     scrollToBottom()
-    return () => {}
   }, [messagesToShow])
 
   const scrollToBottom = () => {
-    var msgsContainer = document.querySelector('.user-profile-details')
+    const msgsContainer = messagesContainerRef.current
+    if (!msgsContainer) return
     msgsContainer.scrollTop = msgsContainer.scrollHeight
   }
 
   return (
-    <section className="flex flex-col h-full bg-white">
-      <header className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
+    <section className="message-thread">
+      <header className="message-thread-header">
         <div
-          className="flex items-center cursor-pointer group"
+          className="thread-profile"
           onClick={() => history.push(`/main/profile/${chatWith?._id}`)}
         >
-          <img src={chatWith?.imgUrl} alt="" className="w-10 h-10 rounded-full mr-3" />
-          <p className="text-sm font-semibold text-gray-900 group-hover:underline">{chatWith?.fullname}</p>
+          <img src={chatWith?.imgUrl} alt="" />
+          <div>
+            <p>{chatWith?.fullname}</p>
+            <span>Private conversation</span>
+          </div>
         </div>
         <button
-          className="p-2 text-gray-600 hover:bg-gray-100 rounded transition"
+          className="close-thread-btn"
+          type="button"
+          aria-label="Close conversation"
           onClick={() => {
             setMessagesToShow(null)
           }}
@@ -42,7 +48,10 @@ export function MessageThread({
         </button>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
+      <div
+        ref={messagesContainerRef}
+        className="message-thread-body"
+      >
         <ThreadMsgList messagesToShow={messagesToShow} />
       </div>
 
