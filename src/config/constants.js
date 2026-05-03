@@ -63,7 +63,7 @@ export const API_CONFIG = {
 export const STORAGE_CONFIG = {
   TOKEN_KEY: 'token',
   USER_KEY: 'user',
-  STORAGE_TYPE: 'sessionStorage', // 'localStorage' or 'sessionStorage'
+  STORAGE_TYPE: 'localStorage', // 'localStorage' or 'sessionStorage'
 }
 
 // ==================== UI CONFIGURATION ====================

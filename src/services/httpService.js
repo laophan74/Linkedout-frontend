@@ -11,9 +11,11 @@ var axios = Axios.create({
   timeout: HTTP_CONFIG.TIMEOUT,
 })
 
+const storage = STORAGE_CONFIG.STORAGE_TYPE === 'localStorage' ? localStorage : sessionStorage
+
 // Add JWT token to requests
 axios.interceptors.request.use((config) => {
-  const token = sessionStorage.getItem(STORAGE_CONFIG.TOKEN_KEY)
+  const token = storage.getItem(STORAGE_CONFIG.TOKEN_KEY)
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }

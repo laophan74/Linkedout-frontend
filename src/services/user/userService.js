@@ -84,9 +84,11 @@ async function signup(userCred) {
   }
 }
 
+const storage = STORAGE_CONFIG.STORAGE_TYPE === 'localStorage' ? localStorage : sessionStorage
+
 async function logout() {
-  sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
-  sessionStorage.removeItem(STORAGE_KEY_TOKEN)
+  storage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
+  storage.removeItem(STORAGE_KEY_TOKEN)
   return await httpService.post(ENDPOINTS.AUTH_LOGOUT)
 }
 
@@ -110,15 +112,15 @@ async function disconnectUser(userId) {
 }
 
 function _saveLocalUser(user, token) {
-  sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
+  storage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
   if (token) {
-    sessionStorage.setItem(STORAGE_KEY_TOKEN, token)
+    storage.setItem(STORAGE_KEY_TOKEN, token)
   }
   return user
 }
 
 function getLoggedinUser() {
   return normalizeUser(
-    JSON.parse(sessionStorage.getItem(STORAGE_KEY_LOGGEDIN_USER) || 'null')
+    JSON.parse(storage.getItem(STORAGE_KEY_LOGGEDIN_USER) || 'null')
   )
 }
