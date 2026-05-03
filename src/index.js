@@ -58,18 +58,55 @@ import {
 
 const debugParams = new URLSearchParams(window.location.search)
 const debugValue = debugParams.get('debug')
+const isMobileDebugDisabled = debugValue === '0' || debugValue === 'false'
+const isMobileDebugEnabled =
+  !isMobileDebugDisabled &&
+  (debugParams.has('debug') ||
+    window.location.hash.includes('debug') ||
+    localStorage.getItem('mobileDebug') === 'true')
 
-if (debugValue === '0' || debugValue === 'false') {
+const showMobileDebugger = () => {
+  eruda.init()
+  eruda.show()
+
+  const existingButton = document.getElementById('mobile-debug-button')
+  if (existingButton) return
+
+  const debugButton = document.createElement('button')
+  debugButton.id = 'mobile-debug-button'
+  debugButton.type = 'button'
+  debugButton.textContent = 'Debug'
+  debugButton.style.cssText = [
+    'position:fixed',
+    'right:12px',
+    'bottom:72px',
+    'z-index:2147483647',
+    'display:block',
+    'min-width:72px',
+    'height:40px',
+    'padding:0 12px',
+    'border:0',
+    'border-radius:20px',
+    'background:#111827',
+    'color:#fff',
+    'font:600 14px/40px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
+    'box-shadow:0 8px 24px rgba(0,0,0,.28)',
+  ].join(';')
+  debugButton.addEventListener('click', () => eruda.show())
+  document.body.appendChild(debugButton)
+}
+
+if (isMobileDebugDisabled) {
   localStorage.removeItem('mobileDebug')
 }
 
-if (
-  debugParams.has('debug') ||
-  window.location.hash.includes('debug') ||
-  localStorage.getItem('mobileDebug') === 'true'
-) {
+if (isMobileDebugEnabled) {
   localStorage.setItem('mobileDebug', 'true')
-  eruda.init()
+  if (document.body) {
+    showMobileDebugger()
+  } else {
+    window.addEventListener('DOMContentLoaded', showMobileDebugger, { once: true })
+  }
 }
 
 library.add(
