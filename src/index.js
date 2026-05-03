@@ -7,7 +7,6 @@ import { store } from './store'
 // Import Tailwind CSS
 import './index.css'
 
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import {
@@ -55,6 +54,13 @@ import {
   faMoon,
   faBookmark,
 } from '@fortawesome/free-solid-svg-icons'
+
+const debugParams = new URLSearchParams(window.location.search)
+if (debugParams.has('debug')) {
+  import('eruda').then(({ default: eruda }) => {
+    eruda.init()
+  })
+}
 
 library.add(
   fab,
