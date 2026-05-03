@@ -120,7 +120,13 @@ function _saveLocalUser(user, token) {
 }
 
 function getLoggedinUser() {
-  return normalizeUser(
-    JSON.parse(storage.getItem(STORAGE_KEY_LOGGEDIN_USER) || 'null')
-  )
+  try {
+    return normalizeUser(
+      JSON.parse(storage.getItem(STORAGE_KEY_LOGGEDIN_USER) || 'null')
+    )
+  } catch (err) {
+    storage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
+    storage.removeItem(STORAGE_KEY_TOKEN)
+    return null
+  }
 }

@@ -59,6 +59,7 @@ import {
 const debugParams = new URLSearchParams(window.location.search)
 const debugValue = debugParams.get('debug')
 const isMobileDebugDisabled = debugValue === '0' || debugValue === 'false'
+const shouldResetSession = debugParams.has('reset')
 const isMobileDebugEnabled =
   !isMobileDebugDisabled &&
   (debugParams.has('debug') ||
@@ -98,6 +99,13 @@ const showMobileDebugger = () => {
 
 if (isMobileDebugDisabled) {
   localStorage.removeItem('mobileDebug')
+}
+
+if (shouldResetSession) {
+  localStorage.removeItem('user')
+  localStorage.removeItem('token')
+  sessionStorage.removeItem('user')
+  sessionStorage.removeItem('token')
 }
 
 if (isMobileDebugEnabled) {
