@@ -27,7 +27,9 @@ export function MsgPreview({
 
   const lastMsg =
     chat.messages[chat.messages?.length - 1]?.txt || 'No Messages yet..'
-  const dateToShow = new Date(chat.messages[0]?.createdAt || chat.createdAt)
+  const dateToShow = new Date(
+    chat.messages[chat.messages?.length - 1]?.createdAt || chat.updatedAt || chat.createdAt
+  )
   const slicedDate = dateToShow.toLocaleDateString().slice(0, -5)
 
   const loadNotLoggedUser = async (chat) => {
@@ -44,16 +46,15 @@ export function MsgPreview({
   useEffect(() => {
     loadNotLoggedUser(chat)
     getUnreadCountMsgs()
-    return () => {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [chat?._id])
 
   useEffect(() => {
-    setMessagesToShow(chat.messages)
-    setChooseenChatId(chat._id)
-    return () => {}
+    if (chooseenChatId === chat._id) {
+      setMessagesToShow(chat.messages)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chat, chats])
+  }, [chat, chats, chooseenChatId])
 
   const isChatChooseen = chooseenChatId === chat._id ? 'chooseen-chat' : ''
 

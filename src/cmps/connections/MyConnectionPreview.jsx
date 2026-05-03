@@ -1,4 +1,5 @@
 import { Link, useHistory } from 'react-router-dom'
+import { navigateToMessage } from '../../services/navigation/messageNavigation'
 
 export function MyConnectionPreview({ connection }) {
   const history = useHistory()
@@ -33,7 +34,7 @@ export function MyConnectionPreview({ connection }) {
           <button
             type="button"
             className="message-btn"
-            onClick={() => history.push(`/main/message/${connection._id}`)}
+            onClick={() => navigateToMessage(history, connection._id)}
           >
             Message
           </button>

@@ -1,5 +1,4 @@
 import { chatService } from '../../services/chats/chatService'
-import { socketService } from '../../services/socket.service'
 
 export function loadChats(userId) {
   return async (dispatch, getState) => {
@@ -25,10 +24,6 @@ export function saveChat(chat) {
       chat._id
         ? dispatch({ type: 'UPDATE_CHAT', chat: addedChat })
         : dispatch({ type: 'ADD_CHAT', chat: addedChat })
-
-      chat._id
-        ? socketService.emit('chat-updated', addedChat)
-        : socketService.emit('chat-added', addedChat)
 
       return addedChat
     } catch (err) {

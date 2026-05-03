@@ -36,10 +36,12 @@ async function getMessages(chatId) {
 
 async function saveMessage(chatId, message) {
   const payload = {
-    txt: message?.txt,
+    txt: message?.txt?.trim(),
     recipientId: message?.recipientId,
   }
-  return await httpService.post(ENDPOINTS.CHAT_MESSAGE_SEND(chatId), payload)
+  return mapBackendMessage(
+    await httpService.post(ENDPOINTS.CHAT_MESSAGE_SEND(chatId), payload)
+  )
 }
 
 async function save(chat) {
@@ -54,7 +56,7 @@ async function save(chat) {
     throw new Error('Recipient ID is required to create a chat')
   }
 
-  const baseChat = chat?._id
+  const baseChat = chat?._id && !chat?._isTemp
     ? await httpService.get(ENDPOINTS.CHAT_GET(chat._id))
     : await httpService.post(ENDPOINTS.CHAT_CREATE, { recipientId })
 
@@ -101,9 +103,20 @@ function mapBackendChat(chat, loggedInUserId) {
 
 function mapBackendMessage(message) {
   if (!message) return message
+  const sender =
+    typeof message.senderId === 'object'
+      ? userService.normalizeUser(message.senderId)
+      : null
+  const recipient =
+    typeof message.recipientId === 'object'
+      ? userService.normalizeUser(message.recipientId)
+      : null
+
   return {
     ...message,
-    userId: message.senderId || message.userId,
+    senderId: sender || message.senderId,
+    recipientId: recipient || message.recipientId,
+    userId: sender?._id || message.senderId || message.userId,
     createdAt: message.createdAt || Date.now(),
   }
 }

@@ -27,7 +27,7 @@ export function ListMsg({
   const setFilter = (txt) => {
     const regex = new RegExp(txt, 'i')
     const filteredChats = [...chats].filter((chat) => {
-      return regex.test(chat.users[0]) || regex.test(chat.users[1])
+      return chat.users?.some((userName) => regex.test(userName))
     })
 
     setChatsToShow(filteredChats)

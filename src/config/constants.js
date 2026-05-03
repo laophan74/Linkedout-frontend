@@ -156,7 +156,8 @@ export const ROUTES = {
   FEED: '/main/feed',
   PROFILE: '/main/profile/:userId',
   POST: '/main/post/:userId/:postId',
-  MESSAGES: '/main/messages',
+  MESSAGES: '/main/message',
+  MESSAGE_WITH_USER: (userId) => `/main/message/${userId}`,
   CONNECTIONS: '/main/connections',
   NOTIFICATIONS: '/main/notifications',
 }

@@ -14,6 +14,7 @@ import {
   setFilterByPosts,
 } from '../store/actions/postActions'
 import { connectToUser, getUsers } from '../store/actions/userActions'
+import { navigateToMessage } from '../services/navigation/messageNavigation'
 
 function Profile() {
   const params = useParams()
@@ -122,7 +123,7 @@ function Profile() {
   }
 
   const moveToChat = () => {
-    history.push(`/main/message/${user?._id}`)
+    navigateToMessage(history, user?._id)
   }
 
   const onConnectSuggestion = async (suggestedUserId) => {
