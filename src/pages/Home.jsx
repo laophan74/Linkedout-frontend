@@ -30,6 +30,22 @@ export const Home = (props) => {
     setCreds((prevCred) => ({ ...prevCred, [field]: value }))
   }
 
+  const getLoginErrorMessage = (err) => {
+    const status = err?.response?.status || err?.status
+    const backendMessage = err?.response?.data?.message
+    const message = backendMessage || err?.message
+
+    if (status) {
+      return `Login failed (${status}): ${message || 'Request failed'}`
+    }
+
+    if (err?.code === 'ECONNABORTED') {
+      return 'Login failed: request timed out'
+    }
+
+    return `Login failed: ${message || 'network/CORS blocked'}`
+  }
+
   const doLogin = () => {
     dispatch(setLogingLoading(true))
     dispatch(login(creds))
@@ -40,7 +56,7 @@ export const Home = (props) => {
       })
       .catch((err) => {
         dispatch(setLogingLoading(false))
-        showMsg('Something went wrong...')
+        showMsg(getLoginErrorMessage(err))
         console.log(err)
       })
   }

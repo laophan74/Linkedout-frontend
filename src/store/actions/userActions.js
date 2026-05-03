@@ -54,7 +54,7 @@ export function login(userCred) {
       return user;
     } catch (err) {
       console.log("can't do login:", err);
-      throw new Error(err);
+      throw err;
     }
   };
 }

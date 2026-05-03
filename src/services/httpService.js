@@ -51,10 +51,18 @@ async function ajax(endpoint, method = 'GET', data = null) {
     }
     // If response is not successful, throw error with backend message
     if (res.data && !res.data.success) {
-      throw new Error(res.data.message || 'Request failed')
+      const error = new Error(res.data.message || 'Request failed')
+      error.status = res.status
+      error.response = res
+      error.endpoint = endpoint
+      throw error
     }
     return res.data
   } catch (err) {
+    if (!err.response && !err.status) {
+      err.message = err.message || 'Network request failed'
+      err.endpoint = endpoint
+    }
     console.error('HTTP Error:', err)
     throw err
   }
