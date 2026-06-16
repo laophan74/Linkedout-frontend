@@ -12,20 +12,17 @@ export const chatService = {
 }
 
 async function query(filterBy = {}) {
-  const chats = await httpService.get(ENDPOINTS.CHAT_LIST, filterBy)
+  const chats = await httpService.get(ENDPOINTS.CHAT_LIST, {
+    ...filterBy,
+    includeMessages: true,
+    messageLimit: 20,
+  })
   if (!Array.isArray(chats)) return chats
 
   const loggedInUser = userService.getLoggedinUser()
   const loggedInUserId = loggedInUser?._id
 
-  const mapped = await Promise.all(
-    chats.map(async (chat) => {
-      const messages = await getMessages(chat._id)
-      return mapBackendChat({ ...chat, messages }, loggedInUserId)
-    })
-  )
-
-  return mapped
+  return chats.map((chat) => mapBackendChat(chat, loggedInUserId))
 }
 
 async function getMessages(chatId) {

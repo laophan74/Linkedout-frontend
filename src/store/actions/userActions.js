@@ -1,14 +1,13 @@
 import { userService } from "../../services/user/userService";
-import { socketService } from "../../services/socket.service";
 
-export function getUsers() {
+export function getUsers(filterOverride = null) {
   return async (dispatch, getState) => {
     try {
       const loggedInUser = getState().userModule.loggedInUser;
 
       if (!loggedInUser) return;
       const { filterByUsers } = getState().userModule;
-      const users = await userService.getUsers(filterByUsers);
+      const users = await userService.getUsers(filterOverride || filterByUsers);
 
       // const ids = users.map((user) => user._id);
       // console.log(ids);
@@ -49,8 +48,6 @@ export function login(userCred) {
       const user = await userService.login(userCred);
       dispatch({ type: "LOGIN", user });
 
-      socketService.emit("setUserSocket", user._id);
-
       return user;
     } catch (err) {
       console.log("can't do login:", err);
@@ -74,7 +71,6 @@ export function signup(userCred) {
     try {
       const user = await userService.signup(userCred);
       dispatch({ type: "SIGNUP", user });
-      socketService.emit("setUserSocket", user._id);
       return user;
     } catch (err) {
       console.log("cannot signup:", err);

@@ -44,6 +44,15 @@ export function activityReducer(state = INITIAL_STATE, action) {
         })),
         activitiesLength: 0,
         unreadActivities: [],
+        unreadMessages: [],
+      }
+    case 'MARK_MESSAGES_READ':
+      return {
+        ...state,
+        activities: state.activities.map((activity) =>
+          activity.type === 'message' ? { ...activity, isRead: true } : activity
+        ),
+        unreadMessages: [],
       }
 
     case 'ADD_FILTER_BY_ACTIVITIES':

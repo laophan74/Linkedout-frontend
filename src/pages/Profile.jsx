@@ -8,7 +8,6 @@ import { ImgPreview } from '../cmps/profile/ImgPreview'
 import loadingGif from '../assets/imgs/loading-gif.gif'
 import { EditModal } from '../cmps/profile/EditModal'
 import {
-  getPostsLength,
   loadPosts,
   setCurrPage,
   setFilterByPosts,
@@ -147,8 +146,7 @@ function Profile() {
     dispatch(setFilterByPosts(filterBy))
     loadUser()
     dispatch(loadPosts(filterBy))
-    dispatch(getPostsLength())
-    dispatch(getUsers())
+    dispatch(getUsers({ page: 1, limit: 12 }))
 
     return () => {
       dispatch(setFilterByPosts(null))

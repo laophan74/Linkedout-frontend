@@ -41,12 +41,19 @@ If it is not set, production currently falls back to:
 - Removed manual notification creation from like/comment/message flows to avoid duplicate activities.
 - Notification unread state now uses backend `activity.isRead`.
 - Notification page calls the backend read-all endpoint when leaving the page.
+- Message page calls a message-specific read endpoint and no longer updates user timestamp fields for read state.
 - Notification preview now supports populated user objects and activity types:
   - `like`
   - `comment`
   - `connection`
   - `message`
 - Notification links now navigate to absolute `/main/...` routes.
+- Frontend preserves backend pagination metadata from list responses and uses it to avoid extra count requests.
+- Feed now loads an initial batch of 5 posts and extends the limit by 5 during infinite scroll.
+- Header search is React state based with debounce instead of manual DOM event listeners.
+- Chat list now requests preloaded recent messages from the backend, avoiding one message request per chat.
+- Comment and thread previews reuse populated user objects when available to reduce extra user fetches.
+- `socket.io-client` was removed; socket service is not used for production behavior.
 
 ## Messaging And Notifications Policy
 
@@ -56,6 +63,7 @@ Expected behavior:
 
 - Messages are sent through `/api/chat/:id/message`.
 - Message list is loaded through REST.
+- Message list should use preloaded chat messages where possible.
 - Notifications are loaded through `/api/activity`.
 - Unread counts are based on stored `Activity.isRead`.
 - It is acceptable for notification/message state to update on page navigation or manual refresh.
@@ -65,6 +73,8 @@ Expected behavior:
 Frontend production build passed:
 
 `npm run build`
+
+Latest build result: compiled successfully; main JS bundle decreased after removing socket client.
 
 ## Recommended Next Steps
 

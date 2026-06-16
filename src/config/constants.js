@@ -47,6 +47,7 @@ export const API_CONFIG = {
     CHAT_MESSAGE_SEND: (id) => `chat/${id}/message`,
     CHAT_MESSAGE_EDIT: (id, msgId) => `chat/${id}/message/${msgId}`,
     CHAT_MESSAGE_DELETE: (id, msgId) => `chat/${id}/message/${msgId}`,
+    CHAT_MESSAGES_READ_ALL: 'chat/read-all/messages',
 
     // Activity
     ACTIVITY_LIST: 'activity',

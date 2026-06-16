@@ -70,18 +70,22 @@ function mapBackendPost(backendPost) {
 }
 
 async function query(filterBy = {}) {
-  console.log('[postService.query] Fetching posts with filter:', filterBy)
   const posts = await httpService.get(ENDPOINTS.POST_LIST, filterBy)
-  console.log('[postService.query] Received posts:', posts?.length || 0, 'posts')
-  return Array.isArray(posts) ? posts.map(mapBackendPost) : posts
+  if (!Array.isArray(posts)) return posts
+
+  const mappedPosts = posts.map(mapBackendPost)
+  if (posts._pagination) {
+    Object.defineProperty(mappedPosts, '_pagination', {
+      value: posts._pagination,
+      enumerable: false,
+    })
+  }
+  return mappedPosts
 }
 
 async function getPostsLength(filterBy = {}) {
-  const filterWithoutPagination = { ...filterBy }
-  delete filterWithoutPagination.page
-  delete filterWithoutPagination.limit
-  const posts = await httpService.get(ENDPOINTS.POST_LIST, filterWithoutPagination)
-  return posts.length
+  const posts = await query({ ...filterBy, page: 1, limit: 1 })
+  return posts?._pagination?.total ?? posts.length
 }
 
 async function getById(id) {

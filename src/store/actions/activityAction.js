@@ -98,10 +98,8 @@ export function markMessagesRead() {
         .filter((activity) => activity.type === 'message')
         .map((activity) => activity._id)
 
-      if (messageActivityIds.length) {
-        await activityService.updateLastSeen()
-      }
-      dispatch({ type: 'SET_UNREAD_MESSAGES', unreadMessages: [] })
+      if (messageActivityIds.length) await activityService.markMessagesRead()
+      dispatch({ type: 'MARK_MESSAGES_READ' })
     } catch (err) {
       console.log('err:', err)
     }

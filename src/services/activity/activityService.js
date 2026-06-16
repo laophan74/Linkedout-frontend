@@ -8,6 +8,7 @@ export const activityService = {
   save,
   getActivitiesLength,
   updateLastSeen,
+  markMessagesRead,
 }
 
 async function query(filterBy = {}) {
@@ -25,4 +26,8 @@ async function getActivitiesLength(filterBy = {}) {
 
 async function updateLastSeen() {
   return await httpService.put(ENDPOINTS.ACTIVITY_READ_ALL)
+}
+
+async function markMessagesRead() {
+  return await httpService.put(ENDPOINTS.CHAT_MESSAGES_READ_ALL)
 }

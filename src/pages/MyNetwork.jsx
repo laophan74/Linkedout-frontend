@@ -28,7 +28,7 @@ function MyNetwork() {
   const suggestionCount = suggestions.length
 
   useEffect(() => {
-    dispatch(getUsers())
+    dispatch(getUsers({ page: 1, limit: 50 }))
     dispatch(setCurrPage('mynetwork'))
 
     return () => {

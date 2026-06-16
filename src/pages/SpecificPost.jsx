@@ -8,7 +8,6 @@ import { Comments } from '../cmps/comments/Comments'
 import { userService } from '../services/user/userService'
 import { postService } from '../services/posts/postService'
 import {
-  getPostsLength,
   setCurrPage,
   setFilterByPosts,
   likePost,
@@ -54,7 +53,6 @@ const SpecificPost = (props) => {
 
         setPost(loadedPost)
         dispatch({ type: 'SET_POSTS', posts: [loadedPost] })
-        dispatch(getPostsLength())
 
         // Initialize like state
         const userHasLiked = (loadedPost.reactions || loadedPost.likes || []).some(

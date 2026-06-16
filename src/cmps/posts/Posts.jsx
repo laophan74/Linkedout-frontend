@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AddPost } from './AddPost'
 import { PostsList } from './PostsList'
-import { loadPosts, getPostsLength } from '../../store/actions/postActions'
+import { loadPosts } from '../../store/actions/postActions'
 
 export const Posts = () => {
   const dispatch = useDispatch()
@@ -14,11 +14,6 @@ export const Posts = () => {
 
     dispatch(loadPosts())
   }, [currPage, dispatch, filterByPosts?.page, filterByPosts?.limit, filterByPosts?.txt])
-
-  useEffect(() => {
-    if (!currPage) return
-    dispatch(getPostsLength())
-  }, [currPage, dispatch, filterByPosts?.txt, filterByPosts?.userId])
 
   return (
     <section className="posts">

@@ -47,6 +47,12 @@ async function ajax(endpoint, method = 'GET', data = null) {
       params: method === 'GET' ? data : null,
     })
     if (res.data && res.data.success && 'data' in res.data) {
+      if (Array.isArray(res.data.data) && res.data.pagination) {
+        Object.defineProperty(res.data.data, '_pagination', {
+          value: res.data.pagination,
+          enumerable: false,
+        })
+      }
       return res.data.data
     }
     // If response is not successful, throw error with backend message

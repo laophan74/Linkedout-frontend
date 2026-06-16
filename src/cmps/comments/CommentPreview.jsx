@@ -14,7 +14,11 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
   const { userId, createdAt, postId, replies } = comment
   const { loggedInUser } = useSelector((state) => state.userModule)
   const [userComment, setUserComment] = useState(
-    loggedInUser && loggedInUser._id === userId ? loggedInUser : null
+    typeof comment.createdBy === 'object'
+      ? comment.createdBy
+      : loggedInUser && loggedInUser._id === userId
+        ? loggedInUser
+        : null
   )
   const [isShowMenu, setIsShowMenu] = useState(false)
   const [isShowReplyForm, setIsShowReplyForm] = useState(false)
@@ -74,6 +78,10 @@ export const CommentPreview = ({ comment, onSaveComment, isReply = false }) => {
   }
 
   useEffect(() => {
+    if (typeof comment.createdBy === 'object') {
+      setUserComment(comment.createdBy)
+      return
+    }
     if (loggedInUser && loggedInUser._id === userId) {
       setUserComment(loggedInUser)
       return

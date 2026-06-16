@@ -1,6 +1,5 @@
 import { postService } from '../../services/posts/postService'
 import { commentService } from '../../services/comment/commentService'
-import { socketService } from '../../services/socket.service'
 
 export function setCurrPage(page) {
   return async (dispatch) => {
@@ -30,13 +29,17 @@ export function setNextPage(number) {
   }
 }
 
-export function loadPosts() {
+export function loadPosts(filterOverride = null) {
   return async (dispatch, getState) => {
     try {
       const { filterByPosts } = getState().postModule
+      const nextFilter = filterOverride || filterByPosts
       dispatch({ type: 'SET_IS_POSTS_LOADING', isLoading: true })
-      const posts = await postService.query(filterByPosts)
+      const posts = await postService.query(nextFilter)
       dispatch({ type: 'SET_POSTS', posts })
+      if (posts?._pagination) {
+        dispatch({ type: 'SET_POSTS_LENGTH', postsLength: posts._pagination.total })
+      }
       dispatch({ type: 'SET_IS_POSTS_LOADING', isLoading: false })
     } catch (err) {
       console.error('Error loading posts:', err)
@@ -73,6 +76,9 @@ export function addPosts() {
       dispatch({ type: 'SET_IS_POSTS_LOADING', isLoading: true })
       const posts = await postService.query(newFilterBy)
       dispatch({ type: 'ADD_POSTS', posts })
+      if (posts?._pagination) {
+        dispatch({ type: 'SET_POSTS_LENGTH', postsLength: posts._pagination.total })
+      }
       dispatch({ type: 'SET_IS_POSTS_LOADING', isLoading: false })
     } catch (err) {
       console.log('err:', err)
@@ -88,10 +94,6 @@ export function savePost(post) {
         ? dispatch({ type: 'UPDATE_POST', post: addedPost })
         : dispatch({ type: 'ADD_POST', post: addedPost })
 
-      post._id
-        ? socketService.emit('post-updated', addedPost)
-        : socketService.emit('post-added', addedPost)
-
       return addedPost
     } catch (err) {
       console.log('err:', err)
@@ -103,8 +105,6 @@ export function removePost(postId) {
   return async (dispatch) => {
     try {
       await postService.remove(postId)
-
-      socketService.emit('post-removed', postId)
 
       dispatch({ type: 'REMOVE_POST', postId })
     } catch (err) {
@@ -118,7 +118,6 @@ export function likePost(postId) {
     try {
       const likedPost = await postService.likePost(postId)
       dispatch({ type: 'UPDATE_POST', post: likedPost })
-      socketService.emit('post-updated', likedPost)
       return likedPost
     } catch (err) {
       console.log('err:', err)
@@ -134,10 +133,6 @@ export function saveComment(comment) {
         ? dispatch({ type: 'UPDATE_COMMENT', comment: savedComment })
         : dispatch({ type: 'ADD_COMMENT', comment: savedComment })
 
-      comment._id
-        ? socketService.emit('comment-updated', savedComment)
-        : socketService.emit('comment-added', savedComment)
-
       return savedComment
     } catch (err) {
       console.log('err:', err)
@@ -149,8 +144,6 @@ export function removeComment(comment) {
   return async (dispatch) => {
     try {
       await commentService.remove(comment)
-
-      socketService.emit('comment-removed', comment)
 
       dispatch({ type: 'REMOVE_COMMENT', comment })
     } catch (err) {

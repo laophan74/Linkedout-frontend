@@ -1,24 +1,10 @@
-import { useState } from 'react'
-import { useEffect } from 'react'
-import { userService } from '../../services/user/userService'
 import TimeAgo from 'react-timeago'
 import { useHistory } from 'react-router-dom'
 import loadingCircle from '../../assets/imgs/loading-circle.gif'
 
 export function ThreadMsgPreview({ msg }) {
-  const [userMsg, setUserMsg] = useState(null)
   const history = useHistory()
-
-  const loadUserMsg = async (id) => {
-    if (!msg) return
-    const user = await userService.getById(id)
-    setUserMsg(() => user)
-  }
-
-  useEffect(() => {
-    loadUserMsg(msg.userId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const userMsg = typeof msg.senderId === 'object' ? msg.senderId : null
 
   return (
     <section className="mb-4">

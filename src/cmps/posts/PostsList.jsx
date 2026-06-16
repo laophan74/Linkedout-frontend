@@ -1,17 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setFilterByPosts } from '../../store/actions/postActions'
 import { PostPreview } from './post-preview/PostPreview'
 
-const INITIAL_POST_COUNT = 1
 const NEXT_BATCH_SIZE = 5
 
 export const PostsList = () => {
   const dispatch = useDispatch()
-  const requestedInitialExpansionRef = useRef(false)
-  const [loadingPlaceholderCount, setLoadingPlaceholderCount] = useState(
-    INITIAL_POST_COUNT
-  )
+  const [loadingPlaceholderCount, setLoadingPlaceholderCount] = useState(0)
 
   const { posts, isPostsLoading, postsLength, currPage, filterByPosts } = useSelector(
     (state) => state.postModule
@@ -36,28 +32,13 @@ export const PostsList = () => {
   useEffect(() => {
     if (!isFeedPage) {
       setLoadingPlaceholderCount(0)
-      requestedInitialExpansionRef.current = false
-      return
-    }
-
-    if (!posts.length) {
-      setLoadingPlaceholderCount(INITIAL_POST_COUNT)
-      requestedInitialExpansionRef.current = false
-      return
-    }
-
-    if (posts.length === 1 && !isPostsLoading && !requestedInitialExpansionRef.current) {
-      requestedInitialExpansionRef.current = true
-      const remainingPosts = Math.max(0, (postsLength || 0) - 1)
-      const placeholderCount = Math.min(NEXT_BATCH_SIZE, remainingPosts || NEXT_BATCH_SIZE)
-      requestMorePosts(INITIAL_POST_COUNT + NEXT_BATCH_SIZE, placeholderCount)
       return
     }
 
     if (!isPostsLoading) {
       setLoadingPlaceholderCount(0)
     }
-  }, [isFeedPage, isPostsLoading, posts.length, postsLength, requestMorePosts])
+  }, [isFeedPage, isPostsLoading])
 
   useEffect(() => {
     if (!isFeedPage) return

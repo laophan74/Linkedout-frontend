@@ -13,10 +13,9 @@ import { useParams } from 'react-router-dom'
 import { userService } from '../services/user/userService'
 import { utilService } from '../services/utilService'
 import {
-  setUnreadActivitiesIds,
+  markMessagesRead,
 } from '../store/actions/activityAction'
 import loadingGif from '../assets/imgs/loading-gif.gif'
-import { updateUser } from '../store/actions/userActions'
 
 // Custom hook to manage chat-related functionality
 function useChat(loggedInUser, chats, params) {
@@ -35,6 +34,12 @@ function useChat(loggedInUser, chats, params) {
 
   const getTheNotLoggedUserChat = useCallback(async (chat) => {
     if (!chat || !loggedInUser) return null
+
+    const participant = chat.participants?.find((participant) => {
+      const participantId = participant?._id || participant
+      return participantId !== loggedInUser._id
+    })
+    if (participant && typeof participant === 'object') return participant
 
     const userId = loggedInUser._id === chat.userId ? chat.userId2 : chat.userId
     if (!userId) return null
@@ -183,16 +188,9 @@ function Message() {
   }, [openChat])
 
   useEffect(() => {
-    updateLastSeenLoggedUser()
-    dispatch(setUnreadActivitiesIds())
+    dispatch(markMessagesRead())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const updateLastSeenLoggedUser = async () => {
-    if (!loggedInUser?._id) return
-    const lastSeenMsgs = new Date().getTime()
-    await dispatch(updateUser({ ...loggedInUser, lastSeenMsgs }))
-  }
 
   if (!chats)
     return (

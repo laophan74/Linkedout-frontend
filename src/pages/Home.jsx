@@ -90,8 +90,8 @@ export const Home = (props) => {
       <div className="hero-container">
         <div className="hero-content">
           <div className="welcome-text">
-            <h1>Connect with travelers<br/>around the world</h1>
-            <p>Join our community to share experiences, find travel companions, and discover new destinations.</p>
+            <h1>Connect with professionals<br/>who move work forward</h1>
+            <p>Build your profile, share career updates, discover people, and grow your professional network.</p>
             <button 
               className="cta-button"
               onClick={() => history.push(`/signup`)}
@@ -176,15 +176,15 @@ export const Home = (props) => {
               <div className="feature-icon">
                 <FontAwesomeIcon icon="comments" />
               </div>
-              <h3>Real-time Messaging</h3>
-              <p>Connect with fellow travelers and share experiences instantly</p>
+              <h3>Professional Messaging</h3>
+              <p>Keep conversations organized with REST-based messaging designed for serverless deployment.</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">
                 <FontAwesomeIcon icon="user-friends" />
               </div>
-              <h3>Find Companions</h3>
-              <p>Connect with like-minded travelers for your next adventure</p>
+              <h3>Grow Your Network</h3>
+              <p>Find relevant professionals, follow profiles, and stay active with notifications.</p>
             </div>
           </div>
         </div>
