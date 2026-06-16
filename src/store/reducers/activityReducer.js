@@ -35,6 +35,16 @@ export function activityReducer(state = INITIAL_STATE, action) {
         ...state,
         activitiesLength: action.activitiesLength,
       }
+    case 'MARK_ACTIVITIES_READ':
+      return {
+        ...state,
+        activities: state.activities.map((activity) => ({
+          ...activity,
+          isRead: true,
+        })),
+        activitiesLength: 0,
+        unreadActivities: [],
+      }
 
     case 'ADD_FILTER_BY_ACTIVITIES':
       return {

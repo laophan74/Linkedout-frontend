@@ -2,13 +2,11 @@ import { InputComment } from './InputComment'
 import { CommentsList } from './CommentsList'
 import { useDispatch, useSelector } from 'react-redux'
 import { saveComment } from '../../store/actions/postActions'
-import { saveActivity } from '../../store/actions/activityAction'
 import { useState, useEffect, useRef } from 'react'
 import { utilService } from '../../services/utilService'
 
-export const Comments = ({ postId, comments: initialComments, userPostId }) => {
+export const Comments = ({ postId, comments: initialComments }) => {
   const dispatch = useDispatch()
-  const { loggedInUser } = useSelector((state) => state.userModule)
   const post = useSelector((state) => state.postModule.posts.find(p => p._id === postId))
   const comments = post ? post.comments || [] : initialComments || []
   const [optimisticComments, setOptimisticComments] = useState([])
@@ -54,16 +52,6 @@ export const Comments = ({ postId, comments: initialComments, userPostId }) => {
         // Remove optimistic comment since Redux store is updated
         setOptimisticComments((prev) => prev.filter((c) => c._id !== tempId))
 
-        // Create activity
-        const newActivity = {
-          type: commentToSave._id ? 'update-comment' : 'add-comment',
-          description: '',
-          createdBy: loggedInUser._id,
-          createdTo: userPostId,
-          commentId: savedComment._id,
-          postId: savedComment.postId,
-        }
-        dispatch(saveActivity(newActivity))
       }
       return savedComment
     }).catch((err) => {

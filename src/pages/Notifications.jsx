@@ -6,10 +6,10 @@ import { NotificationsList } from '../cmps/notifications/NotificationsList'
 import loadingGif from '../assets/imgs/loading-gif.gif'
 import {
   loadActivities,
+  markActivitiesRead,
   setFilterByActivities,
   setUnreadActivitiesIds,
 } from '../store/actions/activityAction'
-import { updateUser } from '../store/actions/userActions'
 
 function Notifications() {
   const dispatch = useDispatch()
@@ -28,18 +28,12 @@ function Notifications() {
 
     return () => {
       if (loggedInUser?._id) {
-        updateLastSeenLoggedUser()
+        dispatch(markActivitiesRead())
         dispatch(setUnreadActivitiesIds())
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, loggedInUser?._id])
-
-  const updateLastSeenLoggedUser = () => {
-    if (!loggedInUser) return
-    const lastSeenActivity = Date.now()
-    dispatch(updateUser({ ...loggedInUser, lastSeenActivity }))
-  }
 
   if (!activities) {
     return (

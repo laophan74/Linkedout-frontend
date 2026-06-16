@@ -59,25 +59,51 @@ export function setUnreadActivitiesIds() {
 
     if (!activities) return
     if (!loggedInUser) return
-    let unreadActivities = []
-    let unreadMessages = []
+    const getUserId = (user) => (typeof user === 'object' ? user?._id : user)
+    const unreadActivities = []
+    const unreadMessages = []
     activities.forEach((activity) => {
-      if (loggedInUser.lastSeenActivity < activity.createdAt) {
-        if (loggedInUser._id === activity.createdBy) return
-        if (activity.type !== 'private-message') {
-          unreadActivities.push(activity._id)
-        }
+      if (getUserId(activity.createdBy) === loggedInUser._id) return
+      if (activity.isRead) return
+
+      if (activity.type === 'message') {
+        unreadMessages.push(activity.chatId)
+        return
       }
-      //
-      if (loggedInUser.lastSeenMsgs < activity.createdAt) {
-        if (loggedInUser._id === activity.createdBy) return
-        if (activity.type === 'private-message') {
-          unreadMessages.push(activity.chatId)
-        }
-      }
+
+      unreadActivities.push(activity._id)
     })
 
     dispatch({ type: 'SET_UNREAD_ACTIVITIES', unreadActivities })
     dispatch({ type: 'SET_UNREAD_MESSAGES', unreadMessages })
+  }
+}
+
+export function markActivitiesRead() {
+  return async (dispatch) => {
+    try {
+      await activityService.updateLastSeen()
+      dispatch({ type: 'MARK_ACTIVITIES_READ' })
+    } catch (err) {
+      console.log('err:', err)
+    }
+  }
+}
+
+export function markMessagesRead() {
+  return async (dispatch, getState) => {
+    try {
+      const { activities } = getState().activityModule
+      const messageActivityIds = activities
+        .filter((activity) => activity.type === 'message')
+        .map((activity) => activity._id)
+
+      if (messageActivityIds.length) {
+        await activityService.updateLastSeen()
+      }
+      dispatch({ type: 'SET_UNREAD_MESSAGES', unreadMessages: [] })
+    } catch (err) {
+      console.log('err:', err)
+    }
   }
 }

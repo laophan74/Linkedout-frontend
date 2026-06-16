@@ -24,6 +24,5 @@ async function getActivitiesLength(filterBy = {}) {
 }
 
 async function updateLastSeen() {
-  // Client-side operation, no backend call needed
-  return Promise.resolve(true)
+  return await httpService.put(ENDPOINTS.ACTIVITY_READ_ALL)
 }

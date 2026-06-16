@@ -13,7 +13,6 @@ import {
   setFilterByPosts,
   likePost,
 } from '../store/actions/postActions'
-import { saveActivity } from '../store/actions/activityAction'
 import loadingGif from '../assets/imgs/loading-gif.gif'
 
 const SpecificPost = (props) => {
@@ -147,13 +146,6 @@ const SpecificPost = (props) => {
         setLikeCount(serverLikeCount)
         setPost(savedPost)
 
-        const newActivity = {
-          type: newIsLiked ? 'add-like' : 'remove-like',
-          createdBy: loggedInUser._id,
-          createdTo: post.userId,
-          postId: post._id,
-        }
-        dispatch(saveActivity(newActivity))
       }
     }).catch((err) => {
       // Revert optimistic update on error

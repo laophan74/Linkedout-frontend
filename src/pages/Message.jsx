@@ -13,7 +13,6 @@ import { useParams } from 'react-router-dom'
 import { userService } from '../services/user/userService'
 import { utilService } from '../services/utilService'
 import {
-  saveActivity,
   setUnreadActivitiesIds,
 } from '../store/actions/activityAction'
 import loadingGif from '../assets/imgs/loading-gif.gif'
@@ -129,17 +128,6 @@ function useChat(loggedInUser, chats, params) {
       const savedChat = await dispatch(saveChat(chatToUpdate))
       setMessagesToShow(savedChat.messages)
       setChooseenChatId(savedChat._id)
-      if (savedChat) {
-        const newActivity = {
-          type: 'message',
-          createdBy: loggedInUser?._id,
-          createdTo: loggedInUser._id === savedChat.userId
-            ? savedChat.userId2
-            : savedChat.userId,
-          chatId: savedChat._id,
-        }
-        dispatch(saveActivity(newActivity))
-      }
     } catch (err) {
       dispatch(loadChats(loggedInUser._id))
     }

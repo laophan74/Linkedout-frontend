@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useDispatch, useSelector } from 'react-redux'
 import { ImgPreview } from '../../profile/ImgPreview'
-import { saveActivity } from '../../../store/actions/activityAction'
 import { likePost, removePost } from '../../../store/actions/postActions'
 import { useEffect, useState } from 'react'
 import { PostActions } from './PostActions'
@@ -94,13 +93,6 @@ export const PostPreview = ({ post, isLoading = false }) => {
           setLikeCount(serverLikeCount)
           setCurrentPost(savedPost)
 
-          const newActivity = {
-            type: newIsLiked ? 'add-like' : 'remove-like',
-            createdBy: loggedInUser._id,
-            createdTo: post.userId,
-            postId: post._id,
-          }
-          dispatch(saveActivity(newActivity))
         }
       })
       .catch((err) => {
